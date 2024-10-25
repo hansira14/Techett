@@ -90,7 +90,7 @@ namespace ASI.Basecode.WebApp.Controllers
             await this._signInManager.SignInAsync(user);
             this._session.SetString("UserName", model.UserId);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Admin");
 
             /*var loginResult = _userService.AuthenticateUser(model.UserId, model.Password, ref user);
             if (loginResult == LoginResult.Success)
@@ -144,6 +144,14 @@ namespace ASI.Basecode.WebApp.Controllers
         public async Task<IActionResult> SignOutUser()
         {
             await this._signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Account");
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> SignOutAdmin()
+        {
+            await _signInManager.SignOutAsync();
+            _session.Clear();
             return RedirectToAction("Login", "Account");
         }
     }
