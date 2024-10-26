@@ -23,15 +23,16 @@
                             </div>
                             <form method="post" action="/Account/Login" id="loginForm">
                                 <div class="form-outline mb-4">
-                                    <label class="form-label" for="form2Example11"></label>
+                                    <label class="form-label" for="form2Example11">Username</label>
                                     <input type="text" id="form2Example11" class="form-control"
-                                           asp-for="UserId" placeholder="username" />
+                                           asp-for="UserId" placeholder="Enter username" />
                                     <span asp-validation-for="UserId" class="text-danger"></span>
                                 </div>
+
                                 <div class="form-outline mb-4">
-                                    <label class="form-label" for="form2Example22"></label>
+                                    <label class="form-label" for="form2Example22">@Password</label>
                                     <input type="password" id="form2Example22" class="form-control"
-                                           asp-for="Password" placeholder="password" />
+                                           asp-for="Password" placeholder="Enter Password" />
                                     <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
                              <div class="text-center pt-1 mb-5 pb-1 d-flex flex-column align-items-center">

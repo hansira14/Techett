@@ -91,7 +91,7 @@ namespace ASI.Basecode.WebApp.Controllers
             await this._signInManager.SignInAsync(user);
             this._session.SetString("UserName", model.UserId);
 
-            return RedirectToAction("Index", "Admin");
+            return RedirectToAction("UserSettings", "User");
 
             /*var loginResult = _userService.AuthenticateUser(model.UserId, model.Password, ref user);
             if (loginResult == LoginResult.Success)

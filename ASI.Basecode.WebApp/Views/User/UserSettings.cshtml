@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "User Settings Page";
+}
+<link rel="stylesheet" href="~/css/settings.css" />
+<div class="settings-container">
+    <header class="d-flex justify-content-left py-3">
+        <h1>SETTINGS & PREFERENCES</h1>
+        <span> Notification</span>
+        <span> Profile</span>
+    </header>
+</div>
+<section class="account-settings">
+    <h2>Account Settings</h2>
+    <div class="account-info">
+        <div class="profile-picture">
+            <img src="~/img/avatar.png" alt="Profile Picture">
+        </div>
+        <form method="post">
+            <div class="row mb-3">
+                <div class="col-md-6 d-flex align-items-center">
+                    <label for="firstName" class="me-3">First Name</label>
+                    <input type="text" id="firstName" name="firstName" class="form-control" />
+                </div>
+                <div class="col-md-6 d-flex align-items-center">
+                    <label for="lastName" class="me-3">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" class="form-control" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6 d-flex align-items-center">
+                    <label for="contactNo" class="me-3">Contact No.</label>
+                    <input type="text" id="contactNo" name="contactNo" class="form-control" />
+                </div>
+                <div class="col-md-6 d-flex align-items-center">
+                    <label for="password" class="me-3">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" />
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section class="account-preferences">
+    <h2>Account Preferences</h2>
+    <div class="preferences">
+        <label>Notifications</label>
+    </div>
+    <div class="preference">
+        <label>Switch to Darkmode</label>
+
+    </div>
+    <button type="submit" class="save-button">Save Changes</button>
+</section>
