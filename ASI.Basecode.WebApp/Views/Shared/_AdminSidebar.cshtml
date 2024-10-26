@@ -1,8 +1,9 @@
 ﻿<link rel="stylesheet" href="~/css/lightmode.css" />
 <div class="sidebar">
     <div class="logo">
-        <img id="logo-img" alt="Logo" />
+        <img id="logo-img" src="~/logo-light.png" alt="Logo" />
     </div>
+
     <ul class="sidebar-menu">
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")">
             <a asp-controller="Admin" asp-action="Index">
