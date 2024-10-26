@@ -22,7 +22,7 @@ namespace ASI.Basecode.Services.Services
             _repository = repository;
         }
 
-        public LoginResult AuthenticateUser(string userId, string password, ref User user)
+        public LoginResult AuthenticateUser(int userId, string password, ref User user)
         {
             user = new User();
             var passwordKey = PasswordManager.EncryptPassword(password);
@@ -32,17 +32,17 @@ namespace ASI.Basecode.Services.Services
             return user != null ? LoginResult.Success : LoginResult.Failed;
         }
 
-        public void AddUser(UserViewModel model)
+        public void AddUser(UserViewModel model, int adminID)
         {
             var user = new User();
             if (!_repository.UserExists(model.UserId))
             {
                 _mapper.Map(model, user);
                 user.Password = PasswordManager.EncryptPassword(model.Password);
-                user.CreatedTime = DateTime.Now;
-                user.UpdatedTime = DateTime.Now;
-                user.CreatedBy = System.Environment.UserName;
-                user.UpdatedBy = System.Environment.UserName;
+                user.CreatedOn = DateTime.Now;
+                user.CreatedOn = DateTime.Now;
+                user.CreatedBy = adminID;
+                user.UpdatedBy = adminID;
 
                 _repository.AddUser(user);
             }
