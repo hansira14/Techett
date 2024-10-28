@@ -6,25 +6,52 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
+    <link rel="icon" href="@Url.Content("~/img/logo-light.png")" type="image/png">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/main.css" />
     <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     @RenderSection("Styles", required: false)
 </head>
 <body>
+    @*
     @Html.Partial("_Header")
     <div class="container">
         <main role="main">
             @RenderBody()
         </main>
+    </div>*@
+    @Html.Partial("_Header")
+    @{
+        var userRole = Context.Session.GetString("UserRole");
+        var isAdmin = userRole == "0"; // Assuming 0 is the role ID for Admin
+        var isLoginOrRegister = ViewContext.RouteData.Values["Controller"].ToString() == "Account" &&
+        (ViewContext.RouteData.Values["Action"].ToString() == "Login" ||
+        ViewContext.RouteData.Values["Action"].ToString() == "Register");
+    }
+
+    @if (!isLoginOrRegister)
+    {
+        @Html.Partial("_AdminSidebar")
+        if (isAdmin)
+        {
+            @Html.Partial("_AdminSidebar")
+        }
+        else
+        {
+            @Html.Partial("_UserSidebar")
+        }
+    }
+
+    <div class="container" style="@(isLoginOrRegister ? "centered;" : "margin-left: 250px;")">
+        <main role="main">
+            @RenderBody()
+        </main>
     </div>
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            @Copyright
-        </div>
-    </footer>
+
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

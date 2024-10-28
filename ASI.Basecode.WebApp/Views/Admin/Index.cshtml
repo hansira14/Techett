@@ -1,0 +1,316 @@
+﻿<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="top-container">
+    <h1 class="text-lg font-bold text-gray-800">Top Container</h1>
+</div>
+<div class="outer-container">
+    <div class="main-content">
+
+        <div id="ticketsContent" class="content flex">
+            <div class="container mx-auto p-4 bg-gray-100" style="height: 79vh;">
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">T i c k e t s</h2>
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
+                    <input type="text" id="searchTicketsBar" class="w-full sm:w-2/3 p-2 mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400" onkeyup="searchFilterTickets()" placeholder="Search tickets...">
+                    <div class="flex space-x-2">
+                        <button id="filterTicketsButton" class="px-4 py-2 bg-transparent text-gray-800 rounded-md flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">
+                            <i class="fas fa-filter text-gray-400"></i>
+                        </button>
+
+                        <div class="create-now">
+                            <button id="addTicketButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <div class="table-container" style="overflow-x: auto; max-height: calc(79vh - 10rem);">
+                        <table id="ticketsTable" class="min-w-full max-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ticket Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ticketsTableBody" class="bg-white divide-y divide-gray-200">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="addTicketModal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="modal-content bg-white w-1/3 rounded-lg shadow-lg relative p-8">
+        <span class="close absolute top-3 right-3 text-gray-400 hover:text-gray-600 cursor-pointer text-2xl">&times;</span>
+
+        <!-- Title section with gradient frame -->
+        <div class="heading-frame" style="width: 100%; height: 100px; background: linear-gradient(to right, #7E8EF1 100%, #E8ECFF 80%); display: flex; align-items: center; justify-content: center; border-top-left-radius: 10px; border-top-right-radius: 10px; margin: 0; padding: 0;">
+            <h1 style="font-size: 2.5rem; color: white; font-weight: bold; margin: 0;">Create Ticket</h1>
+        </div>
+
+        <form id="ticketForm" style="padding-top: 20px;">
+            <!-- Subject Field -->
+            <div class="form-group mb-4">
+                <label for="subject" class="block text-gray-700 text-lg font-medium mb-2">Subject:</label>
+                <input type="text" id="subject" name="subject" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <!-- Status Field -->
+            <div class="form-group mb-4">
+                <label for="status" class="block text-gray-700 text-lg font-medium mb-2">Status:</label>
+                <select id="status" name="status" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <option value="">Select Status</option>
+                    <option value="open">Open</option>
+                    <option value="inProgress">In Progress</option>
+                    <option value="closed">Closed</option>
+                </select>
+            </div>
+
+            <!-- Priority Field -->
+            <div class="form-group mb-4">
+                <label for="priority" class="block text-gray-700 text-lg font-medium mb-2">Priority:</label>
+                <select id="priority" name="priority" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <option value="">Select Priority</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+
+            <!-- Department Field -->
+            <div class="form-group mb-4">
+                <label for="department" class="block text-gray-700 text-lg font-medium mb-2">Department:</label>
+                <select id="department" name="department" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <option value="">Select Department</option>
+                    <option value="hr">HR</option>
+                    <option value="it">IT</option>
+                    <option value="sales">Sales</option>
+                    <option value="support">Support</option>
+                </select>
+            </div>
+
+            <!-- Support System Field -->
+            <div class="form-group mb-4">
+                <label for="supportSystem" class="block text-gray-700 text-lg font-medium mb-2">Support System:</label>
+                <select id="supportSystem" name="supportSystem" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <option value="">Select Support System</option>
+                    <option value="email">Email</option>
+                    <option value="chat">Chat</option>
+                    <option value="phone">Phone</option>
+                </select>
+            </div>
+
+            <!-- Description Field -->
+            <div class="form-group mb-6">
+                <label for="description" class="block text-gray-700 text-lg font-medium mb-2">Description:</label>
+                <textarea id="description" name="description" rows="5" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-between mt-6">
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Create Ticket</button>
+                <button type="reset" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none">Reset</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const ticketForm = document.getElementById('ticketForm');
+        const submitButton = ticketForm.querySelector('button[type="submit"]');
+
+
+
+
+        // pag open/close sa modal
+        var modal = document.getElementById("addTicketModal");
+        var btn = document.querySelector(".create-now button");
+        var span = document.getElementsByClassName("close")[0];
+
+        btn.onclick = function () {
+            modal.style.display = "block";
+            ticketForm.reset(); // reset form
+
+        }
+
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+
+        // reset function
+        document.querySelector('.reset-button').addEventListener('click', function () {
+            document.getElementById('recurrenceOptions').style.display = 'none';
+        });
+
+    });
+</script>
+<style>
+    :root {
+        /*Light Mode Colors*/
+        --light-bg: #fff;
+        --light-main: #ADC5CF;
+        --light-outer: #A4C1CD;
+        --light-text: #185D62;
+        /*Dark Mode Colors*/
+        --dark-bg: #000;
+        --dark-main: #BCBCBC;
+        --dark-outer: #fff;
+        --dark-text: #fff;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        overflow: hidden;
+        transition: background-color 0.4s ease;
+    }
+
+    .top-container {
+        width: calc(100% - 285px);
+        border-radius: 15px;
+        height: 250px;
+        border: 0.5px solid #7E8EF1;
+        position: fixed;
+        text-align: center;
+        top: 20px;
+        right: 20px;
+        z-index: 3;
+    }
+
+    .outer-container {
+        margin-left: 265px;
+        position: fixed;
+        z-index: 2;
+        box-sizing: border-box;
+        background-color: var(--dark-outer);
+        padding: 10px 10px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 285px);
+        height: calc(100% - 280px);
+        top: 280px;
+        right: 20px;
+        bottom: 20px;
+        transition: background-color 0.4s ease;
+        transition: margin-left 0.3s ease;
+    }
+
+        .outer-container.expand {
+            width: calc(100% - 60px);
+        }
+
+    .main-content {
+        height: 85vh;
+        background-color: var(--dark-main);
+        padding: 20px;
+        border-radius: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        flex-grow: 1;
+        color: #fff;
+    }
+
+        .main-content nav {
+            position: relative;
+            height: 100px;
+            width: calc(100% - 300px);
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+
+    #addTicketgContent, #myTicketsContent {
+        display: flex;
+    }
+
+
+
+    -3
+    .modal {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+        padding-bottom: 20px;
+        z-index: 50;
+    }
+
+
+
+    .modal-content {
+        background-color: #185D62;
+        margin: 0 auto;
+        padding-left: 20px;
+        padding-right: 20px;
+        border: 1px solid #185D62;
+        width: 80%;
+        max-width: 700px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        font-family: 'YourMainContainerFont', sans-serif;
+        color: white;
+        position: relative;
+    }
+
+        .modal-content h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    /*
+            .modal-content form {
+                background: #fff;
+                padding: 15px;
+                border-radius: 8px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-bottom: 20px;
+            }
+
+            .modal-content label {
+                display: block;
+                margin-bottom: 2px;
+                font-weight: bold;
+                font-size: 0.9em;
+                color: #000;
+            }
+
+            .modal-content input,
+            .modal-content select {
+                width: 100%;
+                padding: 6px;
+                margin-bottom: 6px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+                background-color: #ecf0f1;
+                color: #2c3e50;
+            }*/
+
+</style>

@@ -1,0 +1,169 @@
+﻿
+/*SIDEBAR*/
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+    z-index: 1;
+    transition: background-color 0.4s ease;
+    transition: width 0.3s ease;
+}
+
+.logo img {
+    width: 200px;
+    height: auto;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0px;
+    margin: 20px 0;
+    width: 100%;
+}
+
+    .sidebar-menu li {
+        width: 100%;
+    }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: #161571;
+            text-decoration: none;
+            width: 100%;
+            height: 68px;
+            font-weight: 500;
+            border-left: 12px solid #fff;
+            font-size: 20px;
+        }
+
+            .sidebar-menu li a:hover,
+            .sidebar-menu li.active a {
+                color: #615EFC;
+            }
+
+        .sidebar-menu li.active a {
+            background-color: #D1D7FF;
+            border-left: 12px solid #615EFC;
+            color: #000;
+            font-weight: bold;
+        }
+
+
+        .sidebar-menu li a i {
+            margin-right: 10px;
+        }
+
+.user-details {
+    width: 100%;
+    padding: 10px;
+    text-align: start;
+    border-bottom: 1px solid #444;
+    margin-top: auto;
+    color: #161571;
+}
+
+.user-name {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #161571;
+}
+
+.user-email {
+    font-size: 0.9em;
+    color: #161571;
+}
+
+
+.sidebar .signout {
+    width: 100%;
+    margin-bottom: 20px;
+    color: #161571;
+    z-index: 1;
+}
+
+.signout a {
+    display: flex;
+    align-items: center;
+    color: #161571;
+    text-decoration: none;
+    width: 100%;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+    z-index: 100;
+}
+
+    .signout a:hover {
+        color: red;
+    }
+
+
+
+.signout i {
+    margin-right: 10px;
+}
+
+
+.user-details .user-name,
+.user-details .user-email,
+.signout a {
+    color: #161571;
+}
+
+
+
+.signout a {
+    color: #161571;
+}
+
+.signout {
+    font-weight: 500;
+    font-size: 20px;
+}
+
+    .user-name,
+    .user-email,
+    .signout a {
+        color: #161571;
+    }
+
+
+
+.sidebar-icon {
+    margin-right: 10px;
+    font-size: 20px;
+    color: #161571;
+}
+
+.sidebar-menu li a:hover .sidebar-icon {
+    color: #615EFC;
+}
+
+.signout:hover .sidebar-icon {
+    color: red;
+}
+
+.sidebar-menu li.active a .sidebar-icon {
+    color: #000;
+    font-weight: bold;
+}
+
+.sidebar-menu li.active a .sidebar-icon {
+    font-weight: bold;
+}
+
+    .sidebar-menu li.active a .sidebar-icon.bold {
+        font-weight: bold;
+    }
+
+
+/*SIDEBAR ENDREGION*/
