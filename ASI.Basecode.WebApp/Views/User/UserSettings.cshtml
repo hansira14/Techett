@@ -2,6 +2,26 @@
     ViewData["Title"] = "User Settings Page";
 }
 <link rel="stylesheet" href="~/css/settings.css" />
+<<<<<<< HEAD
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="settings-header d-flex justify-content-between align-items-center py-3">
+    <h1 class="header-title">S E T T I N G S  &  P R E F E R E N C E S</h1>
+    <div class="header-icons d-flex">
+        <div class="icon-item d-flex align-items-center me-3">
+            <i class="fas fa-bell"></i>
+            <span>Notification</span>
+        </div>
+        <div class="icon-item d-flex align-items-center">
+            <i class="fas fa-user-circle"></i>
+            <span>Profile</span>
+        </div>
+    </div>
+</div>
+
+=======
 <div class="settings-container">
     <header class="d-flex justify-content-left py-3">
         <h1>SETTINGS & PREFERENCES</h1>
@@ -9,6 +29,7 @@
         <span> Profile</span>
     </header>
 </div>
+>>>>>>> 74d2fda1e763e6906f33b6a90a750d98a2a8f796
 <section class="account-settings">
     <h2>Account Settings</h2>
     <div class="account-info">
@@ -17,26 +38,64 @@
         </div>
         <form method="post">
             <div class="row mb-3">
+<<<<<<< HEAD
+                <div class="col-md-6 form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" class="form-control" />
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="lastName">Last Name</label>
+=======
                 <div class="col-md-6 d-flex align-items-center">
                     <label for="firstName" class="me-3">First Name</label>
                     <input type="text" id="firstName" name="firstName" class="form-control" />
                 </div>
                 <div class="col-md-6 d-flex align-items-center">
                     <label for="lastName" class="me-3">Last Name</label>
+>>>>>>> 74d2fda1e763e6906f33b6a90a750d98a2a8f796
                     <input type="text" id="lastName" name="lastName" class="form-control" />
                 </div>
             </div>
             <div class="row mb-3">
+<<<<<<< HEAD
+                <div class="col-md-6 form-group">
+                    <label for="contactNo">Contact No.</label>
+                    <input type="text" id="contactNo" name="contactNo" class="form-control" />
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="password">Password</label>
+=======
                 <div class="col-md-6 d-flex align-items-center">
                     <label for="contactNo" class="me-3">Contact No.</label>
                     <input type="text" id="contactNo" name="contactNo" class="form-control" />
                 </div>
                 <div class="col-md-6 d-flex align-items-center">
                     <label for="password" class="me-3">Password</label>
+>>>>>>> 74d2fda1e763e6906f33b6a90a750d98a2a8f796
                     <input type="password" id="password" name="password" class="form-control" />
                 </div>
             </div>
         </form>
+<<<<<<< HEAD
+
+    </div>
+</section>
+<section class="account-preferences">
+    <h2>Account Preferences</h2>
+    <div class="preference-row">
+        <label>Notifications</label>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="notificationsSwitch">
+        </div>
+    </div>
+    <div class="preference-row">
+        <label>Switch to Darkmode</label>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="darkmodeSwitch">
+        </div>
+    </div>
+    <button type="button" class="save-button">Save Changes</button>
+=======
     </div>
 </section>
 
@@ -50,4 +109,5 @@
 
     </div>
     <button type="submit" class="save-button">Save Changes</button>
+>>>>>>> 74d2fda1e763e6906f33b6a90a750d98a2a8f796
 </section>
