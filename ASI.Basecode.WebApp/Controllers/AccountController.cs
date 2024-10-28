@@ -56,6 +56,7 @@ namespace ASI.Basecode.WebApp.Controllers
             this._appConfiguration = configuration;
             this._userService = userService;
         }
+        
 
         /// <summary>
         /// Login Method
