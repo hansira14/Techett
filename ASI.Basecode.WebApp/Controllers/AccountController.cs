@@ -86,7 +86,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             //User user = null;
 
-            User user = new() { Id = 0, UserId = "0", Name = "Name", Password = "Password" };
+            User user = new() { UserId = 0, Fname = "Fname", Lname = "Lname", Password = "Password" };
             
             await this._signInManager.SignInAsync(user);
             this._session.SetString("UserName", model.UserId);
@@ -123,7 +123,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
-                _userService.AddUser(model);
+                _userService.AddUser(model,123); //HELPP
                 return RedirectToAction("Login", "Account");
             }
             catch(InvalidDataException ex)
