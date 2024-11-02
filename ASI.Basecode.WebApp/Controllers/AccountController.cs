@@ -67,7 +67,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             TempData["returnUrl"] = System.Net.WebUtility.UrlDecode(HttpContext.Request.Query["ReturnUrl"]);
             this._sessionManager.Clear();
-            this._session.SetString("SessionId", System.Guid.NewGuid().ToString());
+            this._session.SetString("SessionId", Guid.NewGuid().ToString());
             return this.View();
         }
 
@@ -83,21 +83,14 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             this._session.SetString("HasSession", "Exist");
 
-            //User user = null;
+            User user = null;
 
-            User user = new() { UserId = 0, Fname = "Fname", Lname = "Lname", Password = "Password" };
-            
-            await this._signInManager.SignInAsync(user);
-            this._session.SetString("UserName", model.UserId);
-
-            return RedirectToAction("Index", "Home");
-
-            /*var loginResult = _userService.AuthenticateUser(model.UserId, model.Password, ref user);
+            var loginResult = _userService.AuthenticateUser(model.Email, model.Password, ref user);
             if (loginResult == LoginResult.Success)
             {
                 // 認証OK
                 await this._signInManager.SignInAsync(user);
-                this._session.SetString("UserName", user.Name);
+                this._session.SetString("UserName", string.Join(" ", user.Fname, user.Lname));
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -106,7 +99,6 @@ namespace ASI.Basecode.WebApp.Controllers
                 TempData["ErrorMessage"] = "Incorrect UserId or Password";
                 return View();
             }
-            return View();*/
         }
 
         [HttpGet]
@@ -129,7 +121,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 TempData["ErrorMessage"] = ex.Message;
             }
-            catch(Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
             }

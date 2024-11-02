@@ -22,13 +22,12 @@ namespace ASI.Basecode.Services.Services
             _repository = repository;
         }
 
-        public LoginResult AuthenticateUser(int userId, string password, ref User user)
+        public LoginResult AuthenticateUser(string email, string password, ref User user)
         {
             user = new User();
             var passwordKey = PasswordManager.EncryptPassword(password);
-            user = _repository.GetUsers().Where(x => x.UserId == userId &&
-                                                     x.Password == passwordKey).FirstOrDefault();
-
+            user = _repository.GetUsers().FirstOrDefault(x => x.Email == email &&
+                                                              x.Password == passwordKey);
             return user != null ? LoginResult.Success : LoginResult.Failed;
         }
 

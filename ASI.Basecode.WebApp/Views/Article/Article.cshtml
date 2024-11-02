@@ -1,0 +1,40 @@
+@using System.Collections.Generic
+@model ArticleDetailViewModel
+
+<div class="article-container">
+    <h2>@Model.Article.Title</h2>
+    <div class="article-meta">
+        <span>Created by: @Model.Article.CreatedByName</span>
+        <span>Created on: @Model.Article.CreatedOn.ToString("g")</span>
+    </div>
+    
+    <div class="article-content">
+        @Model.Article.Content
+    </div>
+
+    <div class="article-actions mt-3">
+        <a asp-action="Edit" asp-route-id="@Model.Article.ArticleId" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+
+    <h3 class="mt-4">Version History</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Version Date</th>
+                <th>Title</th>
+                <th>Modified By</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var version in Model.Versions)
+            {
+                <tr>
+                    <td>@version.VersionDate.ToString("g")</td>
+                    <td>@version.Title</td>
+                    <td>@version.VersionedByName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
