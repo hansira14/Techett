@@ -88,6 +88,26 @@
 
 @section Scripts {
     <script>
+        // Move deleteUser function to global scope
+        function deleteUser(id) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                $.ajax({
+                    url: '/Account/DeleteUser/' + id,
+                    type: 'POST',
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            toastr.error('Failed to delete user');
+                        }
+                    },
+                    error: function() {
+                        toastr.error('An error occurred while deleting the user');
+                    }
+                });
+            }
+        }
+
         $(document).ready(function() {
             $('#createUserForm').validate({
                 rules: {
@@ -132,18 +152,6 @@
                     return false;
                 }
             });
-
-            function deleteUser(id) {
-                if (confirm('Are you sure you want to delete this user?')) {
-                    $.post('/Account/DeleteUser/' + id, function(response) {
-                        if (response.success) {
-                            location.reload();
-                        } else {
-                            toastr.error('Failed to delete user');
-                        }
-                    });
-                }
-            }
         });
     </script>
 } 

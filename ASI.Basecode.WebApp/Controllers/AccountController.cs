@@ -203,6 +203,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpPost]
+        [Route("Account/DeleteUser/{id}")]
         public IActionResult DeleteUser(int id)
         {
             try
