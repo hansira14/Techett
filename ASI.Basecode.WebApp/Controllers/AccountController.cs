@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using static ASI.Basecode.Resources.Constants.Enums;
 
@@ -137,6 +138,82 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             await this._signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
+        }
+
+        [HttpGet]
+        public IActionResult Users()
+        {
+            var users = _userService.GetAllUsers();
+            return View(users);
+        }
+
+        [HttpGet]
+        public IActionResult ViewUser(int id)
+        {
+            var user = _userService.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        [HttpPost]
+        public IActionResult CreateUser(UserViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+                return Json(new { success = false, message = string.Join(", ", errors) });
+            }
+
+            try
+            {
+                _userService.AddUser(model, int.Parse(UserId));
+                return Json(new { success = true });
+            }
+            catch (InvalidDataException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = Resources.Messages.Errors.ServerError });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditUser(UserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _userService.UpdateUser(model, int.Parse(UserId));
+                    return RedirectToAction(nameof(Users));
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = ex.Message;
+                }
+            }
+            return View("ViewUser", model);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteUser(int id)
+        {
+            try
+            {
+                _userService.DeleteUser(id);
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
         }
     }
 }

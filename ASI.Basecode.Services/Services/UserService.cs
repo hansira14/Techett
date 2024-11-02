@@ -5,6 +5,7 @@ using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using static ASI.Basecode.Resources.Constants.Enums;
@@ -39,7 +40,6 @@ namespace ASI.Basecode.Services.Services
                 _mapper.Map(model, user);
                 user.Password = PasswordManager.EncryptPassword(model.Password);
                 user.CreatedOn = DateTime.Now;
-                user.CreatedOn = DateTime.Now;
                 user.CreatedBy = adminID;
                 user.UpdatedBy = adminID;
 
@@ -48,6 +48,47 @@ namespace ASI.Basecode.Services.Services
             else
             {
                 throw new InvalidDataException(Resources.Messages.Errors.UserExists);
+            }
+        }
+
+        public IEnumerable<UserViewModel> GetAllUsers()
+        {
+            var users = _repository.GetUsers();
+            return _mapper.Map<IEnumerable<UserViewModel>>(users);
+        }
+
+        public UserViewModel GetUserById(int id)
+        {
+            var user = _repository.GetUsers().FirstOrDefault(x => x.UserId == id);
+            return _mapper.Map<UserViewModel>(user);
+        }
+
+        public void UpdateUser(UserViewModel model, int adminId)
+        {
+            var user = _repository.GetUsers().FirstOrDefault(x => x.UserId == model.UserId);
+            if (user != null)
+            {
+                _mapper.Map(model, user);
+                user.UpdatedBy = adminId;
+                user.UpdatedOn = DateTime.Now;
+                _repository.UpdateUser(user);
+            }
+            else
+            {
+                throw new InvalidDataException("User not found");
+            }
+        }
+
+        public void DeleteUser(int id)
+        {
+            var user = _repository.GetUsers().FirstOrDefault(x => x.UserId == id);
+            if (user != null)
+            {
+                _repository.DeleteUser(user);
+            }
+            else
+            {
+                throw new InvalidDataException("User not found");
             }
         }
     }

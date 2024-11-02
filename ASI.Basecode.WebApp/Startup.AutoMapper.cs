@@ -26,9 +26,11 @@ namespace ASI.Basecode.WebApp
             public AutoMapperProfileConfiguration()
             {
                 CreateMap<UserViewModel, User>();
+                CreateMap<User, UserViewModel>()
+                    .ForMember(dest => dest.TeamName, 
+                        opt => opt.MapFrom(src => src.Team != null ? src.Team.Name : null));
 
                 CreateMap<Article, ArticleViewModel>();
-                      
                 CreateMap<ArticleViewModel, Article>();
             }
         }
