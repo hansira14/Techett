@@ -36,7 +36,7 @@ namespace ASI.Basecode.Data
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=localhost;Database=techett;User Id=sa;Password=YourStrongPassword!;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer("Server=localhost;Database=techett;User Id=sa;Password=YourStrongPassword!;MultipleActiveResultSets=true;TrustServerCertificate=True;Trusted_Connection=True;integrated security=false");
             }
         }
 
@@ -142,12 +142,9 @@ namespace ASI.Basecode.Data
 
             modelBuilder.Entity<Attachment>(entity =>
             {
-                entity.HasKey(e => e.AtachmentId)
-                    .HasName("PK__tmp_ms_x__E8CFE0B0C6C7668C");
-
                 entity.ToTable("Attachment");
 
-                entity.Property(e => e.AtachmentId).HasColumnName("atachmentID");
+                entity.Property(e => e.AttachmentId).HasColumnName("attachmentID");
 
                 entity.Property(e => e.Source)
                     .IsRequired()

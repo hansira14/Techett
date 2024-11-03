@@ -5,7 +5,7 @@ namespace ASI.Basecode.Data.Models
 {
     public partial class Attachment
     {
-        public int AtachmentId { get; set; }
+        public int AttachmentId { get; set; }
         public int TicketId { get; set; }
         public string Source { get; set; }
         public DateTime UploadedOn { get; set; }
