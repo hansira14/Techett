@@ -12,15 +12,12 @@ namespace ASI.Basecode.Services.Services;
 public class ArticleService : IArticleService
 {
     private readonly IArticleRepository _articleRepository;
-    private readonly IArticleVersionRepository _articleVersionRepository;
     private readonly IMapper _mapper;
 
     public ArticleService(IArticleRepository articleRepository, 
-                         IArticleVersionRepository articleVersionRepository,
                          IMapper mapper)
     {
         _articleRepository = articleRepository;
-        _articleVersionRepository = articleVersionRepository;
         _mapper = mapper;
     }
 
@@ -40,16 +37,10 @@ public class ArticleService : IArticleService
         }
     }
 
-    public ArticleDetailViewModel GetArticleById(int id)
+    public ArticleViewModel GetArticleById(int id)
     {
         var article = _articleRepository.GetArticleById(id);
-        var versions = _articleVersionRepository.GetArticleVersions(id);
-        
-        return new ArticleDetailViewModel
-        {
-            Article = _mapper.Map<ArticleViewModel>(article),
-            Versions = _mapper.Map<IEnumerable<ArticleVersionViewModel>>(versions)
-        };
+        return _mapper.Map<ArticleViewModel>(article);
     }
 
     public void CreateArticle(ArticleViewModel model, int userId)
@@ -62,23 +53,8 @@ public class ArticleService : IArticleService
 
     public void UpdateArticle(ArticleViewModel model, int userId)
     {
-        var existingArticle = _articleRepository.GetArticleById(model.ArticleId);
-        if (existingArticle != null)
-        {
-            // Create version before updating
-            var version = new ArticleVersion
-            {
-                ArticleId = model.ArticleId,
-                Title = existingArticle.Title,
-                Content = existingArticle.Content,
-                VersionedBy = userId
-            };
-            _articleVersionRepository.AddArticleVersion(version);
-
-            // Update article
-            var article = _mapper.Map<Article>(model);
-            _articleRepository.UpdateArticle(article);
-        }
+        var article = _mapper.Map<Article>(model);
+        _articleRepository.UpdateArticle(article);
     }
 
     public void DeleteArticle(int id)

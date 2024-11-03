@@ -12,14 +12,17 @@ namespace ASI.Basecode.WebApp.Controllers;
 public class ArticleController : ControllerBase<ArticleController>
 {
     private readonly IArticleService _articleService;
+    private readonly IArticleVersionService _articleVersionService;
 
     public ArticleController(IHttpContextAccessor httpContextAccessor,
                            ILoggerFactory loggerFactory,
                            IConfiguration configuration,
                            IMapper mapper,
-                           IArticleService articleService) : base(httpContextAccessor, loggerFactory, configuration, mapper)
+                           IArticleService articleService,
+                           IArticleVersionService articleVersionService) : base(httpContextAccessor, loggerFactory, configuration, mapper)
     {
         _articleService = articleService;
+        _articleVersionService = articleVersionService;
     }
 
     public IActionResult Index()
@@ -35,7 +38,15 @@ public class ArticleController : ControllerBase<ArticleController>
         {
             return NotFound();
         }
-        return View("Article", article);
+
+        var versions = _articleVersionService.GetArticleVersions(id);
+        var viewModel = new ArticleDetailViewModel
+        {
+            Article = article,
+            Versions = versions
+        };
+        
+        return View("Article", viewModel);
     }
 
     [HttpGet]
@@ -63,7 +74,7 @@ public class ArticleController : ControllerBase<ArticleController>
         {
             return NotFound();
         }
-        return View(article.Article);
+        return View(article);
     }
 
     [HttpPost]
@@ -71,7 +82,11 @@ public class ArticleController : ControllerBase<ArticleController>
     {
         if (ModelState.IsValid)
         {
-            _articleService.UpdateArticle(model, GetCurrentUserId());
+            var userId = GetCurrentUserId();
+            // Create version before updating
+            _articleVersionService.CreateArticleVersion(model.ArticleId, model.Title, model.Content, userId);
+            // Update article
+            _articleService.UpdateArticle(model, userId);
             return RedirectToAction(nameof(Index));
         }
         return View(model);
