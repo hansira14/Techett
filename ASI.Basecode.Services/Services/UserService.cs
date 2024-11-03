@@ -42,6 +42,7 @@ namespace ASI.Basecode.Services.Services
                 user.CreatedOn = DateTime.Now;
                 user.CreatedBy = adminID;
                 user.UpdatedBy = adminID;
+                user.IsActive = true;
 
                 _repository.AddUser(user);
             }
@@ -68,9 +69,18 @@ namespace ASI.Basecode.Services.Services
             var user = _repository.GetUsers().FirstOrDefault(x => x.UserId == model.UserId);
             if (user != null)
             {
-                _mapper.Map(model, user);
+                user.Fname = model.Fname;
+                user.Lname = model.Lname;
+                user.Email = model.Email;
+                user.Role = model.Role;
                 user.UpdatedBy = adminId;
                 user.UpdatedOn = DateTime.Now;
+
+                if (!string.IsNullOrEmpty(model.Password))
+                {
+                    user.Password = PasswordManager.EncryptPassword(model.Password);
+                }
+
                 _repository.UpdateUser(user);
             }
             else

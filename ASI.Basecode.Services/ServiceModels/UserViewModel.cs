@@ -34,6 +34,6 @@ namespace ASI.Basecode.Services.ServiceModels
         public int? TeamId { get; set; }
         public string TeamName { get; set; }
         public DateTime CreatedOn { get; set; }
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
     }
 }
