@@ -26,8 +26,11 @@ namespace ASI.Basecode.Data.Models
         public DateTime? UpdatedOn { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? DueDate { get; set; }
+        public DateTime? ResolvedOn { get; set; }
+        public int? ResolvedBy { get; set; }
 
         public virtual User CreatedByNavigation { get; set; }
+        public virtual User ResolvedByNavigation { get; set; }
         public virtual ICollection<Assignment> Assignments { get; set; }
         public virtual ICollection<Attachment> Attachments { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }

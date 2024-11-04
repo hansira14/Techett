@@ -21,7 +21,8 @@ namespace ASI.Basecode.Data.Models
             NotificationUsers = new HashSet<Notification>();
             Preferences = new HashSet<Preference>();
             Sessions = new HashSet<Session>();
-            Tickets = new HashSet<Ticket>();
+            TicketCreatedByNavigations = new HashSet<Ticket>();
+            TicketResolvedByNavigations = new HashSet<Ticket>();
             Updates = new HashSet<Update>();
         }
 
@@ -55,7 +56,8 @@ namespace ASI.Basecode.Data.Models
         public virtual ICollection<Notification> NotificationUsers { get; set; }
         public virtual ICollection<Preference> Preferences { get; set; }
         public virtual ICollection<Session> Sessions { get; set; }
-        public virtual ICollection<Ticket> Tickets { get; set; }
+        public virtual ICollection<Ticket> TicketCreatedByNavigations { get; set; }
+        public virtual ICollection<Ticket> TicketResolvedByNavigations { get; set; }
         public virtual ICollection<Update> Updates { get; set; }
     }
 }

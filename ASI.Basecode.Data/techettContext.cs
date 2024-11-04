@@ -117,8 +117,6 @@ namespace ASI.Basecode.Data
 
                 entity.Property(e => e.AssignedTo).HasColumnName("assignedTo");
 
-                entity.Property(e => e.ResolvedOn).HasColumnName("resolvedOn");
-
                 entity.Property(e => e.TicketId).HasColumnName("ticketID");
 
                 entity.HasOne(d => d.AssignedByNavigation)
@@ -145,6 +143,18 @@ namespace ASI.Basecode.Data
                 entity.ToTable("Attachment");
 
                 entity.Property(e => e.AttachmentId).HasColumnName("attachmentID");
+
+                entity.Property(e => e.Filename)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .HasColumnName("filename");
+
+                entity.Property(e => e.Filesize).HasColumnName("filesize");
+
+                entity.Property(e => e.Filetype)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnName("filetype");
 
                 entity.Property(e => e.Source)
                     .IsRequired()
@@ -383,6 +393,10 @@ namespace ASI.Basecode.Data
 
                 entity.Property(e => e.Priority).HasColumnName("priority");
 
+                entity.Property(e => e.ResolvedBy).HasColumnName("resolvedBy");
+
+                entity.Property(e => e.ResolvedOn).HasColumnName("resolvedOn");
+
                 entity.Property(e => e.Status)
                     .IsRequired()
                     .HasMaxLength(20)
@@ -396,10 +410,15 @@ namespace ASI.Basecode.Data
                 entity.Property(e => e.UpdatedOn).HasColumnName("updatedOn");
 
                 entity.HasOne(d => d.CreatedByNavigation)
-                    .WithMany(p => p.Tickets)
+                    .WithMany(p => p.TicketCreatedByNavigations)
                     .HasForeignKey(d => d.CreatedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Tickets__created__3587F3E0");
+
+                entity.HasOne(d => d.ResolvedByNavigation)
+                    .WithMany(p => p.TicketResolvedByNavigations)
+                    .HasForeignKey(d => d.ResolvedBy)
+                    .HasConstraintName("FK_Tickets_Users_ResolvedBy");
             });
 
             modelBuilder.Entity<Update>(entity =>
