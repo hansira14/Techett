@@ -16,8 +16,8 @@
                 <span>Tickets</span>
             </a>
         </li>
-        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Settings" ? "active" : "")">
-            <a asp-controller="User" asp-action="Settings">
+        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "UserSettings" ? "active" : "")">
+            <a asp-controller="User" asp-action="UserSettings">
                 <i class="fa-solid fa-gear sidebar-icon"></i> <!-- Added class here -->
                 <span>Settings</span>
             </a>
@@ -35,6 +35,7 @@
     <div class="user-details">
         <div class="signout">
             <a id="logoutButton" asp-action="SignOutAdmin" asp-controller="Account">
+                <i class="fas fa-sign-out-alt sidebar-icon"></i> <!-- Added class here admin
                 <i class="fas fa-sign-out-alt sidebar-icon"></i> <!-- Added class here -->
                 <span>Logout @*@HttpContextAccessor.HttpContext.Session.GetString("UserName")*@</span>
             </a>
