@@ -1,0 +1,41 @@
+﻿<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
+
+@{
+    ViewData["Title"] = "About Us Page";
+}
+
+<div class="py-2 px-0 bg-absolute flex items-center sticky top-0 left-0 right-0 z-30">
+    <ul class="flex items-center text-sm m-0">
+        <li class="mr-2">
+            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">A B O U T  U S</a>
+        </li>
+    </ul>
+    <ul class="ml-auto flex items-center">
+        <button type="button" class="dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600 mr-4">
+            <i class="ri-notification-3-line"></i>
+        </button>    
+        <div class="flex items-center">
+            <div class="text-left mr-1">
+                <div class="text-gray-800 font-regular text-xs">admin admin</div>
+            </div>
+            <img src="https://placehold.co/32x32" alt="Profile" class="w-10 h-10 rounded-md object-cover" />
+        </div>
+    </ul>
+</div>
+<style>
+
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        transition: background-color 0.4s ease;
+    }
+</style>

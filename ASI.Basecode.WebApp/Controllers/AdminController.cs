@@ -9,12 +9,12 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             return View();
         }
-        public IActionResult Assign()
+        public IActionResult Users()
         {
             return View();
         }
 
-        public IActionResult Tickets()
+        public IActionResult About()
         {
             return View();
         }
@@ -22,7 +22,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             return View();
         }
-        public IActionResult Tools()
+        public IActionResult Tickets()
         {
             return View();
         }

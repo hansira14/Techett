@@ -71,7 +71,7 @@ namespace ASI.Basecode.WebApp.Controllers
             this._session.SetString("SessionId", System.Guid.NewGuid().ToString());
             return this.View();
         }
-
+        
         /// <summary>
         /// Authenticate user and signs the user in when successful.
         /// </summary>
@@ -86,7 +86,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             //User user = null;
 
-            User user = new() { Id = 0, UserId = "0", Name = "Name", Password = "Password" };
+            User user = new() { UserId = 0, Fname = "Fname", Lname = "Lname", Password = "Password" };
             
             await this._signInManager.SignInAsync(user);
             this._session.SetString("UserName", model.UserId);
@@ -108,7 +108,53 @@ namespace ASI.Basecode.WebApp.Controllers
                 return View();
             }
             return View();*/
-        }
+        }/*
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model); // Return to the view if the model is invalid
+            }
+
+            // Retrieve the user based on UserId and Password
+            var user = await _dbContext.Users
+                .Where(u => u.UserId == model.UserId && u.Password == model.Password)
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View(model);
+            }
+
+            // Set session variables
+            _session.SetString("HasSession", "Exist");
+            _session.SetString("UserName", user.Fname + " " + user.Lname); 
+
+            // Sign in the user with identity
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            // Redirect based on user role if necessary
+            if (user.Role == "superadmin")
+            {
+                return RedirectToAction("Dashboard", "SuperAdmin");
+            }
+            else if (user.Role == "admin")
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+            else if (user.Role == "agent")
+            {
+                return RedirectToAction("Dashboard", "Agent");
+            }
+            else
+            {
+                return RedirectToAction("Index", "User");
+            }
+        }*/
+
 
         [HttpGet]
         [AllowAnonymous]
@@ -123,7 +169,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
-                _userService.AddUser(model);
+                _userService.AddUser(model,123); //HELPP
                 return RedirectToAction("Login", "Account");
             }
             catch(InvalidDataException ex)

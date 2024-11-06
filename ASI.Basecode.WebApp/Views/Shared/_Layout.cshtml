@@ -17,34 +17,35 @@
     @RenderSection("Styles", required: false)
 </head>
 <body>
-    @*
-    @Html.Partial("_Header")
-    <div class="container">
-        <main role="main">
-            @RenderBody()
-        </main>
-    </div>*@
-    @Html.Partial("_Header")
+
     @{
         var userRole = Context.Session.GetString("UserRole");
-        var isAdmin = userRole == "0"; // Assuming 0 is the role ID for Admin
         var isLoginOrRegister = ViewContext.RouteData.Values["Controller"].ToString() == "Account" &&
-        (ViewContext.RouteData.Values["Action"].ToString() == "Login" ||
-        ViewContext.RouteData.Values["Action"].ToString() == "Register");
+        (ViewContext.RouteData.Values["Action"].ToString() == "Login" || ViewContext.RouteData.Values["Action"].ToString() == "Register");
     }
 
     @if (!isLoginOrRegister)
     {
-        @Html.Partial("_AdminSidebar")
-        if (isAdmin)
+        switch (userRole)
         {
-            @Html.Partial("_AdminSidebar")
-        }
-        else
-        {
-            @Html.Partial("_UserSidebar")
+            case "superadmin":
+                @Html.Partial("_AdminSidebar")
+                break;
+            case "admin":
+                @Html.Partial("_AdminSidebar")
+                break;
+            case "agent":
+                @Html.Partial("_UserSidebar")
+                break;
+            case "user":
+                @Html.Partial("_UserSidebar")
+                break;
+            default:
+                @Html.Partial("_AdminSidebar")
+                break;
         }
     }
+
 
     <div class="container" style="@(isLoginOrRegister ? "centered;" : "margin-left: 250px;")">
         <main role="main">
@@ -59,7 +60,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.js"></script>
-    <script src="https://kit.fontawesome.com/7a7c645416.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
         // Configure Toastr options

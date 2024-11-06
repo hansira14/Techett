@@ -2,11 +2,10 @@
 using ASI.Basecode.Services.ServiceModels;
 using static ASI.Basecode.Resources.Constants.Enums;
 
-namespace ASI.Basecode.Services.Interfaces
+namespace ASI.Basecode.Services.Interfaces;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        LoginResult AuthenticateUser(string userid, string password, ref User user);
-        void AddUser(UserViewModel model);
-    }
+    LoginResult AuthenticateUser(int userid, string password, ref User user);
+    void AddUser(UserViewModel model, int adminID);
 }
