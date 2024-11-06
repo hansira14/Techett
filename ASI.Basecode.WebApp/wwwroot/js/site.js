@@ -1,4 +1,5 @@
 ﻿
+/*
 // start: Popper
 const popperInstance = {}
 document.querySelectorAll('.dropdown').forEach(function (item, index) {
@@ -162,4 +163,4 @@ function generateRandomData(n) {
     }
     return data
 }
-// end: Chart
+// end: Chart*/
