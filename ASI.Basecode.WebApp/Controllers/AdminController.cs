@@ -22,7 +22,10 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             return View();
         }
-        
+        public IActionResult Tickets()
+        {
+            return View();
+        }
 
         public async Task<IActionResult> SignOutUser()
         {
