@@ -12,7 +12,7 @@ namespace ASI.Basecode.Data.Repositories
 {
     public class UserRepository : BaseRepository, IUserRepository
     {
-        public UserRepository(IUnitOfWork unitOfWork) : base(unitOfWork) 
+        public UserRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
 
         }
@@ -23,7 +23,7 @@ namespace ASI.Basecode.Data.Repositories
                        .Include(u => u.Team);
         }
 
-        public User GetById(int id)
+        public User GetById(int id) 
         {
             return this.GetDbSet<User>()
                        .Include(u => u.Team)

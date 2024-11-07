@@ -1,0 +1,112 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ASI.Basecode.Services.ServiceModels.TicketViewModel
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3>@Model.Title</h3>
+            <div>
+                <button class="btn btn-primary" onclick="editMode()">Edit</button>
+                <a href="/Ticket" class="btn btn-secondary">Back to List</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div id="viewMode">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Status:</strong> @Model.Status</p>
+                        <p><strong>Priority:</strong> @Model.Priority</p>
+                        <p><strong>Category:</strong> @Model.Category</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Created On:</strong> @Model.CreatedOn.ToString("g")</p>
+                        <p><strong>Created By:</strong> @Model.CreatedByName</p>
+                        @if (Model.ResolvedOn.HasValue)
+                        {
+                            <p><strong>Resolved On:</strong> @Model.ResolvedOn.Value.ToString("g")</p>
+                        }
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h5>Description</h5>
+                    <p>@Model.Content</p>
+                </div>
+            </div>
+
+            <div id="editMode" style="display: none;">
+                <form id="editTicketForm">
+                    <input type="hidden" name="TicketId" value="@Model.TicketId" />
+                    <div class="form-group">
+                        <label for="Title">Title</label>
+                        <input name="Title" id="Title" class="form-control" value="@Model.Title" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="Content">Description</label>
+                        <textarea name="Content" id="Content" class="form-control" rows="4" required>@Model.Content</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="Category">Category</label>
+                        <select name="Category" id="Category" class="form-control" required>
+                            <option value="Bug" selected="@(Model.Category == "Bug")">Bug</option>
+                            <option value="Feature" selected="@(Model.Category == "Feature")">Feature Request</option>
+                            <option value="Support" selected="@(Model.Category == "Support")">Support</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Priority">Priority</label>
+                        <select name="Priority" id="Priority" class="form-control" required>
+                            <option value="1" selected="@(Model.Priority == 1)">Low</option>
+                            <option value="2" selected="@(Model.Priority == 2)">Medium</option>
+                            <option value="3" selected="@(Model.Priority == 3)">High</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Status">Status</label>
+                        <select name="Status" id="Status" class="form-control" required>
+                            <option value="Open" selected="@(Model.Status == "Open")">Open</option>
+                            <option value="In Progress" selected="@(Model.Status == "In Progress")">In Progress</option>
+                            <option value="Resolved" selected="@(Model.Status == "Resolved")">Resolved</option>
+                        </select>
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function editMode() {
+            $('#viewMode').hide();
+            $('#editMode').show();
+        }
+
+        function cancelEdit() {
+            $('#editMode').hide();
+            $('#viewMode').show();
+        }
+
+        $('#editTicketForm').submit(function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/Ticket/EditTicket',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        toastr.error(response.message || 'Failed to update ticket');
+                    }
+                },
+                error: function() {
+                    toastr.error('An error occurred while updating the ticket');
+                }
+            });
+        });
+    </script>
+}

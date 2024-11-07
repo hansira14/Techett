@@ -31,6 +31,9 @@ public class TicketRepository : BaseRepository, ITicketRepository
             existingTicket.Category = ticket.Category;
             existingTicket.Priority = ticket.Priority;
             existingTicket.UpdatedOn = DateTime.Now;
+            existingTicket.ResolvedOn = ticket.ResolvedOn;
+            existingTicket.ResolvedBy = ticket.ResolvedBy;
+
             this.UnitOfWork.SaveChanges();
         }
     }
