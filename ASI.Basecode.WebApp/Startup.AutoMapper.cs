@@ -43,6 +43,15 @@ namespace ASI.Basecode.WebApp
                             $"{src.ResolvedByNavigation.Fname} {src.ResolvedByNavigation.Lname}" : null));
 
                 CreateMap<TicketViewModel, Ticket>();
+
+                CreateMap<Comment, CommentViewModel>()
+                    .ForMember(dest => dest.UserName,
+                        opt => opt.MapFrom(src => $"{src.User.Fname} {src.User.Lname}"))
+                    .ForMember(dest => dest.Comment,
+                        opt => opt.MapFrom(src => src.Comment1));
+                CreateMap<CommentViewModel, Comment>()
+                    .ForMember(dest => dest.Comment1, 
+                        opt => opt.MapFrom(src => src.Comment));
             }
         }
     }
