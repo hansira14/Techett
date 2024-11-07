@@ -28,5 +28,7 @@ namespace ASI.Basecode.Services.ServiceModels
         public DateTime? ResolvedOn { get; set; }
         public int? ResolvedBy { get; set; }
         public string ResolvedByName { get; set; }
+        public int? AssignedToId { get; set; }
+        public string AssignedToName { get; set; }
     }
 }
