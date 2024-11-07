@@ -24,4 +24,11 @@ public class UpdateController : ControllerBase<UpdateController>
     {
         return View();
     }
+
+    [HttpGet]
+    public IActionResult GetTicketUpdates(int ticketId)
+    {
+        var updates = _updateService.GetTicketUpdates(ticketId);
+        return Json(updates);
+    }
 }

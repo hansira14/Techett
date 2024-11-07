@@ -15,6 +15,7 @@
                 <th>Priority</th>
                 <th>Status</th>
                 <th>Created On</th>
+                <th>Assigned To</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -27,10 +28,12 @@
                     <td>@ticket.Priority</td>
                     <td>@ticket.Status</td>
                     <td>@ticket.CreatedOn.ToString("g")</td>
+                    <td>@(ticket.AssignedToName ?? "Unassigned")</td>
                     <td>
                         <a asp-action="Details" asp-route-id="@ticket.TicketId" class="btn btn-info btn-sm">View</a>
                         <button class="btn btn-warning btn-sm" onclick="editTicket(@ticket.TicketId)">Edit</button>
                         <button class="btn btn-danger btn-sm" onclick="deleteTicket(@ticket.TicketId)">Delete</button>
+                        <button class="btn btn-primary btn-sm" onclick="showAssignModal(@ticket.TicketId)">Assign</button>
                     </td>
                 </tr>
             }
@@ -85,9 +88,45 @@
     </div>
 </div>
 
+<!-- Assign Ticket Modal -->
+<div class="modal fade" id="assignTicketModal" tabindex="-1" role="dialog" aria-labelledby="assignTicketModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign Ticket</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form id="assignTicketForm">
+                <input type="hidden" id="ticketId" name="TicketId" />
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="AssignedTo">Assign To</label>
+                        <select name="AssignedTo" id="AssignedTo" class="form-control" required>
+                            <!-- Options will be populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="removeAssignment()">Remove Assignment</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Assign</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         $(document).ready(function() {
+            if (typeof $().modal === 'undefined') {
+                console.error('Bootstrap modal is not loaded');
+            } else {
+                console.log('Bootstrap modal is loaded correctly');
+            }
+
             $('#createTicketForm').submit(function(e) {
                 e.preventDefault();
                 $.ajax({
@@ -107,6 +146,25 @@
                     }
                 });
             });
+
+            window.showAssignModal = function(ticketId) {
+                $('#ticketId').val(ticketId);
+                
+                // Load agents
+                $.get('/Assignment/GetAgents', function(agents) {
+                    var select = $('#AssignedTo');
+                    select.empty();
+                    agents.forEach(function(agent) {
+                        select.append($('<option></option>')
+                            .val(agent.userId)
+                            .text(agent.fname + ' ' + agent.lname));
+                    });
+                    
+                    $('#assignTicketModal').modal('show');
+                }).fail(function(error) {
+                    toastr.error('Failed to load agents');
+                });
+            };
         });
 
         function deleteTicket(id) {
@@ -131,6 +189,48 @@
 
         function editTicket(id) {
             window.location.href = '/Ticket/Details/' + id;
+        }
+
+        $('#assignTicketForm').submit(function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/Assignment/AssignTicket',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        $('#assignTicketModal').modal('hide');
+                        location.reload();
+                    } else {
+                        toastr.error(response.message || 'Failed to assign ticket');
+                    }
+                },
+                error: function() {
+                    toastr.error('An error occurred while assigning the ticket');
+                }
+            });
+        });
+
+        function removeAssignment() {
+            var ticketId = $('#ticketId').val();
+            if (confirm('Are you sure you want to remove the current assignment?')) {
+                $.ajax({
+                    url: '/Assignment/RemoveAssignment',
+                    type: 'POST',
+                    data: { ticketId: ticketId },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#assignTicketModal').modal('hide');
+                            location.reload();
+                        } else {
+                            toastr.error(response.message || 'Failed to remove assignment');
+                        }
+                    },
+                    error: function() {
+                        toastr.error('An error occurred while removing the assignment');
+                    }
+                });
+            }
         }
     </script>
 }

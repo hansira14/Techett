@@ -2,6 +2,7 @@
 using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.ServiceModels;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace ASI.Basecode.WebApp
 {
@@ -40,9 +41,41 @@ namespace ASI.Basecode.WebApp
                     .ForMember(dest => dest.ResolvedByName,
                         opt => opt.MapFrom(src => 
                             src.ResolvedByNavigation != null ? 
-                            $"{src.ResolvedByNavigation.Fname} {src.ResolvedByNavigation.Lname}" : null));
+                            $"{src.ResolvedByNavigation.Fname} {src.ResolvedByNavigation.Lname}" : null))
+                    .ForMember(dest => dest.AssignedToId,
+                        opt => opt.MapFrom(src => 
+                            src.Assignments.OrderByDescending(a => a.AssignedOn).FirstOrDefault().AssignedTo))
+                    .ForMember(dest => dest.AssignedToName,
+                        opt => opt.MapFrom(src => 
+                            src.Assignments.OrderByDescending(a => a.AssignedOn)
+                                .Select(a => $"{a.AssignedToNavigation.Fname} {a.AssignedToNavigation.Lname}")
+                                .FirstOrDefault()));
 
                 CreateMap<TicketViewModel, Ticket>();
+
+                CreateMap<Comment, CommentViewModel>()
+                    .ForMember(dest => dest.UserName,
+                        opt => opt.MapFrom(src => $"{src.User.Fname} {src.User.Lname}"))
+                    .ForMember(dest => dest.Comment,
+                        opt => opt.MapFrom(src => src.Comment1));
+                CreateMap<CommentViewModel, Comment>()
+                    .ForMember(dest => dest.Comment1, 
+                        opt => opt.MapFrom(src => src.Comment));
+
+                CreateMap<Assignment, AssignmentViewModel>()
+                    .ForMember(dest => dest.AssignedToName,
+                        opt => opt.MapFrom(src => 
+                            $"{src.AssignedToNavigation.Fname} {src.AssignedToNavigation.Lname}"))
+                    .ForMember(dest => dest.AssignedByName,
+                        opt => opt.MapFrom(src => 
+                            $"{src.AssignedByNavigation.Fname} {src.AssignedByNavigation.Lname}"));
+
+                CreateMap<AssignmentViewModel, Assignment>();
+
+                CreateMap<Update, UpdateViewModel>()
+                    .ForMember(dest => dest.UpdatedByName,
+                        opt => opt.MapFrom(src => 
+                            $"{src.UpdatedByNavigation.Fname} {src.UpdatedByNavigation.Lname}"));
             }
         }
     }
