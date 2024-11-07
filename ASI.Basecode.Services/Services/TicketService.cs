@@ -14,12 +14,14 @@ public class TicketService : ITicketService
     private readonly ITicketRepository _ticketRepository;
     private readonly IUserService _userService;
     private readonly IMapper _mapper;
+    private readonly IUpdateService _updateService;
 
-    public TicketService(ITicketRepository ticketRepository, IUserService userService, IMapper mapper)
+    public TicketService(ITicketRepository ticketRepository, IUserService userService, IMapper mapper, IUpdateService updateService)
     {
         _ticketRepository = ticketRepository;
         _userService = userService;
         _mapper = mapper;
+        _updateService = updateService;
     }
 
     public IEnumerable<TicketViewModel> GetAllTickets()
@@ -51,6 +53,18 @@ public class TicketService : ITicketService
         if (ticket == null)
             throw new InvalidOperationException("Ticket not found");
 
+        var statusChanged = ticket.Status != model.Status;
+        var priorityChanged = ticket.Priority != model.Priority;
+
+        if (statusChanged || priorityChanged)
+        {
+            var message = GenerateUpdateMessage(userId, ticket.TicketId, 
+                statusChanged ? model.Status : null,
+                priorityChanged ? model.Priority : null);
+            
+            _updateService.AddUpdate(ticket.TicketId, model.Status, model.Priority, message, userId);
+        }
+
         ticket.Title = model.Title;
         ticket.Content = model.Content;
         ticket.Category = model.Category;
@@ -65,6 +79,30 @@ public class TicketService : ITicketService
         }
 
         _ticketRepository.UpdateTicket(ticket);
+    }
+
+    private string GenerateUpdateMessage(int userId, int ticketId, string newStatus, int? newPriority)
+    {
+        var user = _userService.GetUserById(userId);
+        var userName = $"{user.Fname} {user.Lname}";
+        
+        if (newStatus != null && newPriority.HasValue)
+            return $"{userName} updated Ticket #{ticketId} status to {newStatus} and priority to {GetPriorityText(newPriority.Value)}";
+        else if (newStatus != null)
+            return $"{userName} updated Ticket #{ticketId} status to {newStatus}";
+        else
+            return $"{userName} updated Ticket #{ticketId} priority to {GetPriorityText(newPriority.Value)}";
+    }
+
+    private string GetPriorityText(int priority)
+    {
+        return priority switch
+        {
+            1 => "Low",
+            2 => "Medium",
+            3 => "High",
+            _ => priority.ToString()
+        };
     }
 
     public void DeleteTicket(int id)

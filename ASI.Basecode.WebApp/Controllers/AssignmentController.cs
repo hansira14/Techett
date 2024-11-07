@@ -73,13 +73,9 @@ public class AssignmentController : ControllerBase<AssignmentController>
     {
         try
         {
-            var assignment = _assignmentRepository.GetAssignmentByTicketId(ticketId);
-            if (assignment != null)
-            {
-                _assignmentRepository.DeleteAssignment(assignment);
-                return Json(new { success = true });
-            }
-            return Json(new { success = false, message = "No assignment found for this ticket" });
+            var userId = GetCurrentUserId();
+            _assignmentService.RemoveAssignment(ticketId, userId);
+            return Json(new { success = true });
         }
         catch (Exception ex)
         {

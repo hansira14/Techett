@@ -71,6 +71,11 @@ namespace ASI.Basecode.WebApp
                             $"{src.AssignedByNavigation.Fname} {src.AssignedByNavigation.Lname}"));
 
                 CreateMap<AssignmentViewModel, Assignment>();
+
+                CreateMap<Update, UpdateViewModel>()
+                    .ForMember(dest => dest.UpdatedByName,
+                        opt => opt.MapFrom(src => 
+                            $"{src.UpdatedByNavigation.Fname} {src.UpdatedByNavigation.Lname}"));
             }
         }
     }
