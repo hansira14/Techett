@@ -36,7 +36,7 @@ namespace ASI.Basecode.Data
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=localhost;Database=techett;User Id=sa;Password=YourStrongPassword!;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer("Server=localhost;Database=techett;User Id=sa;Password=YourStrongPassword!;MultipleActiveResultSets=true;TrustServerCertificate=True;Trusted_Connection=True;integrated security=false");
             }
         }
 
@@ -117,8 +117,6 @@ namespace ASI.Basecode.Data
 
                 entity.Property(e => e.AssignedTo).HasColumnName("assignedTo");
 
-                entity.Property(e => e.ResolvedOn).HasColumnName("resolvedOn");
-
                 entity.Property(e => e.TicketId).HasColumnName("ticketID");
 
                 entity.HasOne(d => d.AssignedByNavigation)
@@ -142,12 +140,21 @@ namespace ASI.Basecode.Data
 
             modelBuilder.Entity<Attachment>(entity =>
             {
-                entity.HasKey(e => e.AtachmentId)
-                    .HasName("PK__tmp_ms_x__E8CFE0B0C6C7668C");
-
                 entity.ToTable("Attachment");
 
-                entity.Property(e => e.AtachmentId).HasColumnName("atachmentID");
+                entity.Property(e => e.AttachmentId).HasColumnName("attachmentID");
+
+                entity.Property(e => e.Filename)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .HasColumnName("filename");
+
+                entity.Property(e => e.Filesize).HasColumnName("filesize");
+
+                entity.Property(e => e.Filetype)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnName("filetype");
 
                 entity.Property(e => e.Source)
                     .IsRequired()
@@ -386,6 +393,10 @@ namespace ASI.Basecode.Data
 
                 entity.Property(e => e.Priority).HasColumnName("priority");
 
+                entity.Property(e => e.ResolvedBy).HasColumnName("resolvedBy");
+
+                entity.Property(e => e.ResolvedOn).HasColumnName("resolvedOn");
+
                 entity.Property(e => e.Status)
                     .IsRequired()
                     .HasMaxLength(20)
@@ -399,10 +410,15 @@ namespace ASI.Basecode.Data
                 entity.Property(e => e.UpdatedOn).HasColumnName("updatedOn");
 
                 entity.HasOne(d => d.CreatedByNavigation)
-                    .WithMany(p => p.Tickets)
+                    .WithMany(p => p.TicketCreatedByNavigations)
                     .HasForeignKey(d => d.CreatedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Tickets__created__3587F3E0");
+
+                entity.HasOne(d => d.ResolvedByNavigation)
+                    .WithMany(p => p.TicketResolvedByNavigations)
+                    .HasForeignKey(d => d.ResolvedBy)
+                    .HasConstraintName("FK_Tickets_Users_ResolvedBy");
             });
 
             modelBuilder.Entity<Update>(entity =>

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using static ASI.Basecode.Resources.Constants.Enums;
 
@@ -26,6 +27,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly TokenProviderOptionsFactory _tokenProviderOptionsFactory;
         private readonly IConfiguration _appConfiguration;
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -55,6 +57,7 @@ namespace ASI.Basecode.WebApp.Controllers
             this._tokenValidationParametersFactory = tokenValidationParametersFactory;
             this._appConfiguration = configuration;
             this._userService = userService;
+            this._mapper = mapper;
         }
 
         /// <summary>
@@ -137,6 +140,122 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             await this._signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
+        }
+
+        [HttpGet]
+        public IActionResult Users()
+        {
+            var users = _userService.GetAllUsers();
+            return View(users);
+        }
+
+        [HttpGet]
+        public IActionResult ViewUser(int id)
+        {
+            var user = _userService.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        [HttpPost]
+        public IActionResult CreateUser(UserViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+                return Json(new { success = false, message = string.Join(", ", errors) });
+            }
+
+            try
+            {
+                _userService.AddUser(model, int.Parse(UserId));
+                return Json(new { success = true });
+            }
+            catch (InvalidDataException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = Resources.Messages.Errors.ServerError });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditUser(EditUserViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+                return Json(new { success = false, message = string.Join(", ", errors) });
+            }
+
+            try
+            {
+                var userViewModel = new UserViewModel
+                {
+                    UserId = model.UserId,
+                    Fname = model.Fname,
+                    Lname = model.Lname,
+                    Email = model.Email,
+                    Role = model.Role,
+                    IsActive = model.IsActive,
+                    Password = string.IsNullOrEmpty(model.Password) ? null : model.Password,
+                    ConfirmPassword = string.IsNullOrEmpty(model.ConfirmPassword) ? null : model.ConfirmPassword
+                };
+
+                _userService.UpdateUser(userViewModel, model.UserId);
+                return Json(new { success = true });
+            }
+            catch (InvalidDataException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = Resources.Messages.Errors.ServerError });
+            }
+        }
+
+        [HttpGet]
+        [Route("Account/DeleteUser/{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            try
+            {
+                _userService.DeleteUser(id);
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+        }
+
+        [HttpGet]
+        [Route("Account/GetUserDetails/{id}")]
+        public IActionResult GetUserDetails(int id)
+        {
+            try
+            {
+                var user = _userService.GetUserById(id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return Json(user);
+            }
+            catch
+            {
+                return Json(new { success = false, message = Resources.Messages.Errors.ServerError });
+            }
         }
     }
 }
