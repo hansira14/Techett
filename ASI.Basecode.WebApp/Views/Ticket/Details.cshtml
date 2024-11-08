@@ -144,13 +144,21 @@
 
         $('#editTicketForm').submit(function(e) {
             e.preventDefault();
+            var oldStatus = '@Model.Status';
+            var oldPriority = '@Model.Priority';
+            var newStatus = $('#Status').val();
+            var newPriority = $('#Priority').val();
+            
+            
             $.ajax({
                 url: '/Ticket/EditTicket',
                 type: 'POST',
                 data: $(this).serialize(),
                 success: function(response) {
                     if (response.success) {
-                        loadUpdates();
+                        if (oldStatus !== newStatus || oldPriority !== newPriority) {
+                            loadUpdates();
+                        }
                         location.reload();
                     } else {
                         toastr.error(response.message || 'Failed to update ticket');
@@ -263,14 +271,26 @@
             $.get('/Attachment/GetTicketAttachments', { ticketId: @Model.TicketId }, function(attachments) {
                 var html = '';
                 attachments.forEach(function(attachment) {
+                    const isImage = attachment.filetype.startsWith('image/');
+                    
                     html += `
                         <div class="attachment-item mb-3">
                             <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <a href="${attachment.source}" target="_blank" class="text-decoration-none">
-                                        <i class="fas fa-paperclip"></i> ${attachment.filename}
-                                    </a>
-                                    <small class="text-muted ml-2">${formatFileSize(attachment.filesize)}</small>
+                                <div class="d-flex align-items-center">
+                                    ${isImage ? 
+                                        `<div class="mr-3">
+                                            <img src="${attachment.source}" alt="${attachment.filename}" 
+                                                 style="max-width: 150px; max-height: 150px; object-fit: contain;" 
+                                                 class="img-thumbnail"/>
+                                        </div>` : 
+                                        `<i class="fas fa-paperclip mr-2"></i>`
+                                    }
+                                    <div>
+                                        <a href="${attachment.source}" target="_blank" class="text-decoration-none">
+                                            ${attachment.filename}
+                                        </a>
+                                        <small class="text-muted d-block">${formatFileSize(attachment.filesize)}</small>
+                                    </div>
                                 </div>
                                 <button class="btn btn-danger btn-sm" onclick="deleteAttachment(${attachment.attachmentId})">
                                     <i class="fas fa-trash"></i>
