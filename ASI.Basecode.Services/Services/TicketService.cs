@@ -36,7 +36,7 @@ public class TicketService : ITicketService
         return _mapper.Map<TicketViewModel>(ticket);
     }
 
-    public void CreateTicket(TicketViewModel model, int userId)
+    public int CreateTicket(TicketViewModel model, int userId)
     {
         var ticket = _mapper.Map<Ticket>(model);
         ticket.CreatedBy = userId;
@@ -45,6 +45,7 @@ public class TicketService : ITicketService
         ticket.IsActive = true;
 
         _ticketRepository.AddTicket(ticket);
+        return ticket.TicketId;
     }
 
     public void UpdateTicket(TicketViewModel model, int userId)

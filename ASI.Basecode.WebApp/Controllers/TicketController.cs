@@ -16,16 +16,19 @@ namespace ASI.Basecode.WebApp.Controllers
     {
         private readonly ITicketService _ticketService;
         private readonly IUserService _userService;
+        private readonly IAttachmentService _attachmentService;
 
         public TicketController(IHttpContextAccessor httpContextAccessor,
             ILoggerFactory loggerFactory,
             IConfiguration configuration,
             IMapper mapper,
             ITicketService ticketService,
-            IUserService userService) : base(httpContextAccessor, loggerFactory, configuration, mapper)
+            IUserService userService,
+            IAttachmentService attachmentService) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
             _ticketService = ticketService;
             _userService = userService;
+            _attachmentService = attachmentService;
         }
 
         public IActionResult Tickets()
@@ -45,7 +48,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateTicket(TicketViewModel model)
+        public IActionResult CreateTicket([FromForm] TicketViewModel model, List<IFormFile> attachments)
         {
             if (!ModelState.IsValid)
             {
@@ -55,7 +58,17 @@ namespace ASI.Basecode.WebApp.Controllers
             try
             {
                 var userId = GetCurrentUserId();
-                _ticketService.CreateTicket(model, userId);
+                var ticketId = _ticketService.CreateTicket(model, userId);
+
+                // Process attachments if any
+                if (attachments != null && attachments.Any())
+                {
+                    foreach (var file in attachments)
+                    {
+                        _attachmentService.AddAttachment(file, ticketId, userId);
+                    }
+                }
+
                 return Json(new { success = true });
             }
             catch (UnauthorizedAccessException)

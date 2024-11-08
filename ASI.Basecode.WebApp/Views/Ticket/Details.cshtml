@@ -118,6 +118,18 @@
     </div>
 </div>
 
+<!-- Attachments -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h4>Attachments</h4>
+    </div>
+    <div class="card-body">
+        <div id="attachmentsList">
+            <!-- Attachments will be loaded here -->
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         function editMode() {
@@ -198,6 +210,8 @@
             });
 
             loadUpdates();
+
+            loadAttachments();
         });
 
         function deleteComment(commentId) {
@@ -243,6 +257,58 @@
                 });
                 $('#updatesList').html(html);
             });
+        }
+
+        function loadAttachments() {
+            $.get('/Attachment/GetTicketAttachments', { ticketId: @Model.TicketId }, function(attachments) {
+                var html = '';
+                attachments.forEach(function(attachment) {
+                    html += `
+                        <div class="attachment-item mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="${attachment.source}" target="_blank" class="text-decoration-none">
+                                        <i class="fas fa-paperclip"></i> ${attachment.filename}
+                                    </a>
+                                    <small class="text-muted ml-2">${formatFileSize(attachment.filesize)}</small>
+                                </div>
+                                <button class="btn btn-danger btn-sm" onclick="deleteAttachment(${attachment.attachmentId})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                $('#attachmentsList').html(html || '<p>No attachments</p>');
+            });
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function deleteAttachment(attachmentId) {
+            if (confirm('Are you sure you want to delete this attachment?')) {
+                $.ajax({
+                    url: '/Attachment/Delete',
+                    type: 'POST',
+                    data: { attachmentId: attachmentId },
+                    success: function(response) {
+                        if (response.success) {
+                            loadAttachments();
+                        } else {
+                            toastr.error(response.message || 'Failed to delete attachment');
+                        }
+                    },
+                    error: function() {
+                        toastr.error('An error occurred while deleting the attachment');
+                    }
+                });
+            }
         }
     </script>
 }
