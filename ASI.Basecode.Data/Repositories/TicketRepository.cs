@@ -30,15 +30,7 @@ public class TicketRepository : BaseRepository, ITicketRepository
         var existingTicket = this.GetDbSet<Ticket>().Find(ticket.TicketId);
         if (existingTicket != null)
         {
-            existingTicket.Title = ticket.Title;
-            existingTicket.Content = ticket.Content;
-            existingTicket.Status = ticket.Status;
-            existingTicket.Category = ticket.Category;
-            existingTicket.Priority = ticket.Priority;
-            existingTicket.UpdatedOn = DateTime.Now;
-            existingTicket.ResolvedOn = ticket.ResolvedOn;
-            existingTicket.ResolvedBy = ticket.ResolvedBy;
-
+            this.Context.Entry(existingTicket).CurrentValues.SetValues(ticket);
             this.UnitOfWork.SaveChanges();
         }
     }

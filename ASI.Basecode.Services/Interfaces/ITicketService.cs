@@ -7,8 +7,8 @@ namespace ASI.Basecode.Services.Interfaces
     {
         IEnumerable<TicketViewModel> GetAllTickets();
         TicketViewModel GetTicketById(int id);
-        void CreateTicket(TicketViewModel ticket, int userId);
         void UpdateTicket(TicketViewModel ticket, int userId);
         void DeleteTicket(int id);
+        int CreateTicket(TicketViewModel model, int userId);
     }
 }

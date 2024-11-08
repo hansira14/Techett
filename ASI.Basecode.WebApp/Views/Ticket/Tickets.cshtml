@@ -78,6 +78,11 @@
                             <option value="4">Critical</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label>Attachments</label>
+                        <input type="file" id="attachmentInput" class="form-control-file" multiple />
+                        <div id="attachmentsList" class="mt-2"></div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -127,12 +132,56 @@
                 console.log('Bootstrap modal is loaded correctly');
             }
 
+            let pendingAttachments = [];
+
+            $('#attachmentInput').change(function(e) {
+                const files = e.target.files;
+                for (let i = 0; i < files.length; i++) {
+                    pendingAttachments.push(files[i]);
+                    displayPendingAttachment(files[i], pendingAttachments.length - 1);
+                }
+                $(this).val('');
+            });
+
+            function displayPendingAttachment(file, index) {
+                const html = `
+                    <div class="attachment-item d-flex justify-content-between align-items-center mb-2">
+                        <span>${file.name}</span>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="window.removePendingAttachment(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                $('#attachmentsList').append(html);
+            }
+
+            window.removePendingAttachment = function(index) {
+                pendingAttachments.splice(index, 1);
+                refreshPendingAttachments();
+            };
+
+            function refreshPendingAttachments() {
+                $('#attachmentsList').empty();
+                pendingAttachments.forEach((file, index) => {
+                    displayPendingAttachment(file, index);
+                });
+            }
+
             $('#createTicketForm').submit(function(e) {
                 e.preventDefault();
+                const formData = new FormData(this);
+                
+                // Add each pending attachment to the form data
+                pendingAttachments.forEach(file => {
+                    formData.append('attachments', file);
+                });
+
                 $.ajax({
                     url: '/Ticket/CreateTicket',
                     type: 'POST',
-                    data: $(this).serialize(),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     success: function(response) {
                         if (response.success) {
                             $('#createTicketModal').modal('hide');

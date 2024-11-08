@@ -76,6 +76,12 @@ namespace ASI.Basecode.WebApp
                     .ForMember(dest => dest.UpdatedByName,
                         opt => opt.MapFrom(src => 
                             $"{src.UpdatedByNavigation.Fname} {src.UpdatedByNavigation.Lname}"));
+
+                CreateMap<Attachment, AttachmentViewModel>()
+                    .ForMember(dest => dest.UploadedByName,
+                        opt => opt.MapFrom(src => 
+                            $"{src.UploadedByNavigation.Fname} {src.UploadedByNavigation.Lname}"));
+                CreateMap<AttachmentViewModel, Attachment>();
             }
         }
     }

@@ -118,6 +118,18 @@
     </div>
 </div>
 
+<!-- Attachments -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h4>Attachments</h4>
+    </div>
+    <div class="card-body">
+        <div id="attachmentsList">
+            <!-- Attachments will be loaded here -->
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         function editMode() {
@@ -132,13 +144,21 @@
 
         $('#editTicketForm').submit(function(e) {
             e.preventDefault();
+            var oldStatus = '@Model.Status';
+            var oldPriority = '@Model.Priority';
+            var newStatus = $('#Status').val();
+            var newPriority = $('#Priority').val();
+            
+            
             $.ajax({
                 url: '/Ticket/EditTicket',
                 type: 'POST',
                 data: $(this).serialize(),
                 success: function(response) {
                     if (response.success) {
-                        loadUpdates();
+                        if (oldStatus !== newStatus || oldPriority !== newPriority) {
+                            loadUpdates();
+                        }
                         location.reload();
                     } else {
                         toastr.error(response.message || 'Failed to update ticket');
@@ -198,6 +218,8 @@
             });
 
             loadUpdates();
+
+            loadAttachments();
         });
 
         function deleteComment(commentId) {
@@ -243,6 +265,70 @@
                 });
                 $('#updatesList').html(html);
             });
+        }
+
+        function loadAttachments() {
+            $.get('/Attachment/GetTicketAttachments', { ticketId: @Model.TicketId }, function(attachments) {
+                var html = '';
+                attachments.forEach(function(attachment) {
+                    const isImage = attachment.filetype.startsWith('image/');
+                    
+                    html += `
+                        <div class="attachment-item mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    ${isImage ? 
+                                        `<div class="mr-3">
+                                            <img src="${attachment.source}" alt="${attachment.filename}" 
+                                                 style="max-width: 150px; max-height: 150px; object-fit: contain;" 
+                                                 class="img-thumbnail"/>
+                                        </div>` : 
+                                        `<i class="fas fa-paperclip mr-2"></i>`
+                                    }
+                                    <div>
+                                        <a href="${attachment.source}" target="_blank" class="text-decoration-none">
+                                            ${attachment.filename}
+                                        </a>
+                                        <small class="text-muted d-block">${formatFileSize(attachment.filesize)}</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-danger btn-sm" onclick="deleteAttachment(${attachment.attachmentId})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                $('#attachmentsList').html(html || '<p>No attachments</p>');
+            });
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function deleteAttachment(attachmentId) {
+            if (confirm('Are you sure you want to delete this attachment?')) {
+                $.ajax({
+                    url: '/Attachment/Delete',
+                    type: 'POST',
+                    data: { attachmentId: attachmentId },
+                    success: function(response) {
+                        if (response.success) {
+                            loadAttachments();
+                        } else {
+                            toastr.error(response.message || 'Failed to delete attachment');
+                        }
+                    },
+                    error: function() {
+                        toastr.error('An error occurred while deleting the attachment');
+                    }
+                });
+            }
         }
     </script>
 }

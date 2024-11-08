@@ -36,7 +36,7 @@ public class TicketService : ITicketService
         return _mapper.Map<TicketViewModel>(ticket);
     }
 
-    public void CreateTicket(TicketViewModel model, int userId)
+    public int CreateTicket(TicketViewModel model, int userId)
     {
         var ticket = _mapper.Map<Ticket>(model);
         ticket.CreatedBy = userId;
@@ -45,6 +45,7 @@ public class TicketService : ITicketService
         ticket.IsActive = true;
 
         _ticketRepository.AddTicket(ticket);
+        return ticket.TicketId;
     }
 
     public void UpdateTicket(TicketViewModel model, int userId)
@@ -53,14 +54,16 @@ public class TicketService : ITicketService
         if (ticket == null)
             throw new InvalidOperationException("Ticket not found");
 
-        var statusChanged = ticket.Status != model.Status;
+        var statusChanged = !string.Equals(ticket.Status, model.Status, StringComparison.OrdinalIgnoreCase);
         var priorityChanged = ticket.Priority != model.Priority;
+        var categoryChanged = !string.Equals(ticket.Category, model.Category, StringComparison.OrdinalIgnoreCase);
 
-        if (statusChanged || priorityChanged)
+        if (statusChanged || priorityChanged || categoryChanged)
         {
             var message = GenerateUpdateMessage(userId, ticket.TicketId, 
                 statusChanged ? model.Status : null,
-                priorityChanged ? model.Priority : null);
+                priorityChanged ? model.Priority : null,
+                categoryChanged ? model.Category : null);
             
             _updateService.AddUpdate(ticket.TicketId, model.Status, model.Priority, message, userId);
         }
@@ -81,17 +84,21 @@ public class TicketService : ITicketService
         _ticketRepository.UpdateTicket(ticket);
     }
 
-    private string GenerateUpdateMessage(int userId, int ticketId, string newStatus, int? newPriority)
+    private string GenerateUpdateMessage(int userId, int ticketId, string newStatus, int? newPriority, string newCategory)
     {
         var user = _userService.GetUserById(userId);
         var userName = $"{user.Fname} {user.Lname}";
         
-        if (newStatus != null && newPriority.HasValue)
-            return $"{userName} updated Ticket #{ticketId} status to {newStatus} and priority to {GetPriorityText(newPriority.Value)}";
-        else if (newStatus != null)
-            return $"{userName} updated Ticket #{ticketId} status to {newStatus}";
-        else
-            return $"{userName} updated Ticket #{ticketId} priority to {GetPriorityText(newPriority.Value)}";
+        var changes = new List<string>();
+        
+        if (newStatus != null)
+            changes.Add($"status to {newStatus}");
+        if (newPriority.HasValue)
+            changes.Add($"priority to {GetPriorityText(newPriority.Value)}");
+        if (newCategory != null)
+            changes.Add($"category to {newCategory}");
+        
+        return $"{userName} updated Ticket #{ticketId} " + string.Join(" and ", changes);
     }
 
     private string GetPriorityText(int priority)
