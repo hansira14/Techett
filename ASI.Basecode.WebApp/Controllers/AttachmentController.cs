@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
 using System.Linq;
 
 namespace ASI.Basecode.WebApp.Controllers
@@ -60,6 +61,40 @@ namespace ASI.Basecode.WebApp.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet("files/{*filePath}")]
+        public IActionResult GetFile(string filePath)
+        {
+            try
+            {
+                var fullPath = Path.Combine(_configuration["FileServer:UploadPath"], filePath);
+                
+                if (!System.IO.File.Exists(fullPath))
+                {
+                    return NotFound();
+                }
+
+                // Get content type based on file extension
+                var contentType = Path.GetExtension(fullPath).ToLowerInvariant() switch
+                {
+                    ".jpg" or ".jpeg" => "image/jpeg",
+                    ".png" => "image/png",
+                    ".pdf" => "application/pdf",
+                    ".doc" or ".docx" => "application/msword",
+                    ".xls" or ".xlsx" => "application/vnd.ms-excel",
+                    ".txt" => "text/plain",
+                    _ => "application/octet-stream",
+                };
+
+                // Return the file with the correct content type
+                return PhysicalFile(fullPath, contentType);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving file: {FilePath}", filePath);
+                return StatusCode(500, "Error retrieving file");
             }
         }
     }
