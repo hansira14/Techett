@@ -26,7 +26,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             return View();
         }
-        public IActionResult Sidebar()
+        public IActionResult Articles()
         {
             return View();
         }

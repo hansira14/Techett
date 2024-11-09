@@ -78,11 +78,14 @@ body {
     color: var(--blue-color);
     font-weight: 600;
 }
+
 .sidebar-submenu {
     list-style: none;
     margin-left: 35px;
     display: none;
     border-left: 2px solid var(--grey-color);
+    background-color: none;
+    color: none;
 }
 
 .sidebar-submenu li a {
@@ -90,7 +93,6 @@ body {
     height: 30px;
     text-decoration: none;
     display: block;
-    
 }
 
 .sidebar-submenu:hover {

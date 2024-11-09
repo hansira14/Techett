@@ -1,98 +1,187 @@
-﻿@*<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+﻿<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
+
 @{
-    ViewData["Title"] = "Admin Settings Page";
+    ViewData["Title"] = "About Us Page";
 }
+
+
 <div class="py-2 px-0 bg-absolute flex items-center sticky top-0 left-0 right-0 z-30">
     <ul class="flex items-center text-sm m-0">
         <li class="mr-2">
-            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">A C C O U N T & S E T T I N G S</a>
+            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">A B O U T    U S</a>
         </li>
     </ul>
     <ul class="ml-auto flex items-center">
         <button type="button" class="dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600 mr-4">
             <i class="ri-notification-3-line"></i>
         </button>
+        <div class="dropdown-menu shadow-md shadow-black/5 z-30 max-w-xs w-full bg-white rounded-md border border-gray-100">
+            <div class="flex items-center px-4 pt-4 border-b border-b-gray-100 notification-tab">
+                <button type="button" data-tab="notification" data-tab-page="notifications" class="text-gray-400 font-medium text-[13px] hover:text-gray-600 border-b-2 border-b-transparent mr-4 pb-1 active">Notifications</button>
+            </div>
+            <div class="my-2">
+                <ul class="max-h-64 overflow-y-auto" data-tab-for="notification" data-page="notifications">
+                    <li>
+                        <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
+                            <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
+                            <div class="ml-2">
+                                <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">New issue</div>
+                                <div class="text-[11px] text-gray-400">from a user</div>
+                            </div>
+                        </a>
+                        <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
+                            <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
+                            <div class="ml-2">
+                                <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">New issue</div>
+                                <div class="text-[11px] text-gray-400">from a user</div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- Profile Section -->
         <div class="flex items-center">
+            <!-- User Name and Settings -->
             <div class="text-left mr-1">
                 <div class="text-gray-800 font-regular text-xs">admin admin</div>
             </div>
+
+            <!-- Profile Picture -->
             <img src="https://placehold.co/32x32" alt="Profile" class="w-10 h-10 rounded-md object-cover" />
         </div>
     </ul>
 </div>
-@{
-    ViewData["Title"] = "Admin Settings Page";
-}
 
-<link rel="stylesheet" href="~/css/settings.css" />
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<body>
-    <div class="settings-header d-flex justify-content-between align-items-center py-3">
-        <h1 class="header-title">S E T T I N G S  &  P R E F E R E N C E S</h1>
-        <div class="header-icons d-flex">
-            <div class="icon-item d-flex align-items-center me-3">
-                <i class="fas fa-bell"></i>
-                <span>Notification</span>
+<script>
+    document.querySelector('.dropdown-toggle').addEventListener('click', function () {
+        const dropdownMenu = this.nextElementSibling;
+        dropdownMenu.classList.toggle('hidden'); // Toggle visibility
+    });
+
+</script>
+<div class="grid grid-cols-1 gap-6 pb-6 h-screen w-full overflow-hidden">
+    <div class="bg-white h-full border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-2">
+
+        <div class="flex justify-between mb-6">
+            <div>
+                <div class="text-sm font-medium text-gray-400">ALL ABOUT US</div>
             </div>
-            <div class="icon-item d-flex align-items-center">
-                <i class="fas fa-user-circle"></i>
-                <span>Profile</span>
-            </div>
+        </div>
+
+        <!-- Chart area -->
+        <div>
+            <canvas id="order-chart"></canvas>
         </div>
     </div>
+</div>
 
-    <section class="account-settings">
-        <h2>Account Settings</h2>
-        <div class="account-info">
-            <div class="profile-picture">
-                <img src="~/img/avatar.png" alt="Profile Picture">
-            </div>
-            <form method="post">
-                <div class="row mb-3">
-                    <div class="col-md-6 form-group">
-                        <label for="firstName">First Name</label>
-                        <input type="text" id="firstName" name="firstName" class="form-control" />
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label for="lastName">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" class="form-control" />
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6 form-group">
-                        <label for="contactNo">Contact No.</label>
-                        <input type="text" id="contactNo" name="contactNo" class="form-control" />
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" class="form-control" />
-                    </div>
-                </div>
-            </form>
+<style>
+    :root {
+        /*Dark Mode Colors*/
+        --dark-bg: #000;
+        --dark-main: #BCBCBC;
+        --dark-outer: #fff;
+        --dark-text: #fff;
+    }
 
-        </div>
-    </section>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        transition: background-color 0.4s ease;
+    }
 
-    <section class="account-preferences">
-        <h2>Account Preferences</h2>
-        <div class="preference-row">
-            <label>Notifications</label>
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="notificationsSwitch">
-            </div>
-        </div>
-        <div class="preference-row">
-            <label>Switch to Darkmode</label>
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="darkmodeSwitch">
-            </div>
-        </div>
-        <button type="button" class="save-button">Save Changes</button>
-    </section>
-</body>
-*@
+
+    .outer-container {
+        margin-left: 265px;
+        position: fixed;
+        z-index: 2;
+        box-sizing: border-box;
+        background-color: var(--dark-outer);
+        padding: 10px 10px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 285px);
+        height: calc(100% - 280px);
+        top: 280px;
+        right: 20px;
+        bottom: 20px;
+        transition: background-color 0.4s ease;
+        transition: margin-left 0.3s ease;
+    }
+
+        .outer-container.expand {
+            width: calc(100% - 60px);
+        }
+
+    .main-content {
+        height: 85vh;
+        background-color: var(--dark-main);
+        padding: 20px;
+        border-radius: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        flex-grow: 1;
+        color: #fff;
+    }
+
+        .main-content nav {
+            position: relative;
+            height: 100px;
+            width: calc(100% - 300px);
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+
+    #addTicketgContent, #myTicketsContent {
+        display: flex;
+    }
+
+
+
+
+    .modal {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+        padding-bottom: 20px;
+        z-index: 50;
+    }
+
+
+
+    .modal-content {
+        background-color: #185D62;
+        margin: 0 auto;
+        padding-left: 20px;
+        padding-right: 20px;
+        border: 1px solid #185D62;
+        width: 80%;
+        max-width: 700px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        font-family: 'YourMainContainerFont', sans-serif;
+        color: white;
+        position: relative;
+    }
+
+        .modal-content h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+</style>
