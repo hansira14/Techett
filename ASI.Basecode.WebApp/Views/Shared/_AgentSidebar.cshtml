@@ -1,0 +1,162 @@
+﻿@*<div class="sidebar-menu">
+    <div class="sidebar">
+        <div class="toggle-btn">
+            <i class=" fa fa-angle-right"></i>
+        </div>
+        
+        <div class="links">
+            <div class="link">
+                <a asp-controller="Admin" asp-action="Index">
+                    <i class="fa fa-solid fa-house"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+            <div class="sub-menu">
+                <a href="#">Tickets</a>
+                <a href="#">Articles</a>
+            </div>
+            <div class="link">
+                <a asp asp-controller="Admin" asp-action="Users">
+                    <i class="fa fa-solid fa-user"></i> <!-- Added class here -->
+                    Users
+                </a>
+            </div>
+            <div class="link">
+                <a asp-controller="Admin" asp-action="Settings">
+                    <i class="fa-solid fa-gear"></i> <!-- Added class here -->
+                    <span>Settings</span>
+                </a>
+            </div>
+            <div class="link">
+                <a asp-controller="Admin" asp-action="About">
+                    <i class="fa fa-solid fa-list"></i> <!-- Added class here -->
+                    <span>About Us</span>
+                </a>
+            </div>
+            <div class="user-details">
+                <div class="link">
+                    <a id="logoutButton" asp-action="SignOutAdmin" asp-controller="Account">
+                        <i class="fa fas fa-sign-out-alt"></i> <!-- Added class here -->
+                        <span>Logout @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelector(".sidebar-menu .toggle-btn".addEventListerner("click", function(){
+        document.querySelector(".sidebar-menu").classList.toggle("active");
+    });
+    document.querySelector(".sidebar-menu .sidebar .links .link a").forEach(function(link)){
+        HTMLLinkElement.addEventListener("click", function(e){
+            if(e.terget.parentNode.children.length > 1){
+                e.target.parentNode.classList.toggle("active");
+            }
+        });
+    });
+</script>
+<style>
+    * {
+        margin: 0px;
+        padding: 0px;
+        box-sizing: border-box;
+    }
+
+    .body {
+        font-family: "Roboto", sans-serif;
+        background: #eee;
+    }
+
+    .sidebar-menu {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: -250px;
+        height: 100%;
+        transition: left 300ms ease-in-out;
+    }
+    .sidebar-menu.active{
+        left: 0px;
+    }
+
+    .sidebar-menu .sidebar {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        padding: 10px;
+        z-index: 5;
+    }
+    .sidebar-menu .toggle-btn {
+        position: absolute;
+        top: 20px;
+        left: 238px;
+        width: 30px;
+        height: 30px;
+        text-align: right;
+        padding-left: 8px;
+        background: #fff;
+        cursor: pointer;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 18px;
+        line-height: 30px;
+        color: #111;
+    }
+
+    .sidebar-menu.active .toggle-btn i.fa{
+        transform: rotate(180deg);
+    }
+
+    .sidebar-menu .sidebar .links .link {
+        margin: 10px 0px;
+    }
+
+    .sidebar-menu .sidebar .links .link > a {
+        text-decoration: none;
+        display: block;
+        padding: 10px 5px;
+        color: #555;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .sidebar-menu .sidebar .links .link > a  i.fa {
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+    }
+
+    .sidebar-menu .sidebar .links .link .sub-menu {
+        margin-left: 5px;
+        padding-left: 10px;
+        border-left: 1px solid #bbb;
+        max-height: 0px;
+        overflow: hidden;
+        transition: max-height 300ms ease-in-out;
+    }
+
+    .sidebar-menu .sidebar .links .link .sub-menu.active {
+        max-height: 500px;
+    }
+
+    .sidebar-menu .sidebar .links .link .sub-menu a {
+        text-decoration: none;
+        display: block;
+        padding: 5px;
+        margin: 5px 0px;
+        color: #222;
+        cursor: pointer;
+    }
+
+    .sidebar-menu .sidebar .links .link.active > a, 
+    .sidebar-menu .sidebar .links .link > a:hover {
+        background: #e7eaff;
+        color: #556df5;
+    }
+</style>*@

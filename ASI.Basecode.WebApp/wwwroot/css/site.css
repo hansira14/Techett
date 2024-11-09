@@ -1,4 +1,4 @@
-﻿/*html {
+﻿/**/html {
     font-size: 14px;
 }
 
@@ -55,22 +55,22 @@ body {
     z-index: 1;
 }
 
-    /* Style the dropdown list 
-    .dropdown ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
+/* Style the dropdown list 
+.dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 
-        .dropdown ul li {
-            padding: 10px;
-        }
+.dropdown ul li {
+    padding: 10px;
+}
 
-            /* Style the links in the dropdown 
-            .dropdown ul li a {
-                text-decoration: none;
-                color: #333;
-            }
+/* Style the links in the dropdown 
+.dropdown ul li a {
+    text-decoration: none;
+    color: #333;
+}
 
 .dropdown-open {
     display: block;

@@ -1,16 +1,7 @@
 ﻿<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-
-
 <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
-@*<link rel="stylesheet" href="~/css/admin.css" />
-<text>
-    <script src="https://unpkg.com/@@popperjs/core@2/dist/umd/popper.min.js"></script>
-    <script src="~/js/site.js"></script>
-</text>
-<script src="~/js/site.js"></script>
-*@
 
 @{
     ViewData["Title"] = "Admin Dashboard";
@@ -157,8 +148,9 @@
                 <tbody>
                     <tr>
                         <td class="py-2 pl-2 border-b border-b-gray-50 max-w-xs">
-                            <a href="#" class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap" style="text-overflow: ellipsis; display: block; max-width: 100%;">Wildcat is too slow and needs to be fixed as soon as possible</a>
+                            <a href="@Url.Action("Tickets", "Admin")" class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap" style="text-overflow: ellipsis; display: block; max-width: 100%;">Wildcat is too slow and needs to be fixed as soon as possible</a>
                         </td>
+                            
                         <td class="py-2 pl-2 border-b border-b-gray-50">
                             <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap" style="text-overflow: ellipsis; display: block; max-width: 100%;">3 days</span>
                         </td>
@@ -456,35 +448,6 @@
             text-align: center;
             margin-bottom: 10px;
         }
-    /*
-            .modal-content form {
-                background: #fff;
-                padding: 15px;
-                border-radius: 8px;
-                display: flex;
-                flex-wrap: wrap;
-                gap: 8px;
-                margin-bottom: 20px;
-            }
-
-            .modal-content label {
-                display: block;
-                margin-bottom: 2px;
-                font-weight: bold;
-                font-size: 0.9em;
-                color: #000;
-            }
-
-            .modal-content input,
-            .modal-content select {
-                width: 100%;
-                padding: 6px;
-                margin-bottom: 6px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                box-sizing: border-box;
-                background-color: #ecf0f1;
-                color: #2c3e50;
-            }*/
+   
 
 </style>

@@ -26,7 +26,10 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             return View();
         }
-
+        public IActionResult Sidebar()
+        {
+            return View();
+        }
         public async Task<IActionResult> SignOutUser()
         {
             return RedirectToAction("Login", "Account");

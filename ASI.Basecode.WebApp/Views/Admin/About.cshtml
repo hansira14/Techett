@@ -7,26 +7,86 @@
     ViewData["Title"] = "About Us Page";
 }
 
+
 <div class="py-2 px-0 bg-absolute flex items-center sticky top-0 left-0 right-0 z-30">
     <ul class="flex items-center text-sm m-0">
         <li class="mr-2">
-            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">A B O U T  U S</a>
+            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">A B O U T    U S</a>
         </li>
     </ul>
     <ul class="ml-auto flex items-center">
         <button type="button" class="dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600 mr-4">
             <i class="ri-notification-3-line"></i>
-        </button>    
+        </button>
+        <div class="dropdown-menu shadow-md shadow-black/5 z-30 max-w-xs w-full bg-white rounded-md border border-gray-100">
+            <div class="flex items-center px-4 pt-4 border-b border-b-gray-100 notification-tab">
+                <button type="button" data-tab="notification" data-tab-page="notifications" class="text-gray-400 font-medium text-[13px] hover:text-gray-600 border-b-2 border-b-transparent mr-4 pb-1 active">Notifications</button>
+            </div>
+            <div class="my-2">
+                <ul class="max-h-64 overflow-y-auto" data-tab-for="notification" data-page="notifications">
+                    <li>
+                        <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
+                            <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
+                            <div class="ml-2">
+                                <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">New issue</div>
+                                <div class="text-[11px] text-gray-400">from a user</div>
+                            </div>
+                        </a>
+                        <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
+                            <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
+                            <div class="ml-2">
+                                <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">New issue</div>
+                                <div class="text-[11px] text-gray-400">from a user</div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- Profile Section -->
         <div class="flex items-center">
+            <!-- User Name and Settings -->
             <div class="text-left mr-1">
                 <div class="text-gray-800 font-regular text-xs">admin admin</div>
             </div>
+
+            <!-- Profile Picture -->
             <img src="https://placehold.co/32x32" alt="Profile" class="w-10 h-10 rounded-md object-cover" />
         </div>
     </ul>
 </div>
-<style>
 
+<script>
+    document.querySelector('.dropdown-toggle').addEventListener('click', function () {
+        const dropdownMenu = this.nextElementSibling;
+        dropdownMenu.classList.toggle('hidden'); // Toggle visibility
+    });
+
+</script>
+<div class="grid grid-cols-1 gap-6 pb-6 h-screen w-full overflow-hidden">
+    <div class="bg-white h-full border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-2">
+
+        <div class="flex justify-between mb-6">
+            <div>
+                <div class="text-sm font-medium text-gray-400">ALL ABOUT US</div>
+            </div>
+        </div>
+
+        <!-- Chart area -->
+        <div>
+            <canvas id="order-chart"></canvas>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        /*Dark Mode Colors*/
+        --dark-bg: #000;
+        --dark-main: #BCBCBC;
+        --dark-outer: #fff;
+        --dark-text: #fff;
+    }
 
     body {
         margin: 0;
@@ -38,4 +98,90 @@
         align-items: flex-start;
         transition: background-color 0.4s ease;
     }
+
+
+    .outer-container {
+        margin-left: 265px;
+        position: fixed;
+        z-index: 2;
+        box-sizing: border-box;
+        background-color: var(--dark-outer);
+        padding: 10px 10px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 285px);
+        height: calc(100% - 280px);
+        top: 280px;
+        right: 20px;
+        bottom: 20px;
+        transition: background-color 0.4s ease;
+        transition: margin-left 0.3s ease;
+    }
+
+        .outer-container.expand {
+            width: calc(100% - 60px);
+        }
+
+    .main-content {
+        height: 85vh;
+        background-color: var(--dark-main);
+        padding: 20px;
+        border-radius: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        flex-grow: 1;
+        color: #fff;
+    }
+
+        .main-content nav {
+            position: relative;
+            height: 100px;
+            width: calc(100% - 300px);
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+
+    #addTicketgContent, #myTicketsContent {
+        display: flex;
+    }
+
+
+
+
+    .modal {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+        padding-bottom: 20px;
+        z-index: 50;
+    }
+
+
+
+    .modal-content {
+        background-color: #185D62;
+        margin: 0 auto;
+        padding-left: 20px;
+        padding-right: 20px;
+        border: 1px solid #185D62;
+        width: 80%;
+        max-width: 700px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        font-family: 'YourMainContainerFont', sans-serif;
+        color: white;
+        position: relative;
+    }
+
+        .modal-content h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
 </style>

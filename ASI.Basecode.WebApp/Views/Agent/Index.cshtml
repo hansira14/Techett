@@ -1,0 +1,436 @@
+﻿<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+@{
+    ViewData["Title"] = "Agent Dashboard";
+}
+<div class="py-2 px-0 bg-absolute flex items-center sticky top-0 left-0 right-0 z-30">
+    <ul class="flex items-center text-sm m-0">
+        <li class="mr-2">
+            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">D A S H B O A R D</a>
+        </li>
+    </ul>
+    <ul class="ml-auto flex items-center">
+        <button type="button" class="dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600 mr-4">
+            <i class="ri-notification-3-line"></i>
+        </button>
+        <div class="dropdown-menu shadow-md shadow-black/5 z-30 max-w-xs w-full bg-white rounded-md border border-gray-100">
+            <div class="flex items-center px-4 pt-4 border-b border-b-gray-100 notification-tab">
+                <button type="button" data-tab="notification" data-tab-page="notifications" class="text-gray-400 font-medium text-[13px] hover:text-gray-600 border-b-2 border-b-transparent mr-4 pb-1 active">Notifications</button>
+            </div>
+            <div class="my-2">
+                <ul class="max-h-64 overflow-y-auto" data-tab-for="notification" data-page="notifications">
+                    <li>
+                        <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
+                            <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
+                            <div class="ml-2">
+                                <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">New issue</div>
+                                <div class="text-[11px] text-gray-400">from a user</div>
+                            </div>
+                        </a>
+                        <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
+                            <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
+                            <div class="ml-2">
+                                <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">New issue</div>
+                                <div class="text-[11px] text-gray-400">from a user</div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- Profile Section -->
+        <div class="flex items-center">
+            <!-- User Name and Settings -->
+            <div class="text-left mr-1">
+                <div class="text-gray-800 font-regular text-xs">admin admin</div>
+            </div>
+
+            <!-- Profile Picture -->
+            <img src="https://placehold.co/32x32" alt="Profile" class="w-10 h-10 rounded-md object-cover" />
+        </div>
+    </ul>
+</div>
+
+<div class="grid grid-cols-1 gap-6 mb-6" @*style="border: 2px solid #7E8EF1;*@">
+    <div class="h-80 border border-[#7E8EF1] border-opacity-100 p-6 shadow-md shadow-#7E8EF1/5 rounded-[15px]">
+
+        <div class="flex justify-between mb-6">
+            <div>
+                <div class="text-sm font-medium text-gray-400">GRAPH/NUMBERING</div>
+            </div>
+        </div>
+        <form id="preferencesForm" method="post">
+            <div class="outer-container">
+                <div class="main-content">
+                    <!-- chart and chart filter -->
+                    <div class="charts-section">
+                        <h2>Overall Bookings and Room Usage</h2>
+                        <div class="filter-container">
+                            <select id="time-range" class="filter-select" onchange="updateFilterOptions()">
+                                <option value="year">By Year</option>
+                                <option value="month">By Month</option>
+
+                            </select>
+                            <select id="filter-options" class="filter-select" onchange="updateChartData()">
+                            </select>
+                        </div>
+                        <div id="area-chart" class="chart"></div>
+                    </div>
+
+                    <button id="generate-report-btn" class="btn pulse">Generate Report</button>
+                    <!-- Modal sa Generated Reports -->
+                    <div id="report-modal" class="modalRA">
+                        <div class="modal-contentRA">
+                            <span class="closeRA">&times;</span>
+                            <h2>Generate Report</h2>
+                            <div class="report-options">
+                                <select id="report-type">
+                                    <option value="room-usage">Room Usage Report</option>
+                                    <option value="user-activity">User Activity Report</option>
+                                    <option value="booking-summary">Booking Summary Report</option>
+                                </select>
+                                <button id="generate-report" class="btn btn-primary">Generate</button>
+                                <button id="download-pdf" class="btn btn-secondary">Download</button>
+                            </div>
+                            <div id="report-preview" class="report-preview">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- Left-aligned boxes with reduced width -->
+        <div class="flex flex-col items-end gap-1 mb-1">
+            <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 5px;">
+                <!-- Adjust width to control size -->
+                <div class="flex items-center mb-0.5 justify-between">
+                    <span class="text-gray-400 text-xs">Tickets</span>
+                    <div class="text-xl font-semibold ml-auto">10</div>
+                </div>
+            </div>
+            <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 5px;">
+                <div class="flex items-center mb-0.5 justify-between">
+                    <span class="text-gray-400 text-xs">Articles</span>
+                    <div class="text-xl font-semibold ml-auto">50</div>
+                </div>
+            </div>
+            <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 10px;">
+                <div class="flex items-center mb-0.5 justify-between">
+                    <span class="text-gray-400 text-xs">Users</span>
+                    <div class="text-xl font-semibold ml-auto">4</div>
+                </div>
+            </div>
+            <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 10px;">
+                <div class="flex items-center mb-0.5 justify-between">
+                    <span class="text-gray-400 text-xs">Users</span>
+                    <div class="text-xl font-semibold ml-auto">4</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart area on the right or below -->
+        <div>
+            <canvas id="order-chart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('.dropdown-toggle').addEventListener('click', function () {
+        const dropdownMenu = this.nextElementSibling;
+        dropdownMenu.classList.toggle('hidden'); // Toggle visibility
+    });
+
+    var ctx = document.getElementById('area-chart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr'], // Example labels
+            datasets: [{
+                label: 'Bookings',
+                data: [10, 20, 15, 30], // Example data
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {}
+    });
+    function updateChartData() {
+        // Fetch or calculate the chart data here
+        var timeRange = document.getElementById("time-range").value;
+        var filterOption = document.getElementById("filter-options").value;
+        // Example: use the selected options to update the chart data
+        chart.data.labels = [...];  // New labels
+        chart.data.datasets[0].data = [...];  // New data
+        chart.update(); // Redraw chart
+    }
+
+</script>
+<script>
+    const areaChartOptions = {
+        series: [
+            {
+                name: 'Booking Summary',
+                data: [],
+            },
+            {
+                name: 'Room Usage',
+                data: [],
+            },
+        ],
+        chart: {
+            type: 'line',
+            background: 'transparent',
+            height: 250,
+            stacked: false,
+            toolbar: {
+                show: false,
+            },
+        },
+        colors: ['#EF9C66', '#84c0dc'],
+        dataLabels: {
+            enabled: false,
+        },
+        stroke: {
+            curve: 'smooth',
+            width: [4, 4],
+        },
+        fill: {
+            opacity: [0.5, 0.3],
+        },
+        grid: {
+            borderColor: '#d8ddb9',
+            yaxis: {
+                lines: {
+                    show: true,
+                },
+            },
+            xaxis: {
+                lines: {
+                    show: true,
+                },
+            },
+            row: {
+                colors: ['#5d5d5d', 'transparent'],
+                opacity: 0.5,
+            },
+        },
+        legend: {
+            labels: {
+                colors: '#FCF8F3',
+            },
+            show: true,
+            position: 'top',
+        },
+        markers: {
+            size: 6,
+            strokeColors: '#1b2635',
+            strokeWidth: 2,
+        },
+        xaxis: {
+            axisBorder: {
+                color: '#FCF8F3',
+                show: true,
+            },
+            axisTicks: {
+                color: '#FCF8F3',
+                show: true,
+            },
+            labels: {
+                offsetY: 0,
+                style: {
+                    colors: '#FCF8F3',
+                    fontSize: '0.9rem',
+                },
+            },
+        },
+        yaxis: [
+            {
+                title: {
+                    text: 'Booking Summary',
+                    style: {
+                        color: '#FCF8F3',
+                        fontSize: '0.9rem',
+                    },
+                },
+                labels: {
+                    style: {
+                        colors: ['#FCF8F3'],
+                        fontSize: '0.9rem',
+                    },
+                },
+            },
+            {
+                opposite: true,
+                title: {
+                    text: 'Room Usage',
+                    style: {
+                        color: '#FCF8F3',
+                        fontSize: '0.9rem',
+                    },
+                },
+                labels: {
+                    style: {
+                        colors: ['#FCF8F3'],
+                        fontSize: '0.9rem',
+                    },
+                },
+            },
+        ],
+        tooltip: {
+            shared: true,
+            intersect: false,
+            theme: 'dark',
+        },
+    };
+
+    const areaChart = new ApexCharts(
+        document.querySelector('#area-chart'),
+        areaChartOptions
+    );
+    areaChart.render();
+
+    function updateChartData() {
+        const timeRange = document.getElementById('time-range').value;
+        const filterOption = document.getElementById('filter-options').value;
+
+        let apiUrl = '/api/Analytics/';
+        if (timeRange === 'month') {
+            const month = new Date(Date.parse(filterOption + " 1, 2021")).getMonth() + 1;
+            const year = new Date().getFullYear();
+            apiUrl += `monthly-data/${year}/${month}`;
+        } else if (timeRange === 'year') {
+            apiUrl += `yearly-data/${filterOption}`;
+        }
+
+        fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data || Object.keys(data).length === 0) {
+                    throw new Error('No data returned from API');
+                }
+
+                const labels = Object.keys(data);
+                const bookingSummary = labels.map(label => data[label].bookingSummary || 0);
+                const roomUsage = labels.map(label => data[label].roomUsage || 0);
+
+                const newChartType = timeRange === 'month' ? 'bar' : 'line';
+
+                const updatedOptions = {
+                    chart: {
+                        type: newChartType,
+                        background: '#1f504d',
+                    },
+                    colors: ['#FCF8F3', '#abebf6'],
+                    theme: {
+                        mode: 'dark',
+                    },
+                    grid: {
+                        borderColor: '#455b55',
+                        row: {
+                            colors: ['#264945', '#263f32'],
+                            opacity: 0.5
+                        },
+                    },
+                    xaxis: {
+                        categories: labels,
+                        labels: {
+                            style: {
+                                colors: '#FCF8F3',
+                            },
+                        },
+                        axisBorder: {
+                            color: '#455b55'
+                        },
+                        axisTicks: {
+                            color: '#455b55'
+                        },
+                    },
+                    yaxis: {
+                        labels: {
+                            style: {
+                                colors: '#FCF8F3',
+                            },
+                        },
+                    },
+                    legend: {
+                        labels: {
+                            colors: '#FCF8F3',
+                        },
+                    },
+                    tooltip: {
+                        theme: 'dark',
+                        style: {
+                            fontSize: '12px',
+                            fontFamily: 'Poppins'
+                        },
+                    },
+                };
+
+                areaChart.updateOptions(updatedOptions);
+
+                areaChart.updateSeries([
+                    {
+                        name: 'Booking Summary',
+                        data: bookingSummary
+                    },
+                    {
+                        name: 'Room Usage',
+                        data: roomUsage
+                    }
+                ]);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
+
+    function updateFilterOptions() {
+        const timeRange = document.getElementById('time-range').value;
+        const filterOptions = document.getElementById('filter-options');
+        filterOptions.innerHTML = '';
+
+        if (timeRange === 'month') {
+            const months = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            months.forEach(month => {
+                const option = document.createElement('option');
+                option.value = month;
+                option.textContent = month;
+                filterOptions.appendChild(option);
+            });
+        } else if (timeRange === 'year') {
+            const currentYear = new Date().getFullYear();
+            for (let year = currentYear; year >= currentYear - 10; year--) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                filterOptions.appendChild(option);
+            }
+        }
+        updateChartData();
+    }
+    updateFilterOptions();
+
+    //periodic updates (every 5 minutes)
+    setInterval(updateChartData, 5 * 60 * 1000);
+</script>
+<style>
+    #area-chart {
+        width: 100%;
+        height: 300px; /* Make sure the chart has enough space */
+    }
+
+</style>
