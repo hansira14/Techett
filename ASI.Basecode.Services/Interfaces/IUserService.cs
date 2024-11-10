@@ -12,6 +12,6 @@ public interface IUserService
     UserViewModel GetUserById(int id);
     void AddUser(UserViewModel model, int adminId);
     void UpdateUser(UserViewModel model, int adminId);
-    void DeleteUser(int id, string currentUserRole);
+    void DeleteUser(int id);
     
 }

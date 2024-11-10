@@ -92,7 +92,7 @@ public class ArticleController : ControllerBase<ArticleController>
         return View(model);
     }
 
-    [HttpPost]
+    [HttpDelete]
     public IActionResult Delete(int id)
     {
         _articleService.DeleteArticle(id);

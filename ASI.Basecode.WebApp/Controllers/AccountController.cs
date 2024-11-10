@@ -112,33 +112,6 @@ namespace ASI.Basecode.WebApp.Controllers
             }
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        public IActionResult Register(UserViewModel model)
-        {
-            try
-            {
-                _userService.AddUser(model, 123); //HELPP
-                return RedirectToAction("Login", "Account");
-            }
-            catch (InvalidDataException ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-            }
-            catch (Exception)
-            {
-                TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
-            }
-            return View();
-        }
-
         /// <summary>
         /// Sign Out current account and return login view.
         /// </summary>
@@ -265,7 +238,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
         }
 
-        [HttpGet]
+        [HttpDelete]
         [Authorize(Policy = "RequireAdminRole")]
         [Route("Account/DeleteUser/{id}")]
         public IActionResult DeleteUser(int id)
@@ -283,10 +256,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     return Json(new { success = false, message = "You don't have permission to delete this user." });
                 }
 
-                var currentUserRole = User.Claims
-                    .FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
-
-                _userService.DeleteUser(id, currentUserRole);
+                _userService.DeleteUser(id);
                 return Json(new { success = true });
             }
             catch (UnauthorizedAccessException ex)
