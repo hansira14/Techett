@@ -61,5 +61,17 @@ namespace ASI.Basecode.Services.Services
 
             return false;
         }
+
+        public bool CanDeleteComment(int commentUserId)
+        {
+            var currentUser = _httpContextAccessor.HttpContext?.User;
+            if (currentUser == null) return false;
+
+            var userIdClaim = currentUser.Claims.FirstOrDefault(c => c.Type == "UserId");
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int currentUserId))
+                return false;
+
+            return currentUserId == commentUserId;
+        }
     }
 } 

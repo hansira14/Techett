@@ -42,4 +42,9 @@ public class CommentService : ICommentService
             _commentRepository.DeleteComment(comment);
         }
     }
+
+    public Comment GetCommentById(int commentId)
+    {
+        return _commentRepository.GetCommentById(commentId);
+    }
 }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ASI.Basecode.Data.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ASI.Basecode.WebApp.Controllers;
 
@@ -30,8 +31,8 @@ public class AssignmentController : ControllerBase<AssignmentController>
         _userService = userService;
         _assignmentRepository = assignmentRepository;
     }
-
     [HttpGet]
+    [Authorize(Policy = "RequireAdminRole")]
     public IActionResult GetAgents()
     {
         var agents = _userService.GetAllUsers().Where(u => u.Role == "Agent");
@@ -39,6 +40,7 @@ public class AssignmentController : ControllerBase<AssignmentController>
     }
 
     [HttpPost]
+    [Authorize(Policy = "RequireAdminRole")]
     public IActionResult AssignTicket(AssignmentViewModel model)
     {
         try
@@ -54,6 +56,7 @@ public class AssignmentController : ControllerBase<AssignmentController>
     }
 
     [HttpPost]
+    [Authorize(Policy = "RequireAdminRole")]
     public IActionResult UpdateAssignment(AssignmentViewModel model)
     {
         try
@@ -69,6 +72,7 @@ public class AssignmentController : ControllerBase<AssignmentController>
     }
 
     [HttpPost]
+    [Authorize(Policy = "RequireAdminRole")]
     public IActionResult RemoveAssignment(int ticketId)
     {
         try
