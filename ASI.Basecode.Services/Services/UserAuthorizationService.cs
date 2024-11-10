@@ -97,7 +97,14 @@ namespace ASI.Basecode.Services.Services
 
             return false;
         }
-
+        public bool CanUploadAttachment(int ticketCreatorId)
+        {
+            return CanModifyTicket(ticketCreatorId);
+        }
+        public bool CanDeleteAttachment(int ticketCreatorId)
+        {
+            return CanModifyTicket(ticketCreatorId);
+        }   
         public bool CanDeleteTicket(int ticketCreatorId)
         {
             return CanModifyTicket(ticketCreatorId);

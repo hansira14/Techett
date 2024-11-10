@@ -120,8 +120,14 @@
 
 <!-- Attachments -->
 <div class="card mt-4">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between align-items-center">
         <h4>Attachments</h4>
+        <div>
+            <input type="file" id="attachmentInput" class="d-none" multiple />
+            <button class="btn btn-primary btn-sm" onclick="$('#attachmentInput').click()">
+                <i class="fas fa-plus"></i> Add Attachments
+            </button>
+        </div>
     </div>
     <div class="card-body">
         <div id="attachmentsList">
@@ -220,6 +226,37 @@
             loadUpdates();
 
             loadAttachments();
+
+            $('#attachmentInput').change(function(e) {
+                const files = e.target.files;
+                if (files.length > 0) {
+                    const formData = new FormData();
+                    formData.append('ticketId', @Model.TicketId);
+                    
+                    for (let i = 0; i < files.length; i++) {
+                        formData.append('file', files[i]);
+                    }
+
+                    $.ajax({
+                        url: '/Attachment/Upload',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            if (response.success) {
+                                loadAttachments();
+                                $(this).val('');
+                            } else {
+                                toastr.error(response.message || 'Failed to upload attachment');
+                            }
+                        },
+                        error: function() {
+                            toastr.error('An error occurred while uploading the attachment');
+                        }
+                    });
+                }
+            });
         });
 
         function deleteComment(commentId) {

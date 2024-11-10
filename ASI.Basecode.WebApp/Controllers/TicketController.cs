@@ -142,7 +142,6 @@ namespace ASI.Basecode.WebApp.Controllers
 
         private int GetCurrentUserId()
         {
-            // Get the claim containing the user ID
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
             if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
             {

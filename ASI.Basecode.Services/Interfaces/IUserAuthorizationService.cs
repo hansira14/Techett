@@ -7,4 +7,6 @@ public interface IUserAuthorizationService
     bool CanDeleteComment(int commentUserId);
     bool CanModifyTicket(int ticketCreatorId);
     bool CanDeleteTicket(int ticketCreatorId);
+    bool CanUploadAttachment(int ticketCreatorId);
+    bool CanDeleteAttachment(int ticketCreatorId);
 }
