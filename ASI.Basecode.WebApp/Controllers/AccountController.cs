@@ -143,6 +143,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "RequireAdminRole")]
         public IActionResult Users()
         {
             var users = _userService.GetAllUsers();
@@ -161,6 +162,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "RequireAdminRole")]
         public IActionResult CreateUser(UserViewModel model)
         {
             if (!ModelState.IsValid)
@@ -173,6 +175,15 @@ namespace ASI.Basecode.WebApp.Controllers
 
             try
             {
+                if (model.Role == Roles.Admin)
+                {
+                    if (!User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
+                        c.Value.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        return Json(new { success = false, message = "Only SuperAdmin users can create Admin accounts." });
+                    }
+                }
+
                 _userService.AddUser(model, int.Parse(UserId));
                 return Json(new { success = true });
             }
@@ -187,6 +198,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "RequireAdminRole")]
         public IActionResult EditUser(EditUserViewModel model)
         {
             if (!ModelState.IsValid)
@@ -199,6 +211,43 @@ namespace ASI.Basecode.WebApp.Controllers
 
             try
             {
+                var existingUser = _userService.GetUserById(model.UserId);
+                if (existingUser == null)
+                {
+                    return Json(new { success = false, message = "User not found" });
+                }
+
+                // Check if current user is trying to edit a SuperAdmin
+                if (existingUser.Role == Roles.SuperAdmin && 
+                    !User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
+                        c.Value.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return Json(new { success = false, message = "You don't have permission to edit SuperAdmin users." });
+                }
+                if (model.Role == Roles.Admin)
+                {
+                    if (!User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
+                        c.Value.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        return Json(new { success = false, message = "Only SuperAdmin users can assign Admin roles." });
+                    }
+                }
+
+                if (existingUser.Role == Roles.Admin && 
+                    !User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
+                        c.Value.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return Json(new { success = false, message = "Only SuperAdmin users can modify Admin accounts." });
+                }
+
+                if (model.UserId == int.Parse(UserId))
+                {
+                    if (model.Role != existingUser.Role)
+                    {
+                        return Json(new { success = false, message = "You cannot modify your own role." });
+                    }
+                }
+
                 var userViewModel = new UserViewModel
                 {
                     UserId = model.UserId,
@@ -222,20 +271,44 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 return Json(new { success = false, message = Resources.Messages.Errors.ServerError });
             }
+
         }
 
         [HttpGet]
+        [Authorize(Policy = "RequireAdminRole")]
         [Route("Account/DeleteUser/{id}")]
         public IActionResult DeleteUser(int id)
         {
             try
             {
-                _userService.DeleteUser(id);
+                var userToDelete = _userService.GetUserById(id);
+                if (userToDelete == null)
+                {
+                    return Json(new { success = false, message = "User not found" });
+                }
+
+                if (userToDelete.Role == Roles.Admin)
+                {
+                    if (!User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
+                        c.Value.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        return Json(new { success = false, message = "Only SuperAdmin users can delete Admin accounts." });
+                    }
+                }
+
+                var currentUserRole = User.Claims
+                    .FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+
+                _userService.DeleteUser(id, currentUserRole);
                 return Json(new { success = true });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
             }
             catch
             {
-                return Json(new { success = false });
+                return Json(new { success = false, message = Resources.Messages.Errors.ServerError });
             }
         }
 
@@ -259,3 +332,4 @@ namespace ASI.Basecode.WebApp.Controllers
         }
     }
 }
+

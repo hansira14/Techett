@@ -73,9 +73,18 @@
                     <div class="form-group">
                         <label for="Role">Role</label>
                         <select name="Role" id="Role" class="form-control" required>
-                            <option value="Admin">Admin</option>
+                            @if (User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
+                                c.Value.Equals("SuperAdmin", StringComparison.OrdinalIgnoreCase)))
+                            {
+                                <option value="Admin">Admin</option>
+                            }
+                            @if (User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
+                                (c.Value.Equals("SuperAdmin", StringComparison.OrdinalIgnoreCase) || 
+                                 c.Value.Equals("Admin", StringComparison.OrdinalIgnoreCase))))
+                            {
+                                <option value="Agent">Agent</option>
+                            }
                             <option value="User">User</option>
-                            <option value="Agent">Agent</option>
                         </select>
                     </div>
                 </div>
@@ -124,9 +133,18 @@
                     <div class="form-group">
                         <label for="editRole">Role</label>
                         <select name="Role" id="editRole" class="form-control" required>
-                            <option value="Admin">Admin</option>
+                            @if (User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
+                                c.Value.Equals("SuperAdmin", StringComparison.OrdinalIgnoreCase)))
+                            {
+                                <option value="Admin">Admin</option>
+                            }
+                            @if (User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
+                                (c.Value.Equals("SuperAdmin", StringComparison.OrdinalIgnoreCase) || 
+                                 c.Value.Equals("Admin", StringComparison.OrdinalIgnoreCase))))
+                            {
+                                <option value="Agent">Agent</option>
+                            }
                             <option value="User">User</option>
-                            <option value="Agent">Agent</option>
                         </select>
                     </div>
                 </div>

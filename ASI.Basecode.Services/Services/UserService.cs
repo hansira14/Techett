@@ -89,11 +89,19 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
-        public void DeleteUser(int id)
+        public void DeleteUser(int id, string currentUserRole)
         {
             var user = _repository.GetUsers().FirstOrDefault(x => x.UserId == id);
             if (user != null)
             {
+                if (user.Role == Roles.Admin)
+                {
+                    if (currentUserRole != Roles.SuperAdmin)
+                    {
+                        throw new UnauthorizedAccessException("Only SuperAdmin users can delete Admin accounts.");
+                    }
+                }
+
                 _repository.DeleteUser(user);
             }
             else
