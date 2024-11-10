@@ -1,4 +1,5 @@
 ﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Services;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
@@ -27,6 +28,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly TokenProviderOptionsFactory _tokenProviderOptionsFactory;
         private readonly IConfiguration _appConfiguration;
         private readonly IUserService _userService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
         private readonly IMapper _mapper;
 
         /// <summary>
@@ -48,6 +50,7 @@ namespace ASI.Basecode.WebApp.Controllers
                             IConfiguration configuration,
                             IMapper mapper,
                             IUserService userService,
+                            IUserAuthorizationService userAuthorizationService,
                             TokenValidationParametersFactory tokenValidationParametersFactory,
                             TokenProviderOptionsFactory tokenProviderOptionsFactory) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
@@ -57,6 +60,7 @@ namespace ASI.Basecode.WebApp.Controllers
             this._tokenValidationParametersFactory = tokenValidationParametersFactory;
             this._appConfiguration = configuration;
             this._userService = userService;
+            this._userAuthorizationService = userAuthorizationService;
             this._mapper = mapper;
         }
 
@@ -68,6 +72,10 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous]
         public ActionResult Login()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             TempData["returnUrl"] = System.Net.WebUtility.UrlDecode(HttpContext.Request.Query["ReturnUrl"]);
             this._sessionManager.Clear();
             this._session.SetString("SessionId", Guid.NewGuid().ToString());
@@ -117,10 +125,10 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
-                _userService.AddUser(model,123); //HELPP
+                _userService.AddUser(model, 123); //HELPP
                 return RedirectToAction("Login", "Account");
             }
-            catch(InvalidDataException ex)
+            catch (InvalidDataException ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
             }
@@ -175,13 +183,9 @@ namespace ASI.Basecode.WebApp.Controllers
 
             try
             {
-                if (model.Role == Roles.Admin)
+                if (!_userAuthorizationService.CanAssignRole(model.Role))
                 {
-                    if (!User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
-                        c.Value.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        return Json(new { success = false, message = "Only SuperAdmin users can create Admin accounts." });
-                    }
+                    return Json(new { success = false, message = "You don't have permission to assign this role." });
                 }
 
                 _userService.AddUser(model, int.Parse(UserId));
@@ -217,27 +221,14 @@ namespace ASI.Basecode.WebApp.Controllers
                     return Json(new { success = false, message = "User not found" });
                 }
 
-                // Check if current user is trying to edit a SuperAdmin
-                if (existingUser.Role == Roles.SuperAdmin && 
-                    !User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
-                        c.Value.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase)))
+                if (!_userAuthorizationService.CanModifyUser(existingUser.Role))
                 {
-                    return Json(new { success = false, message = "You don't have permission to edit SuperAdmin users." });
-                }
-                if (model.Role == Roles.Admin)
-                {
-                    if (!User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
-                        c.Value.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        return Json(new { success = false, message = "Only SuperAdmin users can assign Admin roles." });
-                    }
+                    return Json(new { success = false, message = "You don't have permission to modify this user." });
                 }
 
-                if (existingUser.Role == Roles.Admin && 
-                    !User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
-                        c.Value.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase)))
+                if (!_userAuthorizationService.CanAssignRole(model.Role))
                 {
-                    return Json(new { success = false, message = "Only SuperAdmin users can modify Admin accounts." });
+                    return Json(new { success = false, message = "You don't have permission to assign this role." });
                 }
 
                 if (model.UserId == int.Parse(UserId))
@@ -287,13 +278,9 @@ namespace ASI.Basecode.WebApp.Controllers
                     return Json(new { success = false, message = "User not found" });
                 }
 
-                if (userToDelete.Role == Roles.Admin)
+                if (!_userAuthorizationService.CanModifyUser(userToDelete.Role))
                 {
-                    if (!User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
-                        c.Value.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        return Json(new { success = false, message = "Only SuperAdmin users can delete Admin accounts." });
-                    }
+                    return Json(new { success = false, message = "You don't have permission to delete this user." });
                 }
 
                 var currentUserRole = User.Claims
