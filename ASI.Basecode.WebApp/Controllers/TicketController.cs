@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using ASI.Basecode.Services;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -17,6 +18,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly ITicketService _ticketService;
         private readonly IUserService _userService;
         private readonly IAttachmentService _attachmentService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public TicketController(IHttpContextAccessor httpContextAccessor,
             ILoggerFactory loggerFactory,
@@ -24,11 +26,13 @@ namespace ASI.Basecode.WebApp.Controllers
             IMapper mapper,
             ITicketService ticketService,
             IUserService userService,
-            IAttachmentService attachmentService) : base(httpContextAccessor, loggerFactory, configuration, mapper)
+            IAttachmentService attachmentService,
+            IUserAuthorizationService userAuthorizationService) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
             _ticketService = ticketService;
             _userService = userService;
             _attachmentService = attachmentService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public IActionResult Tickets()
@@ -91,6 +95,17 @@ namespace ASI.Basecode.WebApp.Controllers
 
             try
             {
+                var ticket = _ticketService.GetTicketById(model.TicketId);
+                if (ticket == null)
+                {
+                    return Json(new { success = false, message = "Ticket not found" });
+                }
+
+                if (!_userAuthorizationService.CanModifyTicket(ticket.CreatedBy))
+                {
+                    return Json(new { success = false, message = "You don't have permission to modify this ticket" });
+                }
+
                 _ticketService.UpdateTicket(model, GetCurrentUserId());
                 return Json(new { success = true });
             }
@@ -105,6 +120,17 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
+                var ticket = _ticketService.GetTicketById(id);
+                if (ticket == null)
+                {
+                    return Json(new { success = false, message = "Ticket not found" });
+                }
+
+                if (!_userAuthorizationService.CanDeleteTicket(ticket.CreatedBy))
+                {
+                    return Json(new { success = false, message = "You don't have permission to delete this ticket" });
+                }
+
                 _ticketService.DeleteTicket(id);
                 return Json(new { success = true });
             }

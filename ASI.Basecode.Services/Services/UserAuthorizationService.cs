@@ -73,5 +73,34 @@ namespace ASI.Basecode.Services.Services
 
             return currentUserId == commentUserId;
         }
+
+        public bool CanModifyTicket(int ticketCreatorId)
+        {
+            var currentUser = _httpContextAccessor.HttpContext?.User;
+            if (currentUser == null) return false;
+
+            var userRole = currentUser.Claims
+                .FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            var userIdClaim = currentUser.Claims
+                .FirstOrDefault(c => c.Type == "UserId");
+
+            if (userRole?.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase) == true ||
+                userRole?.Equals(Roles.Admin, StringComparison.OrdinalIgnoreCase) == true)
+            {
+                return true;
+            }
+
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int currentUserId))
+            {
+                return currentUserId == ticketCreatorId;
+            }
+
+            return false;
+        }
+
+        public bool CanDeleteTicket(int ticketCreatorId)
+        {
+            return CanModifyTicket(ticketCreatorId);
+        }
     }
 } 
