@@ -115,6 +115,11 @@ namespace ASI.Basecode.WebApp.Mvc
         /// <param name="context">context</param>
         public override void OnActionExecuting(ActionExecutingContext context)
         {
+            if (context.HttpContext.Response.StatusCode == 403)
+            {
+                context.Result = new RedirectToActionResult("Forbidden", "Home", null);
+            }
+            base.OnActionExecuting(context);
         }
 
         /// <summary>

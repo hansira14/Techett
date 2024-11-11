@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using ASI.Basecode.Services;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.WebApp.Mvc;
 using AutoMapper;
@@ -13,14 +14,17 @@ namespace ASI.Basecode.WebApp.Controllers;
 public class CommentController : ControllerBase<CommentController>
 {
     private readonly ICommentService _commentService;
+    private readonly IUserAuthorizationService _userAuthorizationService;
 
     public CommentController(IHttpContextAccessor httpContextAccessor,
         ILoggerFactory loggerFactory,
         IConfiguration configuration,
         IMapper mapper,
-        ICommentService commentService) : base(httpContextAccessor, loggerFactory, configuration, mapper)
+        ICommentService commentService,
+        IUserAuthorizationService userAuthorizationService) : base(httpContextAccessor, loggerFactory, configuration, mapper)
     {
         _commentService = commentService;
+        _userAuthorizationService = userAuthorizationService;
     }
 
     [HttpGet]
@@ -50,6 +54,12 @@ public class CommentController : ControllerBase<CommentController>
     {
         try
         {
+            var comment = _commentService.GetCommentById(commentId);
+            if (!_userAuthorizationService.CanDeleteComment(comment.UserId))
+            {
+                return Json(new { success = false, message = "You don't have permission to delete this comment" });
+            }
+
             _commentService.DeleteComment(commentId);
             return Json(new { success = true });
         }

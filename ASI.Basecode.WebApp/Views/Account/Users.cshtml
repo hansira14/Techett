@@ -73,9 +73,18 @@
                     <div class="form-group">
                         <label for="Role">Role</label>
                         <select name="Role" id="Role" class="form-control" required>
-                            <option value="Admin">Admin</option>
+                            @if (User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
+                                c.Value.Equals("SuperAdmin", StringComparison.OrdinalIgnoreCase)))
+                            {
+                                <option value="Admin">Admin</option>
+                            }
+                            @if (User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
+                                (c.Value.Equals("SuperAdmin", StringComparison.OrdinalIgnoreCase) || 
+                                 c.Value.Equals("Admin", StringComparison.OrdinalIgnoreCase))))
+                            {
+                                <option value="Agent">Agent</option>
+                            }
                             <option value="User">User</option>
-                            <option value="Agent">Agent</option>
                         </select>
                     </div>
                 </div>
@@ -124,9 +133,18 @@
                     <div class="form-group">
                         <label for="editRole">Role</label>
                         <select name="Role" id="editRole" class="form-control" required>
-                            <option value="Admin">Admin</option>
+                            @if (User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
+                                c.Value.Equals("SuperAdmin", StringComparison.OrdinalIgnoreCase)))
+                            {
+                                <option value="Admin">Admin</option>
+                            }
+                            @if (User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
+                                (c.Value.Equals("SuperAdmin", StringComparison.OrdinalIgnoreCase) || 
+                                 c.Value.Equals("Admin", StringComparison.OrdinalIgnoreCase))))
+                            {
+                                <option value="Agent">Agent</option>
+                            }
                             <option value="User">User</option>
-                            <option value="Agent">Agent</option>
                         </select>
                     </div>
                 </div>
@@ -147,17 +165,21 @@
         // Move deleteUser function to global scope
         function deleteUser(id) {
             if (confirm('Are you sure you want to delete this user?')) {
+                console.log('Current user claims:', document.cookie);
+                
                 $.ajax({
                     url: '/Account/DeleteUser/' + id,
-                    type: 'POST',
+                    type: 'DELETE',
                     success: function(response) {
                         if (response.success) {
                             location.reload();
                         } else {
-                            toastr.error('Failed to delete user');
+                            console.log('Error details:', response);
+                            toastr.error(response.message || 'Failed to delete user');
                         }
                     },
-                    error: function() {
+                    error: function(xhr) {
+                        console.log('Error details:', xhr);
                         toastr.error('An error occurred while deleting the user');
                     }
                 });
