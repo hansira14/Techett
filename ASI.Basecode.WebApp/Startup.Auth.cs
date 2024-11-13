@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using System.Security.Claims;
+using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ASI.Basecode.WebApp
 {
@@ -42,7 +45,7 @@ namespace ASI.Basecode.WebApp
                     Name = $"{this._environment.ApplicationName}_{token.CookieName}"
                 };
                 options.LoginPath = new PathString("/Account/Login");
-                options.AccessDeniedPath = new PathString("/html/Forbidden.html");
+                options.AccessDeniedPath = new PathString("/Home/Forbidden");
                 options.ReturnUrlParameter = "ReturnUrl";
                 options.TicketDataFormat = new CustomJwtDataFormat(SecurityAlgorithms.HmacSha256, _tokenValidationParameters, Configuration, tokenProviderOptionsFactory);
             });
@@ -53,11 +56,45 @@ namespace ASI.Basecode.WebApp
                 {
                     policy.RequireAuthenticatedUser();
                 });
+
+                options.AddPolicy("RequireSuperAdminRole", policy =>
+                    policy.RequireAssertion(context => 
+                        context.User.HasClaim(c => c.Type == ClaimTypes.Role && 
+                            c.Value.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase))));
+
+                options.AddPolicy("RequireAdminRole", policy =>
+                    policy.RequireAssertion(context => 
+                        context.User.HasClaim(c => c.Type == ClaimTypes.Role && 
+                            (c.Value.Equals(Roles.Admin, StringComparison.OrdinalIgnoreCase) || 
+                             c.Value.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase)))));
+
+                options.AddPolicy("RequireAgentRole", policy =>
+                    policy.RequireAssertion(context => 
+                        context.User.HasClaim(c => c.Type == ClaimTypes.Role && 
+                            (c.Value.Equals(Roles.Agent, StringComparison.OrdinalIgnoreCase) || 
+                             c.Value.Equals(Roles.Admin, StringComparison.OrdinalIgnoreCase) || 
+                             c.Value.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase)))));
+
+                options.AddPolicy("RequireUserRole", policy =>
+                    policy.RequireAssertion(context => 
+                        context.User.HasClaim(c => c.Type == ClaimTypes.Role && 
+                            c.Value.Equals(Roles.User, StringComparison.OrdinalIgnoreCase))));
             });
 
             this._services.AddMvc(options =>
             {
                 options.Filters.Add(new AuthorizeFilter("RequireAuthenticatedUser"));
+            });
+
+            this._services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = "/Home/Forbidden";
+                options.Cookie.Name = "YourAppCookie";
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                options.LoginPath = "/Account/Login";
+                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                options.SlidingExpiration = true;
             });
         }
     }

@@ -1,6 +1,8 @@
+using ASI.Basecode.Services;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.WebApp.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -11,18 +13,24 @@ using System.Linq;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
+    [Authorize]
     public class AttachmentController : ControllerBase<AttachmentController>
     {
         private readonly IAttachmentService _attachmentService;
-
+        private readonly ITicketService _ticketService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
         public AttachmentController(IHttpContextAccessor httpContextAccessor,
                                   ILoggerFactory loggerFactory,
                                   IConfiguration configuration,
                                   IMapper mapper,
-                                  IAttachmentService attachmentService) 
+                                  IAttachmentService attachmentService,
+                                  IUserAuthorizationService userAuthorizationService,
+                                  ITicketService ticketService) 
             : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
             _attachmentService = attachmentService;
+            _userAuthorizationService = userAuthorizationService;
+            _ticketService = ticketService;
         }
 
         [HttpPost]
@@ -30,10 +38,14 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
+                var ticket = _ticketService.GetTicketById(ticketId);
+                if (!_userAuthorizationService.CanUploadAttachment(ticket.CreatedBy))
+                {
+                    return Json(new { success = false, message = "You don't have permission to upload attachments" });
+                }
+                var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
                 if (file == null || file.Length == 0)
                     return Json(new { success = false, message = "No file uploaded" });
-
-                var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
                 var attachment = _attachmentService.AddAttachment(file, ticketId, userId);
                 return Json(new { success = true, attachment });
             }
@@ -51,10 +63,16 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpPost]
+
         public IActionResult Delete(int attachmentId)
         {
             try
             {
+                var attachment = _attachmentService.GetAttachmentById(attachmentId);
+                if (!_userAuthorizationService.CanDeleteAttachment(attachment.UploadedBy))
+                {
+                    return Json(new { success = false, message = "You don't have permission to delete this attachment" });
+                }   
                 _attachmentService.DeleteAttachment(attachmentId);
                 return Json(new { success = true });
             }
