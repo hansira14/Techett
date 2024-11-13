@@ -1,0 +1,54 @@
+﻿<link rel="stylesheet" href="~/css/admin.css" />
+<div class="sidebar">
+    <div class="logo">
+        <img id="logo-img" alt="Logo" />
+    </div>
+    <ul class="sidebar-menu">
+        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")">
+            <a asp-controller="Admin" asp-action="Index">
+                <i class="fa-solid fa-bars sidebar-icon"></i> <!-- Added class here -->
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Assign" ? "active" : "")">
+            <a asp-controller="Admin" asp-action="Assign">
+                <i class="fa-solid fa-pen-fancy sidebar-icon"></i> <!-- Added class here -->
+                <span>Assign</span>
+            </a>
+        </li>
+        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Tickets" ? "active" : "")">
+            <a asp-controller="Admin" asp-action="Tickets">
+                <i class="fa-solid fa-ticket sidebar-icon"></i> <!-- Added class here -->
+                <span>Tickets</span>
+            </a>
+        </li>
+        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Settings" ? "active" : "")">
+            <a asp-controller="Admin" asp-action="Settings">
+                <i class="fa-solid fa-gear sidebar-icon"></i> <!-- Added class here -->
+                <span>Settings</span>
+            </a>
+        </li>
+        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Tools" ? "active" : "")">
+            <a asp-controller="Admin" asp-action="Tools">
+                <i class="fa-solid fa-wrench sidebar-icon"></i> <!-- Added class here -->
+                <span>Tools</span>
+            </a>
+        </li>
+    </ul>
+
+    <div class="user-details">
+        <div class="signout">
+            <a asp-action="Login" asp-controller="Account">
+                <i class="fas fa-sign-out-alt sidebar-icon"></i> <!-- Added class here -->
+                <span>Logout @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
+            </a>
+        </div>
+    </div>
+    @*
+    <div class="signout">
+        <a asp-action="Login" asp-controller="Account">
+            <i class="fas fa-sign-out-alt sidebar-icon"></i> <!-- Added class here -->
+            <span>Logout, @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
+        </a>
+    </div>*@
+</div>

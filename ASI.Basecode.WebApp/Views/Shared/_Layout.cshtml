@@ -6,17 +6,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
+    <link rel="icon" href="@Url.Content("~/img/logo-light.png")" type="image/png">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/main.css" />
-    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/techett.css" />
+    @*<link rel="stylesheet" href="~/css/style.css" />*@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     @RenderSection("Styles", required: false)
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    @Html.Partial("_Header")
+    @*@Html.Partial("_Header")
     <div class="container">
         <main role="main">
             @RenderBody()
@@ -26,14 +28,49 @@
         <div class="container">
             @Copyright
         </div>
-    </footer>
+    </footer>*@
+
+    @{
+        var userRole = Context.Session.GetString("UserRole");
+        var isLoginOrRegister = ViewContext.RouteData.Values["Controller"].ToString() == "Account" &&
+        (ViewContext.RouteData.Values["Action"].ToString() == "Login" || ViewContext.RouteData.Values["Action"].ToString() == "Register");
+    }
+
+    @if (!isLoginOrRegister)
+    {
+        switch (userRole)
+        {
+            case "superadmin":
+                @Html.Partial("_AdminSidebar")
+                break;
+            case "admin":
+                @Html.Partial("_AdminSidebar")
+                break;
+            case "agent":
+                @Html.Partial("_UserSidebar")
+                break;
+            case "user":
+                @Html.Partial("_UserSidebar")
+                break;
+            default:
+                @Html.Partial("_AdminSidebar")
+                break;
+        }
+    }
+
+
+    <div class="container" style="@(isLoginOrRegister ? "centered;" : "margin-left: 250px;")">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.js"></script>
     <script src="https://kit.fontawesome.com/7a7c645416.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>*@
     <script>
         // Configure Toastr options
         toastr.options = {
