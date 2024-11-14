@@ -1,113 +1,44 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model IEnumerable<ASI.Basecode.Services.ServiceModels.TicketViewModel>
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-<link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-<script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
 
-@{
-    ViewData["Title"] = "Tickets";
-}
-<div class="py-2 px-0 bg-absolute flex items-center sticky top-0 left-0 right-0 z-30">
-    <ul class="flex items-center text-sm m-0">
-        <li class="mr-2">
-            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">T I C K E T S</a>
-        </li>
-    </ul>
-    <ul class="ml-auto flex items-center">
-        <li type="button" class="dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600 mr-4">
-            <i class="ri-notification-3-line"></i>
-        </li>
-        <div class="dropdown-menu shadow-md shadow-black/5 z-30 max-w-xs w-full bg-white rounded-md border border-gray-100">
-            <div class="flex items-center px-4 pt-4 border-b border-b-gray-100 notification-tab">
-                <button type="button" data-tab="notification" data-tab-page="notifications" class="text-gray-400 font-medium text-[13px] hover:text-gray-600 border-b-2 border-b-transparent mr-4 pb-1 active">Notifications</button>
-            </div>
-            <div class="my-2">
-                <ul class="max-h-64 overflow-y-auto" data-tab-for="notification" data-page="notifications">
-                    <li>
-                        <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                            <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
-                            <div class="ml-2">
-                                <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">New issue</div>
-                                <div class="text-[11px] text-gray-400">from a user</div>
-                            </div>
-                        </a>
-                        <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                            <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
-                            <div class="ml-2">
-                                <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">New issue</div>
-                                <div class="text-[11px] text-gray-400">from a user</div>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <!-- Profile Section -->
-        <div class="flex items-center">
-            <!-- User Name and Settings -->
-            <div class="text-left mr-1">
-                <div class="text-gray-800 font-regular text-xs">admin admin</div>
-            </div>
+<div class="container mt-4">
+    <h2>Tickets</h2>
+    <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#createTicketModal">
+        Create New Ticket
+    </button>
 
-            <!-- Profile Picture -->
-            <img src="https://placehold.co/32x32" alt="Profile" class="w-10 h-10 rounded-md object-cover" />
-        </div>
-    </ul>
-</div>
-
-<div class="grid grid-cols-1 gap-6 pb-6 h-screen w-full overflow-hidden">
-    <div class="bg-white h-full border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-2">
-
-        <div class="flex justify-between mb-6">
-            <div>
-                <div class="text-sm font-medium text-gray-400">ALL ABOUT US</div>
-            </div>
-        </div>
-
-        <div class="container mt-4">
-            <h2>Tickets</h2>
-            <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#createTicketModal">
-                Create New Ticket
-            </button>
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Priority</th>
-                        <th>Status</th>
-                        <th>Created On</th>
-                        <th>Assigned To</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var ticket in Model)
-                    {
-                        <tr>
-                            <td>@ticket.Title</td>
-                            <td>@ticket.Category</td>
-                            <td>@ticket.Priority</td>
-                            <td>@ticket.Status</td>
-                            <td>@ticket.CreatedOn.ToString("g")</td>
-                            <td>@(ticket.AssignedToName ?? "Unassigned")</td>
-                            <td>
-                                <a asp-action="Details" asp-route-id="@ticket.TicketId" class="btn btn-info btn-sm">View</a>
-                                <button class="btn btn-warning btn-sm" onclick="editTicket(@ticket.TicketId)">Edit</button>
-                                <button class="btn btn-danger btn-sm" onclick="deleteTicket(@ticket.TicketId)">Delete</button>
-                                <button class="btn btn-primary btn-sm" onclick="showAssignModal(@ticket.TicketId)">Assign</button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div>
-            <canvas id="order-chart"></canvas>
-        </div>
-    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Created On</th>
+                <th>Assigned To</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ticket in Model)
+            {
+                <tr>
+                    <td>@ticket.Title</td>
+                    <td>@ticket.Category</td>
+                    <td>@ticket.Priority</td>
+                    <td>@ticket.Status</td>
+                    <td>@ticket.CreatedOn.ToString("g")</td>
+                    <td>@(ticket.AssignedToName ?? "Unassigned")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@ticket.TicketId" class="btn btn-info btn-sm">View</a>
+                        <button class="btn btn-warning btn-sm" onclick="editTicket(@ticket.TicketId)">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteTicket(@ticket.TicketId)">Delete</button>
+                        <button class="btn btn-primary btn-sm" onclick="showAssignModal(@ticket.TicketId)">Assign</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
 <!-- Create Ticket Modal -->
@@ -352,14 +283,3 @@
         }
     </script>
 }
-
-<style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        display: flex;
-        justify-content: flex-start;
-        align-items: flex-start;
-        transition: background-color 0.4s ease;
-    }
-</style>
