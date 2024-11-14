@@ -17,7 +17,7 @@ appBuilder.Configuration.AddJsonFile("appsettings.json",
     reloadOnChange: true);
 
 appBuilder.WebHost.UseIISIntegration();
-appBuilder.WebHost.UseUrls("http://0.0.0.0:5003");
+//appBuilder.WebHost.UseUrls("http://0.0.0.0:5003");
 
 appBuilder.Logging
     .AddConfiguration(appBuilder.Configuration.GetLoggingSection())
