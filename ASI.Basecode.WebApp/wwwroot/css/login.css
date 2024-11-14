@@ -1,29 +1,62 @@
-.gradient-custom-2 {
-    /* fallback for old browsers */
-    background: #ff0000; /* Red */
-    /* Chrome 10-25, Safari 5.1-6 */
-    background: -webkit-linear-gradient(to right, #ff0000, #000000); /* Red, Black */
-    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    background: linear-gradient(to right, #ff0000, #000000); /* Red, Black */
-}
-
 .login-btn {
     width: 180px;
 }
 
 .register-box {
-    width: 600px;
+    width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+    .login-btn {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .register-box {
+        width: 100%;
+        padding: 20px;
+    }
 }
 
 @media (min-width: 768px) {
     .gradient-form {
         height: 100vh !important;
     }
-}
 
-@media (min-width: 769px) {
-    .gradient-custom-2 {
-        border-top-right-radius: .3rem;
-        border-bottom-right-radius: .3rem;
+    .custom-button {
+        background-color: #7E8EF1;
+        border-color: #7E8EF1;
+        border-radius: 30px;
+        padding: 10px 20px;
     }
 }
+
+@media (min-width: 1024px) {
+    .register-box {
+        width: 600px;
+    }
+
+    .login-btn {
+        width: 200px;
+    }
+}
+.col-lg-6 img {
+    width: 80%;
+    height: 100%;
+    object-fit: cover;
+}
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+
+    .container > div {
+        flex: 1 1 300px;
+        margin: 10px;
+    }
