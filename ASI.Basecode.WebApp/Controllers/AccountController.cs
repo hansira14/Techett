@@ -287,6 +287,10 @@ namespace ASI.Basecode.WebApp.Controllers
                 return Json(new { success = false, message = Resources.Messages.Errors.ServerError });
             }
         }
+        public IActionResult Settings()
+        {
+            return View();
+        }
     }
 }
 

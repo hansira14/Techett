@@ -34,7 +34,7 @@
         </li>
 
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Settings" ? "active" : "")">
-            <a href="#">
+            <a a asp-controller="Account" asp-action="Settings">
                 <i class="fa-solid fa-gear sidebar-icon"></i> <!-- Added class here -->
                 <span>Settings</span>
             </a>
