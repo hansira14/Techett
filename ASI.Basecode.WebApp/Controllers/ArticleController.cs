@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.WebApp.Mvc;
 using AutoMapper;
@@ -58,12 +60,23 @@ public class ArticleController : ControllerBase<ArticleController>
     [HttpPost]
     public IActionResult Create(ArticleViewModel model)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage);
+            return Json(new { success = false, message = string.Join(", ", errors) });
+        }
+
+        try
         {
             _articleService.CreateArticle(model, GetCurrentUserId());
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
         }
-        return View(model);
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
     }
 
     [HttpGet]
@@ -80,28 +93,56 @@ public class ArticleController : ControllerBase<ArticleController>
     [HttpPost]
     public IActionResult Edit(ArticleViewModel model)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage);
+            return Json(new { success = false, message = string.Join(", ", errors) });
+        }
+
+        try
         {
             var userId = GetCurrentUserId();
-            // Create version before updating
-            _articleVersionService.CreateArticleVersion(model.ArticleId, model.Title, model.Content, userId);
-            // Update article
+            var originalArticle = _articleService.GetArticleById(model.ArticleId);
+            
+            _articleVersionService.CreateArticleVersion(
+                model.ArticleId, 
+                originalArticle.Title, 
+                originalArticle.Content, 
+                userId);
+
             _articleService.UpdateArticle(model, userId);
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
         }
-        return View(model);
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
     }
 
     [HttpDelete]
+    [Route("Article/Delete/{id}")]
     public IActionResult Delete(int id)
     {
-        _articleService.DeleteArticle(id);
-        return RedirectToAction(nameof(Index));
+        try 
+        {
+            _articleService.DeleteArticle(id);
+            return Json(new { success = true });
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
     }
 
     private int GetCurrentUserId()
     {
-        // Implement getting current user ID from session/claims
-        return 1; // Temporary return value
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+        if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+        {
+            return userId;
+        }
+        throw new UnauthorizedAccessException("User is not authenticated");
     }
 }

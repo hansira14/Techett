@@ -2,6 +2,7 @@ using System.Linq;
 using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
 using Basecode.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASI.Basecode.Data.Repositories;
 
@@ -23,7 +24,9 @@ public class ArticleVersionRepository : BaseRepository, IArticleVersionRepositor
     }
     public ArticleVersion GetArticleVersionById(int versionId)
     {
-        return this.GetDbSet<ArticleVersion>().Find(versionId);
+        return this.GetDbSet<ArticleVersion>()
+            .Include(v => v.VersionedByNavigation)
+            .FirstOrDefault(v => v.VersionId == versionId);
     }
     public void DeleteArticleVersion(ArticleVersion version)    
     {

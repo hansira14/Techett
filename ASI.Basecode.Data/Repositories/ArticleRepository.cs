@@ -2,6 +2,7 @@ using System.Linq;
 using ASI.Basecode.Data.Interfaces;
 using Basecode.Data.Repositories;
 using ASI.Basecode.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASI.Basecode.Data.Repositories;
 
@@ -30,7 +31,9 @@ public class ArticleRepository : BaseRepository, IArticleRepository
     }
     public Article GetArticleById(int id)
     {
-        return this.GetDbSet<Article>().Find(id);
+        return this.GetDbSet<Article>()
+            .Include(a => a.CreatedByNavigation)
+            .FirstOrDefault(a => a.ArticleId == id);
     }
     public void DeleteArticle(Article article)
     {

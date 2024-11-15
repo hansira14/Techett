@@ -4,6 +4,7 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASI.Basecode.Services.Services;
 
@@ -21,7 +22,8 @@ public class ArticleVersionService : IArticleVersionService
 
     public IEnumerable<ArticleVersionViewModel> GetArticleVersions(int articleId)
     {
-        var versions = _articleVersionRepository.GetArticleVersions(articleId);
+        var versions = _articleVersionRepository.GetArticleVersions(articleId)
+            .Include(v => v.VersionedByNavigation);
         return _mapper.Map<IEnumerable<ArticleVersionViewModel>>(versions);
     }
 
@@ -36,4 +38,10 @@ public class ArticleVersionService : IArticleVersionService
         };
         _articleVersionRepository.AddArticleVersion(version);
     }
+
+    public ArticleVersion GetVersionById(int versionId) 
+    {
+        return _articleVersionRepository.GetArticleVersionById(versionId);
+    }
+    
 }

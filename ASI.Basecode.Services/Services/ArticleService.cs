@@ -32,7 +32,6 @@ public class ArticleService : IArticleService
         }
         catch (Exception ex)
         {
-            // Add proper logging here
             throw;
         }
     }
