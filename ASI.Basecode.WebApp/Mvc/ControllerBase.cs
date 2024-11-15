@@ -149,5 +149,14 @@ namespace ASI.Basecode.WebApp.Mvc
 
             this._logger.LogError(logContent.ToString());
         }
+        public int GetCurrentUserId()
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return userId;
+            }
+            throw new UnauthorizedAccessException("User is not authenticated");
+        }   
     }
 }

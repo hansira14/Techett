@@ -58,7 +58,8 @@ public class ArticleVersionController : ControllerBase<ArticleVersionController>
     {
         try
         {
-            //_articleVersionService.RestoreVersion(versionId);
+            var userId = GetCurrentUserId();
+            _articleVersionService.RestoreVersion(versionId, userId);
             return Json(new { success = true });
         }
         catch (Exception ex)
