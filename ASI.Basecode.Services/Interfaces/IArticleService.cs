@@ -6,7 +6,7 @@ public interface IArticleService
 {
     IEnumerable<ArticleViewModel> GetAllArticles();
     ArticleViewModel GetArticleById(int id);
-    void CreateArticle(ArticleViewModel model, int userId);
+    int CreateArticle(ArticleViewModel model, int userId);
     void UpdateArticle(ArticleViewModel model, int userId);
     void DeleteArticle(int id);
 }

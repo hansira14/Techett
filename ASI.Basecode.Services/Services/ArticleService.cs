@@ -42,12 +42,13 @@ public class ArticleService : IArticleService
         return _mapper.Map<ArticleViewModel>(article);
     }
 
-    public void CreateArticle(ArticleViewModel model, int userId)
+    public int CreateArticle(ArticleViewModel model, int userId)
     {
         var article = _mapper.Map<Article>(model);
         article.CreatedBy = userId;
         article.CreatedOn = DateTime.Now;
         _articleRepository.AddArticle(article);
+        return article.ArticleId;
     }
 
     public void UpdateArticle(ArticleViewModel model, int userId)

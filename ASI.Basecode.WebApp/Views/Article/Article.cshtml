@@ -13,6 +13,19 @@
             @Model.Article.Content
         </div>
 
+        <div class="attachments-section mt-4">
+            <h4>Attachments</h4>
+            <div class="mb-3">
+                <input type="file" id="attachmentInput" class="d-none" multiple />
+                <button class="btn btn-primary btn-sm" onclick="$('#attachmentInput').click()">
+                    <i class="fas fa-plus"></i> Add Attachments
+                </button>
+            </div>
+            <div id="attachmentsList">
+                <!-- Attachments will be loaded here -->
+            </div>
+        </div>
+
         <div class="article-actions mt-3">
             <button type="button" class="btn btn-primary" onclick="toggleEditMode()">Edit</button>
             <a asp-action="Index" class="btn btn-secondary">Back to List</a>
@@ -167,5 +180,105 @@
                 });
             }
         }
+
+        function loadAttachments() {
+            $.get('/ArticleAttachment/GetArticleAttachments', { articleId: @Model.Article.ArticleId }, function(attachments) {
+                var html = '';
+                attachments.forEach(function(attachment) {
+                    const isImage = attachment.filetype.startsWith('image/');
+                    
+                    html += `
+                        <div class="attachment-item mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    ${isImage ? 
+                                        `<div class="mr-3">
+                                            <img src="${attachment.source}" alt="${attachment.filename}" 
+                                                 style="max-width: 150px; max-height: 150px; object-fit: contain;" 
+                                                 class="img-thumbnail"/>
+                                        </div>` : 
+                                        `<i class="fas fa-paperclip mr-2"></i>`
+                                    }
+                                    <div>
+                                        <a href="${attachment.source}" target="_blank" class="text-decoration-none">
+                                            ${attachment.filename}
+                                        </a>
+                                        <small class="text-muted d-block">${formatFileSize(attachment.filesize)}</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-danger btn-sm" onclick="deleteAttachment(${attachment.attachmentId})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                $('#attachmentsList').html(html || '<p>No attachments</p>');
+            });
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        $('#attachmentInput').change(function(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                const formData = new FormData();
+                formData.append('articleId', @Model.Article.ArticleId);
+                
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('file', files[i]);
+                }
+
+                $.ajax({
+                    url: '/ArticleAttachment/Upload',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            loadAttachments();
+                            $(this).val('');
+                        } else {
+                            toastr.error(response.message || 'Failed to upload attachment');
+                        }
+                    },
+                    error: function() {
+                        toastr.error('An error occurred while uploading the attachment');
+                    }
+                });
+            }
+        });
+
+        function deleteAttachment(attachmentId) {
+            if (confirm('Are you sure you want to delete this attachment?')) {
+                $.ajax({
+                    url: '/ArticleAttachment/Delete',
+                    type: 'POST',
+                    data: { attachmentId: attachmentId },
+                    success: function(response) {
+                        if (response.success) {
+                            loadAttachments();
+                        } else {
+                            toastr.error(response.message || 'Failed to delete attachment');
+                        }
+                    },
+                    error: function() {
+                        toastr.error('An error occurred while deleting the attachment');
+                    }
+                });
+            }
+        }
+
+        // Call loadAttachments when the page loads
+        $(document).ready(function() {
+            loadAttachments();
+        });
     </script>
 }

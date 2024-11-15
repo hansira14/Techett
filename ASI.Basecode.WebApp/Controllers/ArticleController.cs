@@ -15,16 +15,19 @@ public class ArticleController : ControllerBase<ArticleController>
 {
     private readonly IArticleService _articleService;
     private readonly IArticleVersionService _articleVersionService;
+    private readonly IArticleAttachmentService _articleAttachmentService;
 
     public ArticleController(IHttpContextAccessor httpContextAccessor,
                            ILoggerFactory loggerFactory,
                            IConfiguration configuration,
                            IMapper mapper,
                            IArticleService articleService,
-                           IArticleVersionService articleVersionService) : base(httpContextAccessor, loggerFactory, configuration, mapper)
+                           IArticleVersionService articleVersionService,
+                           IArticleAttachmentService articleAttachmentService) : base(httpContextAccessor, loggerFactory, configuration, mapper)
     {
         _articleService = articleService;
         _articleVersionService = articleVersionService;
+        _articleAttachmentService = articleAttachmentService;
     }
 
     public IActionResult Index()
@@ -58,7 +61,7 @@ public class ArticleController : ControllerBase<ArticleController>
     }
 
     [HttpPost]
-    public IActionResult Create(ArticleViewModel model)
+    public IActionResult Create([FromForm] ArticleViewModel model, List<IFormFile> attachments)
     {
         if (!ModelState.IsValid)
         {
@@ -70,7 +73,18 @@ public class ArticleController : ControllerBase<ArticleController>
 
         try
         {
-            _articleService.CreateArticle(model, GetCurrentUserId());
+            var userId = GetCurrentUserId();
+            var articleId = _articleService.CreateArticle(model, userId);
+
+            // Process attachments if any
+            if (attachments != null && attachments.Any())
+            {
+                foreach (var file in attachments)
+                {
+                    _articleAttachmentService.AddAttachment(file, articleId, userId);
+                }
+            }
+
             return Json(new { success = true });
         }
         catch (Exception ex)
