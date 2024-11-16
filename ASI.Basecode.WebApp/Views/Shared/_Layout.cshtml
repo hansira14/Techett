@@ -1,4 +1,6 @@
-﻿@using static ASI.Basecode.Resources.Views.Screen
+﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using static ASI.Basecode.Resources.Views.Screen
 
 <!DOCTYPE html>
 <html lang="en">
@@ -30,29 +32,31 @@
         </main>
     </div>*@
     @{
-        var userRole = Context.Session.GetString("UserRole");
-        var isLoginOrRegister = ViewContext.RouteData.Values["Controller"].ToString() == "Account" &&
-        (ViewContext.RouteData.Values["Action"].ToString() == "Login" || ViewContext.RouteData.Values["Action"].ToString() == "Register");
+        var isLoginOrRegister = false;
+        var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+        if (ViewContext.RouteData.Values["Controller"]?.ToString() == "Account" && 
+            ViewContext.RouteData.Values["Action"]?.ToString() is string action)
+        {
+            isLoginOrRegister = action.Equals("Login", StringComparison.OrdinalIgnoreCase) || 
+                               action.Equals("Register", StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     @if (!isLoginOrRegister)
     {
-        switch (userRole)
+        switch (userRole?.ToUpperInvariant())
         {
-            case "superadmin":
-                @Html.Partial("_AdminSidebar")
+            case "SUPERADMIN":
+            case "ADMIN":
+                @await Html.PartialAsync("_AdminSidebar")
                 break;
-            case "admin":
-                @Html.Partial("_AdminSidebar")
-                break;
-            case "agent":
-                @Html.Partial("_UserSidebar")
-                break;
-            case "user":
-                @Html.Partial("_UserSidebar")
+            case "AGENT":
+            case "USER":
+                @await Html.PartialAsync("_UserSidebar")
                 break;
             default:
-                @Html.Partial("_AdminSidebar")
+                <script>window.location.href = '@Url.Action("Login", "Account")';</script>
                 break;
         }
     }
