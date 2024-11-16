@@ -291,6 +291,10 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             return View();
         }
+        public IActionResult AboutUs()
+        {
+            return View();
+        }
     }
 }
 
