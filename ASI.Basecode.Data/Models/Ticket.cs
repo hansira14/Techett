@@ -28,6 +28,7 @@ namespace ASI.Basecode.Data.Models
         public DateTime? DueDate { get; set; }
         public DateTime? ResolvedOn { get; set; }
         public int? ResolvedBy { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public virtual User CreatedByNavigation { get; set; }
         public virtual User ResolvedByNavigation { get; set; }
