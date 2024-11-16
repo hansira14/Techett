@@ -1,0 +1,157 @@
+﻿
+@{
+    ViewData["Title"] = "About Us - Help Desk Ticketing System";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
+
+<div class="py-2 px-0 bg-absolute flex items-center sticky top-0 left-0 right-0 z-30">
+    <ul class="flex items-center text-sm m-0">
+        <li class="mr-2">
+            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">A B O U T   U S</a>
+        </li>
+    </ul>
+    <ul class="ml-auto flex items-center">
+        <button type="button" class="dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600 mr-4">
+            <i class="ri-notification-3-line"></i>
+        </button>
+        <div class="dropdown-menu shadow-md shadow-black/5 z-30 max-w-xs w-full bg-white rounded-md border border-gray-100">
+            <div class="flex items-center px-4 pt-4 border-b border-b-gray-100 notification-tab">
+                <button type="button" data-tab="notification" data-tab-page="notifications" class="text-gray-400 font-medium text-[13px] hover:text-gray-600 border-b-2 border-b-transparent mr-4 pb-1 active">Notifications</button>
+            </div>
+            <div class="my-2">
+                <ul class="max-h-64 overflow-y-auto" data-tab-for="notification" data-page="notifications">
+                    <li>
+                        <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
+                            <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
+                            <div class="ml-2">
+                                <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">New issue</div>
+                                <div class="text-[11px] text-gray-400">from a user</div>
+                            </div>
+                        </a>
+                        <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
+                            <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
+                            <div class="ml-2">
+                                <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">New issue</div>
+                                <div class="text-[11px] text-gray-400">from a user</div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- Profile Section -->
+        <div class="flex items-center">
+            <!-- User Name and Settings -->
+            <div class="text-left mr-1">
+                <div class="text-gray-800 font-regular text-xs">admin admin</div>
+            </div>
+
+            <!-- Profile Picture -->
+            <img src="https://placehold.co/32x32" alt="Profile" class="w-10 h-10 rounded-md object-cover" />
+        </div>
+    </ul>
+</div>
+
+<div class="grid grid-cols-1 gap-6 pb-6 w-full">
+    <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-2">
+        <div class="bg-gradient-to-b from-gray-50 to-white">
+            <div class="container mx-auto px-4 py-16">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">Your Trusted Help Desk Solution</h1>
+                    <p class="text-xl text-gray-600 mb-8">Streamlining support operations and enhancing customer satisfaction through efficient ticket management.</p>
+                </div>
+            </div>
+
+            <!-- Mission Section -->
+            <div class="container mx-auto px-4 py-16">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="order-2 md:order-1">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
+                        <p class="text-gray-600 mb-4">We strive to provide the most efficient and user-friendly help desk solution that empowers organizations to deliver exceptional customer support.</p>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-600">Streamlined ticket management</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-600">24/7 customer support</span>
+                            </li>
+                    
+                        </ul>
+                    </div>
+                    <div class="order-1 md:order-2">
+                        <img src="/placeholder.svg?height=400&width=600" alt="Help Desk Mission" class="rounded-lg shadow-xl">
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Team Section -->
+            <div class="container mx-auto px-5 py-16">
+                <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Meet Our Team</h2>
+                <div class="grid md:grid-cols-4 gap-8">
+                    <div class="text-center">
+                        <img src="/placeholder.svg?height=200&width=200" alt="Team Member" class="w-32 h-32 rounded-full mx-auto mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Neil Frans Dela Cerna</h3>
+                        <p class="text-gray-600">CEO & Founder</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="/placeholder.svg?height=200&width=200" alt="Team Member" class="w-32 h-32 rounded-full mx-auto mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Ira Hans Dedicatoria</h3>
+                        <p class="text-gray-600">Head of Support</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="/placeholder.svg?height=200&width=200" alt="Team Member" class="w-32 h-32 rounded-full mx-auto mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Angel Rose Comajes</h3>
+                        <p class="text-gray-600">Lead Developer</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="/placeholder.svg?height=200&width=200" alt="Team Member" class="w-32 h-32 rounded-full mx-auto mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Vanessa Cosep</h3>
+                        <p class="text-gray-600">Customer Success</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="/placeholder.svg?height=200&width=200" alt="Team Member" class="w-32 h-32 rounded-full mx-auto mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Vanessa Cosep</h3>
+                        <p class="text-gray-600">Jam Cotejo</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div class="bg-gray-50 py-16">
+                <div class="container mx-auto px-4 text-center">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-8">Ready to Get Started?</h2>
+                    <p class="text-xl text-gray-600 mb-8">Contact us today to learn how our help desk solution can transform your customer support.</p>
+                    <div class="flex justify-center gap-4">
+                        <a href="#" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                            Contact Us
+                        </a>
+                        <a href="#" class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Request Demo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        transition: background-color 0.4s ease;
+    }
+</style>
