@@ -39,7 +39,11 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h3>@Model.Title</h3>
                             <div>
-                                <button class="btn btn-primary" onclick="editMode()">Edit</button>
+                                @if (Model.Status != "Resolved")
+                                {
+                                    <button class="btn btn-success" onclick="markAsResolved()">Mark as Resolved</button>
+                                    <button class="btn btn-primary" onclick="editMode()">Edit</button>
+                                }
                                 <a href="/Ticket" class="btn btn-secondary">Back to List</a>
                             </div>
                         </div>
@@ -129,12 +133,15 @@
         <div class="card mt-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h4>Attachments</h4>
-                <div>
-                    <input type="file" id="attachmentInput" class="d-none" multiple />
-                    <button class="btn btn-primary btn-sm" onclick="$('#attachmentInput').click()">
-                        <i class="fas fa-plus"></i> Add Attachments
-                    </button>
-                </div>
+                @if (Model.Status != "Resolved")
+                {
+                    <div>
+                        <input type="file" id="attachmentInput" class="d-none" multiple />
+                        <button class="btn btn-primary btn-sm" onclick="$('#attachmentInput').click()">
+                            <i class="fas fa-plus"></i> Add Attachments
+                        </button>
+                    </div>
+                }
             </div>
             <div class="card-body">
                 <div id="attachmentsList">
@@ -240,6 +247,12 @@
             loadAttachments();
 
             $('#attachmentInput').change(function(e) {
+                if ('@Model.Status' === 'Resolved') {
+                    toastr.error('Cannot add attachments to resolved tickets');
+                    $(this).val('');
+                    return;
+                }
+                
                 const files = e.target.files;
                 if (files.length > 0) {
                     const formData = new FormData();
@@ -361,6 +374,11 @@
         }
 
         function deleteAttachment(attachmentId) {
+            if ('@Model.Status' === 'Resolved') {
+                toastr.error('Cannot delete attachments for resolved tickets');
+                return;
+            }
+            
             if (confirm('Are you sure you want to delete this attachment?')) {
                 $.ajax({
                     url: '/Attachment/Delete',
@@ -375,6 +393,34 @@
                     },
                     error: function() {
                         toastr.error('An error occurred while deleting the attachment');
+                    }
+                });
+            }
+        }
+
+        function markAsResolved() {
+            if (confirm('Are you sure you want to mark this ticket as resolved?')) {
+                $.ajax({
+                    url: '/Ticket/EditTicket',
+                    type: 'POST',
+                    data: {
+                        TicketId: @Model.TicketId,
+                        Title: '@Model.Title',
+                        Content: '@Model.Content',
+                        Category: '@Model.Category',
+                        Priority: '@Model.Priority',
+                        Status: 'Resolved'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            loadUpdates();
+                            location.reload();
+                        } else {
+                            toastr.error(response.message || 'Failed to resolve ticket');
+                        }
+                    },
+                    error: function() {
+                        toastr.error('An error occurred while resolving the ticket');
                     }
                 });
             }
