@@ -206,6 +206,9 @@
                     `;
                 });
                 $('#commentsList').html(html);
+                // Scroll to bottom of comments list after loading
+                var commentsList = document.getElementById('commentsList');
+                commentsList.scrollTop = commentsList.scrollHeight;
             });
         }
 

@@ -18,6 +18,7 @@ namespace ASI.Basecode.Data
         }
 
         public virtual DbSet<Article> Articles { get; set; }
+        public virtual DbSet<ArticleAttachment> ArticleAttachments { get; set; }
         public virtual DbSet<ArticleVersion> ArticleVersions { get; set; }
         public virtual DbSet<Assignment> Assignments { get; set; }
         public virtual DbSet<Attachment> Attachments { get; set; }
@@ -56,6 +57,10 @@ namespace ASI.Basecode.Data
                     .HasColumnName("createdOn")
                     .HasDefaultValueSql("(getdate())");
 
+                entity.Property(e => e.IsDeleted)
+                    .HasColumnName("isDeleted")
+                    .HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.Title)
                     .IsRequired()
                     .HasMaxLength(200)
@@ -66,6 +71,53 @@ namespace ASI.Basecode.Data
                     .HasForeignKey(d => d.CreatedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Articles__create__3A4CA8FD");
+            });
+
+            modelBuilder.Entity<ArticleAttachment>(entity =>
+            {
+                entity.HasKey(e => e.AttachmentId)
+                    .HasName("PK__ArticleA__C417BDA1643FE328");
+
+                entity.ToTable("ArticleAttachment");
+
+                entity.Property(e => e.AttachmentId).HasColumnName("attachmentID");
+
+                entity.Property(e => e.ArticleId).HasColumnName("articleID");
+
+                entity.Property(e => e.Filename)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .HasColumnName("filename");
+
+                entity.Property(e => e.Filesize).HasColumnName("filesize");
+
+                entity.Property(e => e.Filetype)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnName("filetype");
+
+                entity.Property(e => e.Source)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .HasColumnName("source");
+
+                entity.Property(e => e.UploadedBy).HasColumnName("uploadedBy");
+
+                entity.Property(e => e.UploadedOn)
+                    .HasColumnName("uploadedOn")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.HasOne(d => d.Article)
+                    .WithMany(p => p.ArticleAttachments)
+                    .HasForeignKey(d => d.ArticleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__ArticleAt__artic__76619304");
+
+                entity.HasOne(d => d.UploadedByNavigation)
+                    .WithMany(p => p.ArticleAttachments)
+                    .HasForeignKey(d => d.UploadedBy)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__ArticleAt__uploa__7755B73D");
             });
 
             modelBuilder.Entity<ArticleVersion>(entity =>
@@ -390,6 +442,10 @@ namespace ASI.Basecode.Data
                     .IsRequired()
                     .HasColumnName("isActive")
                     .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.IsDeleted)
+                    .HasColumnName("isDeleted")
+                    .HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.Priority).HasColumnName("priority");
 

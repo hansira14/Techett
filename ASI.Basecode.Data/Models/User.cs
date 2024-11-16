@@ -7,6 +7,7 @@ namespace ASI.Basecode.Data.Models
     {
         public User()
         {
+            ArticleAttachments = new HashSet<ArticleAttachment>();
             ArticleVersions = new HashSet<ArticleVersion>();
             Articles = new HashSet<Article>();
             AssignmentAssignedByNavigations = new HashSet<Assignment>();
@@ -42,6 +43,7 @@ namespace ASI.Basecode.Data.Models
         public virtual User CreatedByNavigation { get; set; }
         public virtual Team Team { get; set; }
         public virtual User UpdatedByNavigation { get; set; }
+        public virtual ICollection<ArticleAttachment> ArticleAttachments { get; set; }
         public virtual ICollection<ArticleVersion> ArticleVersions { get; set; }
         public virtual ICollection<Article> Articles { get; set; }
         public virtual ICollection<Assignment> AssignmentAssignedByNavigations { get; set; }

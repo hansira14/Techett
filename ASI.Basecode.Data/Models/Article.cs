@@ -7,6 +7,7 @@ namespace ASI.Basecode.Data.Models
     {
         public Article()
         {
+            ArticleAttachments = new HashSet<ArticleAttachment>();
             ArticleVersions = new HashSet<ArticleVersion>();
         }
 
@@ -15,8 +16,10 @@ namespace ASI.Basecode.Data.Models
         public string Content { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public virtual User CreatedByNavigation { get; set; }
+        public virtual ICollection<ArticleAttachment> ArticleAttachments { get; set; }
         public virtual ICollection<ArticleVersion> ArticleVersions { get; set; }
     }
 }
