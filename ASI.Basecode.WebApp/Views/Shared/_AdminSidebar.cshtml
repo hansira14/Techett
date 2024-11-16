@@ -1,4 +1,4 @@
-﻿<div class="sidebar">
+﻿﻿<div class="sidebar">
     <div class="logo">
         <img id="logo-img" src="~/img/logo-light.png" alt="Logo" />
     </div>
@@ -34,27 +34,28 @@
         </li>
 
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Settings" ? "active" : "")">
-            <a href="#">
+            <a asp-controller="Account" asp-action="Settings">
                 <i class="fa-solid fa-gear sidebar-icon"></i> <!-- Added class here -->
                 <span>Settings</span>
             </a>
         </li>
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "About" ? "active" : "")">
-            <a href="#">
+            <a asp-controller="Account" asp-action="AboutUs">
                 <i class="fa-solid fa-list sidebar-icon"></i> <!-- Added class here -->
                 <span>About Us</span>
             </a>
         </li>
     </ul>
-
     <div class="signout">
-        <a id="logoutButton" asp-action="SignOutUser" asp-controller="Account">
-            <i class="fas fa-sign-out-alt sidebar-icon"></i> <!-- Added class here -->
-            <span>Logout @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
-        </a>
+        <form id="logoutForm" asp-action="SignOutUser" asp-controller="Account" method="post">
+            <button type="submit" id="logoutButton" class="btn">
+                <i class="fas fa-sign-out-alt sid    ebar-icon"></i>
+                <span>Logout @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
+            </button>
+        </form>
     </div>
 
-</div>
+</div>    
 <script>
     document.getElementById("logoutButton").addEventListener("click", function (event) {
         event.preventDefault(); // Prevent the default action
@@ -64,6 +65,7 @@
         // Redirect to the login page after a brief delay (optional)
         setTimeout(function () {
             window.location.href = "/Account/Login"; // Adjust the URL as needed
+            document.getElementById("logoutForm").submit();
         }, 200); // Delay in milliseconds
     });
 
