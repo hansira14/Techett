@@ -18,42 +18,90 @@
         </li>
     </ul>
     <ul class="ml-auto flex items-center">
-        <button type="button" class="dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600 mr-4">
-            <i class="ri-notification-3-line"></i>
-        </button>
-        <div class="dropdown-menu shadow-md shadow-black/5 z-30 max-w-xs w-full bg-white rounded-md border border-gray-100">
-            <div class="flex items-center px-4 pt-4 border-b border-b-gray-100 notification-tab">
-                <button type="button" data-tab="notification" data-tab-page="notifications" class="text-gray-400 font-medium text-[13px] hover:text-gray-600 border-b-2 border-b-transparent mr-4 pb-1 active">Notifications</button>
+        <div class="relative">
+            <div class="notification">
+                <button alt="notification" class="notifs hover-pointer dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600 mr-4">
+                    <i class="ri-notification-3-line"></i>
+                </button>
             </div>
-            <div class="my-2">
-                <ul class="max-h-64 overflow-y-auto" data-tab-for="notification" data-page="notifications">
-                    <li>
-                        <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                            <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
-                            <div class="ml-2">
-                                <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">New issue</div>
-                                <div class="text-[11px] text-gray-400">from a user</div>
+            <div class="dropdown">
+                <div class="container py-4 max-h-140 overflow-y-auto bg-white shadow-lg rounded-lg absolute right-0 mt-2">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0">Earlier</h5>
+                        <a href="#" class="text-primary text-decoration-none">See all</a>
+                    </div>
+
+                    <div class="list-group">
+                        <!-- Friend Request Acceptance -->
+                        <div class="list-group-item border-0 d-flex align-items-center gap-3">
+                            <div class="position-relative">
+                                <img src="/placeholder.svg?height=40&width=40" class="rounded-circle" width="40" height="40" alt="Profile picture">
+                                <div class="position-absolute bottom-0 end-0 bg-primary rounded-circle p-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="white" viewBox="0 0 16 16">
+                                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                                    </svg>
+                                </div>
                             </div>
-                        </a>
-                        <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                            <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
-                            <div class="ml-2">
-                                <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">New issue</div>
-                                <div class="text-[11px] text-gray-400">from a user</div>
+                            <div class="flex-grow-1">
+                                <p class="mb-0"><strong>Jid Cotejo</strong> accepted your friend request.</p>
+                                <small class="text-muted">12h</small>
                             </div>
-                        </a>
-                    </li>
-                </ul>
+                        </div>
+
+                        <!-- Education Update -->
+                        <div class="list-group-item border-0 d-flex align-items-center gap-3">
+                            <div class="position-relative">
+                                <img src="/placeholder.svg?height=40&width=40" class="rounded-circle" width="40" height="40" alt="Profile picture">
+                                <div class="position-absolute bottom-0 end-0 bg-primary rounded-circle p-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="white" viewBox="0 0 16 16">
+                                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <p class="mb-0"><strong>André Erasmo</strong> is at <strong>Cebu Institute of Technology - University</strong> with <strong>Justine Jam Cotejo</strong></p>
+                                <div class="d-flex align-items-center gap-2">
+                                    <small class="text-muted">13h</small>
+                                    <small class="text-muted">42 reactions</small>
+                                    <small class="text-muted">1 comment</small>
+                                </div>
+                            </div>
+                            <div class="text-primary">•</div>
+                        </div>
+
+                        <!-- Story Views -->
+                        <div class="list-group-item border-0 d-flex align-items-center gap-3">
+                            <div class="position-relative">
+                                <img src="/placeholder.svg?height=40&width=40" class="rounded" width="40" height="40" alt="Story thumbnail">
+                            </div>
+                            <div class="flex-grow-1">
+                                <p class="mb-0">Your last story got 415 views before it expired. You can create a new story.</p>
+                                <small class="text-muted">2d</small>
+                            </div>
+                        </div>
+
+                        <!-- Featured List -->
+                        <div class="list-group-item border-0 d-flex align-items-center gap-3">
+                            <div class="position-relative">
+                                <img src="/placeholder.svg?height=40&width=40" class="rounded-circle" width="40" height="40" alt="Profile picture">
+                            </div>
+                            <div class="flex-grow-1">
+                                <p class="mb-0">You're featured on <strong>Dennis E. Albiso</strong>'s public weekly engagement list.</p>
+                                <small class="text-muted">3d</small>
+                            </div>
+                            <div class="text-primary">•</div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-light w-100 mt-3">See previous notifications</button>
+                </div>
             </div>
         </div>
         <!-- Profile Section -->
         <div class="flex items-center">
-            <!-- User Name and Settings -->
             <div class="text-left mr-1">
-                <div class="text-gray-800 font-regular text-xs">admin admin</div>
+                <div class="text-gray-800 font-regular text-xs">@HttpContextAccessor.HttpContext.Session.GetString("UserName")</div>
             </div>
-
-            <!-- Profile Picture -->
             <img src="https://placehold.co/32x32" alt="Profile" class="w-10 h-10 rounded-md object-cover" />
         </div>
     </ul>
@@ -135,7 +183,7 @@
             </div>
             <div class="relative flex items-center ml-2">
                 <div class="create-now">
-                    <button id="addTicketButton" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out">
+                        <button type="button" id="addTicketButton" data-toggle="modal" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" data-target="#createTicketModal">
                         <i class="fas fa-plus"></i>
                     </button>
                 </div>
@@ -225,12 +273,53 @@
                         </tr>
                     }
 
-                </tbody>
+                </tbody>@*
+                <thead>
+                    <tr>
+                        <th class="text-[10px] tracking-wide font-medium text-gray-400 py-1 px-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Title</th>
+                        <th class="text-[10px] tracking-wide font-medium text-gray-400 py-1 px-2 bg-gray-50 text-left">Category</th>
+                        <th class="text-[10px] tracking-wide font-medium text-gray-400 py-1 px-2 bg-gray-50 text-left">Priority</th>
+                        <th class="text-[10px] tracking-wide font-medium text-gray-400 py-1 px-2 bg-gray-50 text-left">Status</th>
+                        <th class="text-[10px] tracking-wide font-medium text-gray-400 py-1 px-2 bg-gray-50 text-left">Created On</th>
+                        <th class="text-[10px] tracking-wide font-medium text-gray-400 py-1 px-2 bg-gray-50 text-left">Assigned To</th>
+                        <th class="text-[10px] tracking-wide font-medium text-gray-400 py-1 px-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ticket in Model)
+                    {
+                        <tr>
+                            <!-- Title -->
+                            <td class="py-1 px-2 text-[12px] text-gray-600 truncate">@ticket.Title</td>
+                            <!-- Category -->
+                            <td class="py-1 px-2 text-[12px] text-gray-600 truncate">@ticket.Category</td>
+                            <!-- Priority -->
+                            <td class="py-1 px-2 text-[12px] text-gray-600 truncate">@ticket.Priority</td>
+                            <!-- Status -->
+                            <td class="py-1 px-2 text-[12px] text-gray-600 truncate">@ticket.Status</td>
+                            <!-- Created On -->
+                            <td class="py-1 px-2 text-[12px] text-gray-600 truncate">@ticket.CreatedOn.ToString("g")</td>
+                            <!-- Assigned To -->
+                            <td class="py-1 px-2 text-[12px] text-gray-600 truncate">@ticket.AssignedToName "Unassigned"</td>
+                            <!-- Actions -->
+                            <td class="py-1 px-2 text-[12px]">
+                                <a asp-action="Details" asp-route-id="@ticket.TicketId" class="text-green-600 hover:text-green-900">Details</a>
+                                <button class="text-blue-600 hover:text-blue-900" onclick="editTicket(@ticket.TicketId)">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                <button class="text-red-600 hover:text-red-900" onclick="deleteTicket(@ticket.TicketId)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>*@
+
             </table>
         </div>
     </div>
 
-    <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md">
+    <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-1">
         <!-- Keep Articles normal width -->
         <div class="flex justify-between mb-4 items-start">
             <div class="font-medium uppercase">A r t i c l e s</div>
@@ -270,6 +359,218 @@
         </div>
     </div>
 </div>
+
+<!-- Create Ticket Modal -->
+<div class="modal fade" id="createTicketModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Ticket</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form id="createTicketForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="Title">Title</label>
+                        <input name="Title" id="Title" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="Content">Description</label>
+                        <textarea name="Content" id="Content" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="Category">Category</label>
+                        <select name="Category" id="Category" class="form-control" required>
+                            <option value="Bug">Bug</option>
+                            <option value="Feature">Feature Request</option>
+                            <option value="Support">Support</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Priority">Priority</label>
+                        <select name="Priority" id="Priority" class="form-control" required>
+                            <option value="1">Low</option>
+                            <option value="2">Medium</option>
+                            <option value="3">High</option>
+                            <option value="4">Critical</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Attachments</label>
+                        <input type="file" id="attachmentInput" class="form-control-file" multiple />
+                        <div id="attachmentsList" class="mt-2"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create Ticket</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            if (typeof $().modal === 'undefined') {
+                console.error('Bootstrap modal is not loaded');
+            } else {
+                console.log('Bootstrap modal is loaded correctly');
+            }
+
+            let pendingAttachments = [];
+
+            $('#attachmentInput').change(function (e) {
+                const files = e.target.files;
+                for (let i = 0; i < files.length; i++) {
+                    pendingAttachments.push(files[i]);
+                    displayPendingAttachment(files[i], pendingAttachments.length - 1);
+                }
+                $(this).val('');
+            });
+
+            function displayPendingAttachment(file, index) {
+                const html = `
+                            <div class="attachment-item d-flex justify-content-between align-items-center mb-2">
+                                <span>${file.name}</span>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="window.removePendingAttachment(${index})">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `;
+                $('#attachmentsList').append(html);
+            }
+
+            window.removePendingAttachment = function (index) {
+                pendingAttachments.splice(index, 1);
+                refreshPendingAttachments();
+            };
+
+            function refreshPendingAttachments() {
+                $('#attachmentsList').empty();
+                pendingAttachments.forEach((file, index) => {
+                    displayPendingAttachment(file, index);
+                });
+            }
+
+            $('#createTicketForm').submit(function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+
+                // Add each pending attachment to the form data
+                pendingAttachments.forEach(file => {
+                    formData.append('attachments', file);
+                });
+
+                $.ajax({
+                    url: '/Ticket/CreateTicket',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.success) {
+                            $('#createTicketModal').modal('hide');
+                            location.reload();
+                        } else {
+                            toastr.error(response.message || 'Failed to create ticket');
+                        }
+                    },
+                    error: function () {
+                        toastr.error('An error occurred while creating the ticket');
+                    }
+                });
+            });
+
+            window.showAssignModal = function (ticketId) {
+                $('#ticketId').val(ticketId);
+
+                // Load agents
+                $.get('/Assignment/GetAgents', function (agents) {
+                    var select = $('#AssignedTo');
+                    select.empty();
+                    agents.forEach(function (agent) {
+                        select.append($('<option></option>')
+                            .val(agent.userId)
+                            .text(agent.fname + ' ' + agent.lname));
+                    });
+
+                    $('#assignTicketModal').modal('show');
+                }).fail(function (error) {
+                    toastr.error('Failed to load agents');
+                });
+            };
+        });
+
+        function deleteTicket(id) {
+            if (confirm('Are you sure you want to delete this ticket?')) {
+                $.ajax({
+                    url: '/Ticket/DeleteTicket',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            toastr.error(response.message || 'Failed to delete ticket');
+                        }
+                    },
+                    error: function () {
+                        toastr.error('An error occurred while deleting the ticket');
+                    }
+                });
+            }
+        }
+
+        function editTicket(id) {
+            window.location.href = '/Ticket/Details/' + id;
+        }
+
+        $('#assignTicketForm').submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/Assignment/AssignTicket',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        $('#assignTicketModal').modal('hide');
+                        location.reload();
+                    } else {
+                        toastr.error(response.message || 'Failed to assign ticket');
+                    }
+                },
+                error: function () {
+                    toastr.error('An error occurred while assigning the ticket');
+                }
+            });
+        });
+
+        function removeAssignment() {
+            var ticketId = $('#ticketId').val();
+            if (confirm('Are you sure you want to remove the current assignment?')) {
+                $.ajax({
+                    url: '/Assignment/RemoveAssignment',
+                    type: 'POST',
+                    data: { ticketId: ticketId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#assignTicketModal').modal('hide');
+                            location.reload();
+                        } else {
+                            toastr.error(response.message || 'Failed to remove assignment');
+                        }
+                    },
+                    error: function () {
+                        toastr.error('An error occurred while removing the assignment');
+                    }
+                });
+            }
+        }
+    </script>
+}
 @*
 <div id="addTicketModal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
     <div class="modal-content bg-white w-1/3 rounded-lg shadow-lg relative p-8">
@@ -394,5 +695,11 @@
         justify-content: flex-start;
         align-items: flex-start;
         transition: background-color 0.4s ease;
+    }
+
+    .dropdown .container {
+        width: 300px;
+        max-height: 400px;
+        overflow-y: auto;
     }
 </style>

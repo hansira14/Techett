@@ -1,6 +1,7 @@
-﻿let dpicn = document.querySelector(".dpicn");
+﻿let notifs = document.querySelector(".notifs");
 let dropdown = document.querySelector(".dropdown");
 
-dpicn.addEventListener("click", () => {
+notifs.addEventListener("click", () => {
     dropdown.classList.toggle("dropdown-open");
 })
+
