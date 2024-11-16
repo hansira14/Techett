@@ -15,7 +15,7 @@ body {
 }
 /*-----------SIDEBAR REGION---------------*/
 .sidebar {
-    width: 250px;
+    width: 230px;
     height: 100vh;
     background-color: var(--white-color);
     position: fixed;
@@ -30,15 +30,27 @@ body {
     transition: width 0.3s ease;
     justify-content: space-between;
 }
+.sidebar-menu {
+    list-style: none; 
+    padding: 0;       
+    margin: 0;        
+}
+
+.sidebar-menu li {
+    list-style: none; 
+    margin: 0;        
+    padding: 0;       
+}
 
 .logo img {
-    width: 200px;
+    width: 180px;
     height: auto;
+    margin-bottom: 100px;
 }
 
 .sidebar-icon {
     margin-right: 10px;
-    font-size: 17px;
+    font-size: 15px;
     color: #161571;
 }
 
@@ -46,22 +58,23 @@ body {
     display: flex;
     align-items: center;
     align-content: center;
-    padding: 5px 10px;
+    padding: 5px 5px;
     color: var(--text-color);
     text-decoration: none;
-    width: auto;
-    height: 45px;
+    width: auto;  
+    height: 40px;
     margin: 10px 10px;
+    margin-top:30px;
     font-weight: 500;
     border-radius: 3px;
-    border-left: 10px solid #fff;
-    font-size: 18px;
+    border-left: 5px solid #fff;
+    font-size: 16px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .sidebar-menu li a:hover,
 .sidebar-menu li a.active {
-    border-left: 10px solid var(--violet-color);
+    border-left: 5px solid var(--violet-color);
     color: var(--blue-color);
 }
 
@@ -72,7 +85,7 @@ body {
 
 .sidebar-menu li.active a {
     background-color: #D1D7FF;
-    border-left: 10px solid var(--blue-color);
+    border-left: 5px solid var(--blue-color);
     color: var(--darviolet-color);
     font-weight: 600;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
@@ -80,14 +93,14 @@ body {
 
 .sidebar-menu li.active a:hover {
     background-color: #D1D7FF;
-    border-left: 10px solid var(--blue-color);
+    border-left: 5px solid var(--blue-color);
     color: var(--blue-color);
     font-weight: 600;
 }
 
 .sidebar-submenu {
     list-style: none;
-    margin-left: 35px;
+    margin-left: 25px;
     display: none;
     border-left: 2px solid var(--grey-color);
     background-color: none;
@@ -95,8 +108,8 @@ body {
 }
 
 .sidebar-submenu li a {
-    font-size: 12px;
-    height: 30px;
+    font-size: 11px;
+    height: 25px;
     text-decoration: none;
     display: block;
 }
@@ -115,8 +128,8 @@ body {
 }
 
 .dropdown-arrow {
-    margin-left: 50px;
-    font-size: 15px;
+    margin-left: 40px;
+    font-size: 14px;
     transition: transform 0.3s ease;
 }
 
@@ -126,7 +139,7 @@ body {
     text-align: start;
     margin-top: auto;
     color: #161571;
-    font-size: 18px;
+    font-size: 16px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
     border-radius: 3px;
 }
@@ -139,19 +152,19 @@ body {
 .signout a {
     display: flex;
     align-items: center;
-    padding-left: 10px;
+    padding-left: 8px;
     text-decoration: none;
-    height: 45px;
+    height: 40px;
     font-weight: 500;
     border-radius: 3px;
-    border-left: 10px solid var(--white-color);
+    border-left: 5px solid var(--white-color);
     width: auto;
     color: var(--darkviolet-color);
 }
 
 .signout a:hover {
     color: red;
-    border-left: 10px solid red;
+    border-left: 5px solid red;
 }
 
 .signout a:hover .sidebar-icon {
@@ -159,7 +172,7 @@ body {
 }
 
 .signout i {
-    margin-right: 10px;
+    margin-right: 8px;
 }
 
 /*---------------SIDEBAR ENDREGION--------------*/
