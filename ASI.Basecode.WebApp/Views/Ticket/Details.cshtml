@@ -1,137 +1,146 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model ASI.Basecode.Services.ServiceModels.TicketViewModel
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
 
-<div class="container mt-4">
-    <div class="row">
-        <!-- Left side - Comments -->
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Comments</h4>
-                </div>
-                <div class="card-body">
-                    <div id="commentsList" class="comments-list" style="max-height: 600px; overflow-y: auto;">
-                        <!-- Comments will be loaded here -->
-                    </div>
-                    <div class="mt-3">
-                        <form id="addCommentForm">
-                            <input type="hidden" name="TicketId" value="@Model.TicketId" />
-                            <div class="form-group">
-                                <textarea name="Comment" class="form-control" rows="3" placeholder="Add a comment..." required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Right side - Ticket Details -->
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3>@Model.Title</h3>
-                    <div>
-                        <button class="btn btn-primary" onclick="editMode()">Edit</button>
-                        <a href="/Ticket" class="btn btn-secondary">Back to List</a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div id="viewMode">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><strong>Status:</strong> @Model.Status</p>
-                                <p><strong>Priority:</strong> @Model.Priority</p>
-                                <p><strong>Category:</strong> @Model.Category</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Created On:</strong> @Model.CreatedOn.ToString("g")</p>
-                                <p><strong>Created By:</strong> @Model.CreatedByName</p>
-                                @if (Model.ResolvedOn.HasValue)
-                                {
-                                    <p><strong>Resolved On:</strong> @Model.ResolvedOn.Value.ToString("g")</p>
-                                }
-                            </div>
+<div class="grid grid-cols-1 gap-6 mb-6 h-screen w-full overflow-hidden" @*style="border: 2px solid #7E8EF1;*@">
+    <div class="h-full border border-[#7E8EF1] border-opacity-100 p-6 shadow-md shadow-#7E8EF1/5 rounded-[15px]">
+        <div class="container mt-4">
+            <div class="row">
+                <!-- Left side - Comments -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Comments</h4>
                         </div>
-                        <div class="mt-4">
-                            <h5>Description</h5>
-                            <p>@Model.Content</p>
-                        </div>
-                    </div>
-
-                    <div id="editMode" style="display: none;">
-                        <form id="editTicketForm">
-                            <input type="hidden" name="TicketId" value="@Model.TicketId" />
-                            <div class="form-group">
-                                <label for="Title">Title</label>
-                                <input name="Title" id="Title" class="form-control" value="@Model.Title" required />
-                            </div>
-                            <div class="form-group">
-                                <label for="Content">Description</label>
-                                <textarea name="Content" id="Content" class="form-control" rows="4" required>@Model.Content</textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="Category">Category</label>
-                                <select name="Category" id="Category" class="form-control" required>
-                                    <option value="Bug" selected="@(Model.Category == "Bug")">Bug</option>
-                                    <option value="Feature" selected="@(Model.Category == "Feature")">Feature Request</option>
-                                    <option value="Support" selected="@(Model.Category == "Support")">Support</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="Priority">Priority</label>
-                                <select name="Priority" id="Priority" class="form-control" required>
-                                    <option value="1" selected="@(Model.Priority == 1)">Low</option>
-                                    <option value="2" selected="@(Model.Priority == 2)">Medium</option>
-                                    <option value="3" selected="@(Model.Priority == 3)">High</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="Status">Status</label>
-                                <select name="Status" id="Status" class="form-control" required>
-                                    <option value="Open" selected="@(Model.Status == "Open")">Open</option>
-                                    <option value="In Progress" selected="@(Model.Status == "In Progress")">In Progress</option>
-                                    <option value="Resolved" selected="@(Model.Status == "Resolved")">Resolved</option>
-                                </select>
+                        <div class="card-body">
+                            <div id="commentsList" class="comments-list" style="max-height: 600px; overflow-y: auto;">
+                                <!-- Comments will be loaded here -->
                             </div>
                             <div class="mt-3">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                                <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+                                <form id="addCommentForm">
+                                    <input type="hidden" name="TicketId" value="@Model.TicketId" />
+                                    <div class="form-group">
+                                        <textarea name="Comment" class="form-control" rows="3" placeholder="Add a comment..." required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
+                                </form>
                             </div>
-                        </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right side - Ticket Details -->
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h3>@Model.Title</h3>
+                            <div>
+                                <button class="btn btn-primary" onclick="editMode()">Edit</button>
+                                <a href="/Ticket" class="btn btn-secondary">Back to List</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="viewMode">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Status:</strong> @Model.Status</p>
+                                        <p><strong>Priority:</strong> @Model.Priority</p>
+                                        <p><strong>Category:</strong> @Model.Category</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Created On:</strong> @Model.CreatedOn.ToString("g")</p>
+                                        <p><strong>Created By:</strong> @Model.CreatedByName</p>
+                                        @if (Model.ResolvedOn.HasValue)
+                                        {
+                                            <p><strong>Resolved On:</strong> @Model.ResolvedOn.Value.ToString("g")</p>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <h5>Description</h5>
+                                    <p>@Model.Content</p>
+                                </div>
+                            </div>
+
+                            <div id="editMode" style="display: none;">
+                                <form id="editTicketForm">
+                                    <input type="hidden" name="TicketId" value="@Model.TicketId" />
+                                    <div class="form-group">
+                                        <label for="Title">Title</label>
+                                        <input name="Title" id="Title" class="form-control" value="@Model.Title" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Content">Description</label>
+                                        <textarea name="Content" id="Content" class="form-control" rows="4" required>@Model.Content</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Category">Category</label>
+                                        <select name="Category" id="Category" class="form-control" required>
+                                            <option value="Bug" selected="@(Model.Category == "Bug")">Bug</option>
+                                            <option value="Feature" selected="@(Model.Category == "Feature")">Feature Request</option>
+                                            <option value="Support" selected="@(Model.Category == "Support")">Support</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Priority">Priority</label>
+                                        <select name="Priority" id="Priority" class="form-control" required>
+                                            <option value="1" selected="@(Model.Priority == 1)">Low</option>
+                                            <option value="2" selected="@(Model.Priority == 2)">Medium</option>
+                                            <option value="3" selected="@(Model.Priority == 3)">High</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Status">Status</label>
+                                        <select name="Status" id="Status" class="form-control" required>
+                                            <option value="Open" selected="@(Model.Status == "Open")">Open</option>
+                                            <option value="In Progress" selected="@(Model.Status == "In Progress")">In Progress</option>
+                                            <option value="Resolved" selected="@(Model.Status == "Resolved")">Resolved</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-3">
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Updates History -->
-<div class="card mt-4">
-    <div class="card-header">
-        <h4>Update History</h4>
-    </div>
-    <div class="card-body">
-        <div id="updatesList">
-            <!-- Updates will be loaded here -->
+        <!-- Updates History -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h4>Update History</h4>
+            </div>
+            <div class="card-body">
+                <div id="updatesList">
+                    <!-- Updates will be loaded here -->
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
-<!-- Attachments -->
-<div class="card mt-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h4>Attachments</h4>
-        <div>
-            <input type="file" id="attachmentInput" class="d-none" multiple />
-            <button class="btn btn-primary btn-sm" onclick="$('#attachmentInput').click()">
-                <i class="fas fa-plus"></i> Add Attachments
-            </button>
-        </div>
-    </div>
-    <div class="card-body">
-        <div id="attachmentsList">
-            <!-- Attachments will be loaded here -->
+        <!-- Attachments -->
+        <div class="card mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4>Attachments</h4>
+                <div>
+                    <input type="file" id="attachmentInput" class="d-none" multiple />
+                    <button class="btn btn-primary btn-sm" onclick="$('#attachmentInput').click()">
+                        <i class="fas fa-plus"></i> Add Attachments
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="attachmentsList">
+                    <!-- Attachments will be loaded here -->
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -369,3 +378,14 @@
         }
     </script>
 }
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            transition: background-color 0.4s ease;
+        }
+    </style>
