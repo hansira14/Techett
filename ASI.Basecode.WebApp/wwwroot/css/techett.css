@@ -176,3 +176,37 @@ body {
 }
 
 /*---------------SIDEBAR ENDREGION--------------*/
+
+.icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #7E8EF1;
+    margin-right: 15px;
+}
+
+.icon-container i,
+.icon-container svg {
+    color: black; 
+    font-size: 18px; 
+}
+.bold-text {
+    font-weight: bold !important;
+}
+.card-content {
+    margin-top: 30px;
+    background-color: #D1D7FF;
+    border: 1px solid #D1D7FF;
+    border-radius:10px;
+    padding: 16px;
+}
+.dashboard-text {
+    color: var(--darkviolet-color);
+}
+
+.my-tickets-text {
+    color: #000000;
+}
