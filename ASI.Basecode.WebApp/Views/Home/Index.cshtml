@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model IEnumerable<ASI.Basecode.Services.ServiceModels.TicketViewModel>
 @{
     ViewData["Title"] = "Home Page";
@@ -7,6 +7,7 @@
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
 
@@ -106,131 +107,105 @@
         </div>
     </ul>
 </div>
-<!--VANESSA'S CODE-->
 
-<div class="grid grid-cols-1 gap-6 mb-6" @*style="border: 2px solid #7E8EF1;*@">
-    <div class="h-80 border border-[#7E8EF1] border-opacity-100 p-6 shadow-md shadow-#7E8EF1/5 rounded-[15px]">
-    @if (User.IsInRole("admin") || User.IsInRole("superadmin"))
-    {
-            <div class="flex justify-between mb-6">
-                <div>
-                    <div class="text-sm font-medium text-gray-400">GRAPH/NUMBERING</div>
+<!-- Row 1 - Charts -->
+<div class="container-fluid mb-4">
+    <div class="row">
+        <!-- Bar Chart -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase">Monthly Tickets</h5>
+                    <canvas id="barChart" height="200"></canvas>
                 </div>
             </div>
-            <div class="text-center">
-                <h1 class="display-4">Welcome</h1>
-                <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+        </div>
 
-                <div class="mt-3">
-                    <a class="btn btn-primary mx-2" href="/Article/Index">
-                        View Articles
-                    </a>
-                    <a class="btn btn-primary mx-2" href="/Account/Users">
-                        Manage Users
-                    </a>
-                    <a class="btn btn-primary mx-2" href="/Ticket/Tickets">
-                        Tickets
-                    </a>
+        <!-- Pie Chart -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase">Ticket Distribution</h5>
+                    <canvas id="pieChart" height="200"></canvas>
                 </div>
             </div>
-    }
-    else
-    {
-            <p><span class="dashboard-text">DASHBOARD</span> > <span class="my-tickets-text">My Tickets</span></p>
-            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4 p-4 md:p-6">
-                <Card class="card-content">
-                    <CardContent className="flex items-center gap-4 p-6">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div class="icon-container">
-                                <i class="fa-solid fa-chart-simple"></i>
-                            </div>
-                            <div>
-                                <p className="text-sm font-medium leading-none bold-text">Total Tickets</p>
-                                <p className="text-xl">86,575,443</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+        </div>
 
-                <Card class="card-content">
-                    <CardContent className="flex items-center gap-4 p-6">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div class="icon-container">
-                                <i class="fa-solid fa-hourglass-half"></i>
-                            </div>
-                            <div>
-                                <p className="text-sm font-medium leading-none bold-text">Pending Tickets</p>
-                                <p className="text-xl">324,243,2455</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card class="card-content">
-                    <CardContent className="flex items-center gap-4 p-6">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div class="icon-container">
-                                <i class="fa-regular fa-folder-open"></i>
-                            </div>
-                            <div>
-                                <p className="text-sm font-medium leading-none bold-text">Opened Tickets</p>
-                                <p className="text-xl">453,472,384</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card class="card-content">
-                    <CardContent className="flex items-center gap-4 p-6">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div class="icon-container">
-                                <i class="fa-solid fa-folder-closed"></i>
-                            </div>
-                            <div>
-                                <p className="text-sm font-medium leading-none bold-text">Closed Tickets</p>
-                                <p className="text-xl">453,472,384</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+        <!-- Line Chart -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase">Ticket Trends</h5>
+                    <canvas id="lineChart1" height="200"></canvas>
+                </div>
             </div>
+        </div>
+    </div>
+</div>
 
+<!-- Row 2 - Stats and Chart -->
+<div class="container-fluid mb-4">
+    <div class="row">
+        <!-- Column 1 - Stats Cards -->
+        <div class="col-md-4">
+            <div class="row">
+                <!-- Total Tickets -->
+                <div class="col-6 mb-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2">Total Tickets</h6>
+                            <h2 class="card-title mb-0">245</h2>
+                            <small class="text-white-50">↑ 12% increase</small>
+                        </div>
+                    </div>
+                </div>
 
-    }
-    </div>
-    <!--End of VanCODE-->
+                <!-- Open Tickets -->
+                <div class="col-6 mb-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2">Open Tickets</h6>
+                            <h2 class="card-title mb-0">85</h2>
+                            <small class="text-white-50">↑ 5% increase</small>
+                        </div>
+                    </div>
+                </div>
 
-@*</div>
-    @*
-    <!-- Left-aligned boxes with reduced width -->
-    <div class="flex flex-col items-end gap-1 mb-1">
-    <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 5px;">
-    <!-- Adjust width to control size -->
-    <div class="flex items-center mb-0.5 justify-between">
-    <span class="text-gray-400 text-xs">Tickets</span>
-    <div class="text-xl font-semibold ml-auto">10</div>
-    </div>
-    </div>
-    <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 5px;">
-    <div class="flex items-center mb-0.5 justify-between">
-    <span class="text-gray-400 text-xs">Articles</span>
-    <div class="text-xl font-semibold ml-auto">50</div>
-    </div>
-    </div>
-    <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 10px;">
-    <div class="flex items-center mb-0.5 justify-between">
-    <span class="text-gray-400 text-xs">Users</span>
-    <div class="text-xl font-semibold ml-auto">4</div>
-    </div>
-    </div>
-    <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 10px;">
-    <div class="flex items-center mb-0.5 justify-between">
-    <span class="text-gray-400 text-xs">Users</span>
-    <div class="text-xl font-semibold ml-auto">4</div>
-    </div>
-    </div>
-    </div>*@
+                <!-- Resolved Tickets -->
+                <div class="col-6 mb-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2">Resolved</h6>
+                            <h2 class="card-title mb-0">142</h2>
+                            <small class="text-white-50">↑ 18% increase</small>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Pending Tickets -->
+                <div class="col-6 mb-3">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2">Pending</h6>
+                            <h2 class="card-title mb-0">18</h2>
+                            <small class="text-white-50">↓ 3% decrease</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Column 2 - Line Chart -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase">Weekly Resolution Rate</h5>
+                    <canvas id="lineChart2" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
     <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-2">
@@ -770,4 +745,106 @@
         max-height: 400px;
         overflow-y: auto;
     }
+
+    .card-body {
+        position: relative;
+        height: 100%;
+        width: 100%;
+    }
+    
+    canvas {
+        max-height: 300px; /* Adjust this value as needed */
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 100%;
+        width: 100%;
+    }
 </style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set default chart options with maintainAspectRatio
+        const defaultOptions = {
+            responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 2, // You can adjust this value to change height/width ratio
+        };
+
+        // Initialize Bar Chart
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                // Your data here
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Monthly Tickets',
+                    data: [12, 19, 3, 5, 2, 3],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: defaultOptions
+        });
+
+        // Initialize Pie Chart
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                // Your data here
+                labels: ['Open', 'Closed', 'Pending'],
+                datasets: [{
+                    data: [12, 19, 3],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: defaultOptions
+        });
+
+        // Initialize Line Charts
+        const lineCtx1 = document.getElementById('lineChart1').getContext('2d');
+        new Chart(lineCtx1, {
+            type: 'line',
+            data: {
+                // Your data here
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Ticket Trends',
+                    data: [12, 19, 3, 5, 2, 3],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    tension: 0.1
+                }]
+            },
+            options: defaultOptions
+        });
+
+        const lineCtx2 = document.getElementById('lineChart2').getContext('2d');
+        new Chart(lineCtx2, {
+            type: 'line',
+            data: {
+                // Your data here
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Resolution Rate',
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    tension: 0.1
+                }]
+            },
+            options: defaultOptions
+        });
+    });
+</script>
