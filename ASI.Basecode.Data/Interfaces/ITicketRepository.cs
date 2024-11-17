@@ -10,4 +10,5 @@ public interface ITicketRepository
     Ticket GetTicketById(int id);
     void UpdateTicket(Ticket ticket);
     void DeleteTicket(Ticket ticket);
+    int GetResolvedTicketsCount(int userId);
 }

@@ -295,6 +295,17 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult Profile(int id)
+        {
+            var profile = _userService.GetUserProfile(id);
+            if (profile == null)
+            {
+                return NotFound();
+            }
+            return View(profile);
+        }
     }
 }
 

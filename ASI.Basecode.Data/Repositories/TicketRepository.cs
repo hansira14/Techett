@@ -48,4 +48,10 @@ public class TicketRepository : BaseRepository, ITicketRepository
         this.GetDbSet<Ticket>().Remove(ticket);
         this.UnitOfWork.SaveChanges();
     }
+    public int GetResolvedTicketsCount(int userId)
+    {
+        return this.GetDbSet<Ticket>()
+            .Count(t => t.ResolvedBy == userId && 
+                       t.Status == "Resolved");
+    }
 }
