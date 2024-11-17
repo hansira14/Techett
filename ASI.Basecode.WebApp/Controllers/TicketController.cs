@@ -48,6 +48,8 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 return NotFound();
             }
+            
+            ViewBag.CurrentUserId = GetCurrentUserId();
             return View(ticket);
         }
 
@@ -101,6 +103,11 @@ namespace ASI.Basecode.WebApp.Controllers
                     return Json(new { success = false, message = "Ticket not found" });
                 }
 
+                if (ticket.Status == "Resolved")
+                {
+                    return Json(new { success = false, message = "Cannot edit resolved tickets" });
+                }
+
                 if (!_userAuthorizationService.CanModifyTicket(ticket.CreatedBy))
                 {
                     return Json(new { success = false, message = "You don't have permission to modify this ticket" });
@@ -138,16 +145,6 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 return Json(new { success = false, message = ex.Message });
             }
-        }
-
-        private int GetCurrentUserId()
-        {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
-            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
-            {
-                return userId;
-            }
-            throw new UnauthorizedAccessException("User is not authenticated");
         }
     }
 }
