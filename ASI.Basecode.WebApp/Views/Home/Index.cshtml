@@ -106,62 +106,130 @@
         </div>
     </ul>
 </div>
+<!--VANESSA'S CODE-->
 
 <div class="grid grid-cols-1 gap-6 mb-6" @*style="border: 2px solid #7E8EF1;*@">
     <div class="h-80 border border-[#7E8EF1] border-opacity-100 p-6 shadow-md shadow-#7E8EF1/5 rounded-[15px]">
+    @if (User.IsInRole("admin") || User.IsInRole("superadmin"))
+    {
+            <div class="flex justify-between mb-6">
+                <div>
+                    <div class="text-sm font-medium text-gray-400">GRAPH/NUMBERING</div>
+                </div>
+            </div>
+            <div class="text-center">
+                <h1 class="display-4">Welcome</h1>
+                <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 
-        <div class="flex justify-between mb-6">
-            <div>
-                <div class="text-sm font-medium text-gray-400">GRAPH/NUMBERING</div>
+                <div class="mt-3">
+                    <a class="btn btn-primary mx-2" href="/Article/Index">
+                        View Articles
+                    </a>
+                    <a class="btn btn-primary mx-2" href="/Account/Users">
+                        Manage Users
+                    </a>
+                    <a class="btn btn-primary mx-2" href="/Ticket/Tickets">
+                        Tickets
+                    </a>
+                </div>
             </div>
-        </div>
-        <div class="text-center">
-            <h1 class="display-4">Welcome</h1>
-            <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    }
+    else
+    {
+            <p><span class="dashboard-text">DASHBOARD</span> > <span class="my-tickets-text">My Tickets</span></p>
+            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4 p-4 md:p-6">
+                <Card class="card-content">
+                    <CardContent className="flex items-center gap-4 p-6">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="icon-container">
+                                <i class="fa-solid fa-chart-simple"></i>
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium leading-none bold-text">Total Tickets</p>
+                                <p className="text-xl">86,575,443</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
 
-            <div class="mt-3">
-                <a asp-controller="Article" asp-action="Index" class="btn btn-primary mx-2">
-                    View Articles
-                </a>
-                <a asp-controller="Account" asp-action="Users" class="btn btn-primary mx-2">
-                    Manage Users
-                </a>
-                <a asp-controller="Ticket" asp-action="Tickets" class="btn btn-primary mx-2">
-                    Tickets
-                </a>
+                <Card class="card-content">
+                    <CardContent className="flex items-center gap-4 p-6">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="icon-container">
+                                <i class="fa-solid fa-hourglass-half"></i>
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium leading-none bold-text">Pending Tickets</p>
+                                <p className="text-xl">324,243,2455</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card class="card-content">
+                    <CardContent className="flex items-center gap-4 p-6">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="icon-container">
+                                <i class="fa-regular fa-folder-open"></i>
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium leading-none bold-text">Opened Tickets</p>
+                                <p className="text-xl">453,472,384</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card class="card-content">
+                    <CardContent className="flex items-center gap-4 p-6">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="icon-container">
+                                <i class="fa-solid fa-folder-closed"></i>
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium leading-none bold-text">Closed Tickets</p>
+                                <p className="text-xl">453,472,384</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
-        </div>
-        @*
-        <!-- Left-aligned boxes with reduced width -->
-        <div class="flex flex-col items-end gap-1 mb-1">
-            <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 5px;">
-                <!-- Adjust width to control size -->
-                <div class="flex items-center mb-0.5 justify-between">
-                    <span class="text-gray-400 text-xs">Tickets</span>
-                    <div class="text-xl font-semibold ml-auto">10</div>
-                </div>
-            </div>
-            <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 5px;">
-                <div class="flex items-center mb-0.5 justify-between">
-                    <span class="text-gray-400 text-xs">Articles</span>
-                    <div class="text-xl font-semibold ml-auto">50</div>
-                </div>
-            </div>
-            <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 10px;">
-                <div class="flex items-center mb-0.5 justify-between">
-                    <span class="text-gray-400 text-xs">Users</span>
-                    <div class="text-xl font-semibold ml-auto">4</div>
-                </div>
-            </div>
-            <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 10px;">
-                <div class="flex items-center mb-0.5 justify-between">
-                    <span class="text-gray-400 text-xs">Users</span>
-                    <div class="text-xl font-semibold ml-auto">4</div>
-                </div>
-            </div>
-        </div>*@
+
+
+    }
     </div>
-</div>
+    <!--End of VanCODE-->
+
+@*</div>
+    @*
+    <!-- Left-aligned boxes with reduced width -->
+    <div class="flex flex-col items-end gap-1 mb-1">
+    <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 5px;">
+    <!-- Adjust width to control size -->
+    <div class="flex items-center mb-0.5 justify-between">
+    <span class="text-gray-400 text-xs">Tickets</span>
+    <div class="text-xl font-semibold ml-auto">10</div>
+    </div>
+    </div>
+    <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 5px;">
+    <div class="flex items-center mb-0.5 justify-between">
+    <span class="text-gray-400 text-xs">Articles</span>
+    <div class="text-xl font-semibold ml-auto">50</div>
+    </div>
+    </div>
+    <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 10px;">
+    <div class="flex items-center mb-0.5 justify-between">
+    <span class="text-gray-400 text-xs">Users</span>
+    <div class="text-xl font-semibold ml-auto">4</div>
+    </div>
+    </div>
+    <div class="rounded-md border border-dashed border-gray-200 p-4" style="width: 250px; height: 10px;">
+    <div class="flex items-center mb-0.5 justify-between">
+    <span class="text-gray-400 text-xs">Users</span>
+    <div class="text-xl font-semibold ml-auto">4</div>
+    </div>
+    </div>
+    </div>*@
 
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
