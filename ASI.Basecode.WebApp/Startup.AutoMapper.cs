@@ -94,6 +94,13 @@ namespace ASI.Basecode.WebApp
                     .ForMember(dest => dest.UploadedByName,
                         opt => opt.MapFrom(src =>
                             $"{src.UploadedByNavigation.Fname} {src.UploadedByNavigation.Lname}"));
+
+                CreateMap<FeedbackViewModel, Feedback>();
+                CreateMap<Feedback, FeedbackViewModel>()
+                    .ForMember(dest => dest.UserId,
+                        opt => opt.MapFrom(src => src.UserId))
+                    .ForMember(dest => dest.AgentId,
+                        opt => opt.MapFrom(src => src.AgentId));
             }
         }
     }

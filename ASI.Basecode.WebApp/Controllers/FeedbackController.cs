@@ -47,7 +47,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 if (_feedbackService.HasUserSubmittedFeedback(model.TicketId, userId))
                     return Json(new { success = false, message = "Feedback already submitted" });
 
-                model.UserId = ticket.CreatedBy;
+                model.UserId = userId;
                 model.AgentId = ticket.AssignedToId ?? 0;
                 model.CreatedOn = DateTime.Now;
 

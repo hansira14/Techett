@@ -1,5 +1,6 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model ASI.Basecode.Services.ServiceModels.TicketViewModel
+@await Html.PartialAsync("_FeedbackModal", Model.TicketId)
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -282,6 +283,10 @@
                     });
                 }
             });
+
+            if ('@Model.Status' === 'Resolved') {
+                checkAndShowFeedback();
+            }
         });
 
         function deleteComment(commentId) {
@@ -414,6 +419,7 @@
                     success: function(response) {
                         if (response.success) {
                             loadUpdates();
+                            showFeedbackModal();
                             location.reload();
                         } else {
                             toastr.error(response.message || 'Failed to resolve ticket');
@@ -425,6 +431,45 @@
                 });
             }
         }
+
+        function checkAndShowFeedback() {
+            $.get('/Feedback/CheckFeedbackStatus', { ticketId: @Model.TicketId }, function(response) {
+                if (!response.hasFeedback && '@Model.CreatedBy' === '@ViewBag.CurrentUserId') {
+                    showFeedbackModal();
+                }
+            });
+        }
+
+        function showFeedbackModal() {
+            $('#feedbackModal').modal('show');
+        }
+
+        $('#feedbackForm').submit(function(e) {
+            e.preventDefault();
+            var formData = {
+                TicketId: @Model.TicketId,
+                Rating: parseInt($('input[name="Rating"]:checked').val()),
+                Remarks: $('textarea[name="Remarks"]').val()
+            };
+
+            $.ajax({
+                url: '/Feedback/SubmitFeedback',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    if (response.success) {
+                        $('#feedbackModal').modal('hide');
+                        toastr.success('Thank you for your feedback!');
+                    } else {
+                        toastr.error(response.message || 'Failed to submit feedback');
+                    }
+                },
+                error: function() {
+                    toastr.error('An error occurred while submitting feedback');
+                }
+            });
+        });
     </script>
 }
 

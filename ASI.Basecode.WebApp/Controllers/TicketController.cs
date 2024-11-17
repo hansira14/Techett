@@ -48,6 +48,8 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 return NotFound();
             }
+            
+            ViewBag.CurrentUserId = GetCurrentUserId();
             return View(ticket);
         }
 
