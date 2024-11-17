@@ -15,12 +15,20 @@ namespace ASI.Basecode.Services.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _repository;
+        private readonly IFeedbackRepository _feedbackRepository;
+        private readonly IAssignmentRepository _assignmentRepository;
         private readonly IMapper _mapper;
 
-        public UserService(IUserRepository repository, IMapper mapper)
+        public UserService(
+            IUserRepository repository,
+            IFeedbackRepository feedbackRepository,
+            IAssignmentRepository assignmentRepository,
+            IMapper mapper)
         {
             _mapper = mapper;
             _repository = repository;
+            _feedbackRepository = feedbackRepository;
+            _assignmentRepository = assignmentRepository;
         }
 
         public LoginResult AuthenticateUser(string email, string password, ref User user)
@@ -100,6 +108,43 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new InvalidDataException("User not found");
             }
+        }
+
+        public UserProfileViewModel GetUserProfile(int userId)
+        {
+            var user = _repository.GetById(userId);
+            if (user == null) return null;
+
+            var assignments = _assignmentRepository.GetUserAssignments(userId);
+
+            var profile = new UserProfileViewModel
+            {
+                Name = $"{user.Fname} {user.Lname}",
+                Email = user.Email,
+                ProfilePictureUrl = "https://placehold.co/150x150",
+                TotalTicketsAssigned = assignments.Count(),
+                TotalTicketsSolved = assignments.Count(a => a.Ticket.Status == "Resolved"),
+                PendingTickets = assignments.Count(a => a.Ticket.Status != "Resolved"),
+                AverageResolveTime = assignments
+                    .Where(a => a.Ticket.Status == "Resolved" && a.Ticket.ResolvedOn.HasValue)
+                    .AsEnumerable()
+                    .DefaultIfEmpty()
+                    .Average(a => a == null ? 0 : (a.Ticket.ResolvedOn.Value - a.AssignedOn).TotalHours),
+                Feedbacks = _feedbackRepository.GetAllFeedbacks()
+                    .Where(f => f.AgentId == userId)
+                    .OrderByDescending(f => f.CreatedOn)
+                    .Select(f => new FeedbackViewModel
+                    {
+                        Rating = f.Rating,
+                        Remarks = f.Remarks,
+                        CreatedOn = f.CreatedOn,
+                        UserName = $"{f.User.Fname} {f.User.Lname}",
+                        TicketTitle = f.Ticket.Title
+                    })
+                    .ToList()
+            };
+
+            return profile;
         }
     }
 }

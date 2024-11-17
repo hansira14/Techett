@@ -1,0 +1,134 @@
+@model UserProfileViewModel
+
+<div class="user-profile">
+    <div class="profile-header">
+        <img src="@Model.ProfilePictureUrl" alt="@Model.Name's profile picture" class="profile-picture" />
+        <h1>@Model.Name</h1>
+        <p>@Model.Email</p>
+    </div>
+
+    <div class="ticket-stats">
+        <h2>Ticket Statistics</h2>
+        <ul>
+            <li>Total Tickets Assigned: @Model.TotalTicketsAssigned</li>
+            <li>Total Tickets Solved: @Model.TotalTicketsSolved</li>
+            <li>Pending Tickets: @Model.PendingTickets</li>
+            <li>Average Resolution Time: @(Model.AverageResolveTime.HasValue ? $"{Model.AverageResolveTime.Value:F1} hours" : "N/A")</li>
+        </ul>
+    </div>
+
+    <div class="feedback-list">
+        <h2>Feedback</h2>
+        @if (Model.Feedbacks.Any())
+        {
+            <ul>
+                @foreach (var feedback in Model.Feedbacks)
+                {
+                    <li class="feedback-item">
+                        <div class="feedback-header">
+                            <div class="feedback-info">
+                                <span class="rater-name">@feedback.UserName</span>
+                                <span class="feedback-meta">
+                                    <span class="ticket-title">@feedback.TicketTitle</span>
+                                    <span class="feedback-date">@((DateTime.Now - feedback.CreatedOn).TotalDays < 1 
+                                        ? "Today" 
+                                        : (DateTime.Now - feedback.CreatedOn).TotalDays < 2 
+                                            ? "Yesterday"
+                                            : $"{(int)(DateTime.Now - feedback.CreatedOn).TotalDays} days ago")</span>
+                                </span>
+                            </div>
+                            <span class="stars">
+                                @for (int i = 0; i < feedback.Rating; i++)
+                                {
+                                    <span class="star">&#9733;</span>
+                                }
+                                @for (int i = feedback.Rating; i < 5; i++)
+                                {
+                                    <span class="star">&#9734;</span>
+                                }
+                            </span>
+                        </div>
+                        <p class="feedback-comment">@feedback.Remarks</p>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No feedback available.</p>
+        }
+    </div>
+</div>
+
+<style>
+    .user-profile {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .profile-picture {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .ticket-stats {
+        background-color: #f0f0f0;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 30px;
+    }
+
+    .feedback-list {
+        margin-top: 30px;
+    }
+
+    .feedback-item {
+        border-bottom: 1px solid #ccc;
+        padding: 15px 0;
+    }
+
+    .feedback-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .star {
+        color: gold;
+    }
+
+    .feedback-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .feedback-meta {
+        display: flex;
+        gap: 10px;
+        font-size: 0.9em;
+        color: #666;
+    }
+
+    .ticket-title {
+        color: #2563eb;
+        font-weight: 500;
+    }
+
+    .feedback-date {
+        color: #666;
+    }
+
+    .rater-name {
+        color: #2563eb;
+        font-weight: 500;
+    }
+</style>

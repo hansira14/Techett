@@ -1,4 +1,5 @@
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
 using Basecode.Data.Repositories;
@@ -13,17 +14,35 @@ public class AssignmentRepository : BaseRepository, IAssignmentRepository
 
     public IQueryable<Assignment> GetAllAssignments()
     {
-        return this.GetDbSet<Assignment>();
+        return this.GetDbSet<Assignment>()
+            .Include(a => a.Ticket)
+            .Include(a => a.AssignedToNavigation)
+            .Include(a => a.AssignedByNavigation);
     }
 
     public Assignment GetAssignmentById(int id)
     {
-        return this.GetDbSet<Assignment>().Find(id);
+        return this.GetDbSet<Assignment>()
+            .Include(a => a.Ticket)
+            .Include(a => a.AssignedToNavigation)
+            .Include(a => a.AssignedByNavigation)
+            .FirstOrDefault(a => a.AssignmentId == id);
     }
 
     public Assignment GetAssignmentByTicketId(int ticketId)
     {
-        return this.GetDbSet<Assignment>().FirstOrDefault(a => a.TicketId == ticketId);
+        return this.GetDbSet<Assignment>()
+            .Include(a => a.Ticket)
+            .Include(a => a.AssignedToNavigation)
+            .Include(a => a.AssignedByNavigation)
+            .FirstOrDefault(a => a.TicketId == ticketId);
+    }
+
+    public IQueryable<Assignment> GetUserAssignments(int userId)
+    {
+        return this.GetDbSet<Assignment>()
+            .Include(a => a.Ticket)
+            .Where(a => a.AssignedTo == userId);
     }
 
     public void AddAssignment(Assignment assignment)

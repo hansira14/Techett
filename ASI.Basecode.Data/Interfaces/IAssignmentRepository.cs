@@ -11,4 +11,5 @@ public interface IAssignmentRepository
     void AddAssignment(Assignment assignment);
     void UpdateAssignment(Assignment assignment);
     void DeleteAssignment(Assignment assignment);
+    IQueryable<Assignment> GetUserAssignments(int userId);
 }
