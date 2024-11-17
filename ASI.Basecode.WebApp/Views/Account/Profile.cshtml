@@ -5,6 +5,7 @@
         <img src="@Model.ProfilePictureUrl" alt="@Model.Name's profile picture" class="profile-picture" />
         <h1>@Model.Name</h1>
         <p>@Model.Email</p>
+        <p class="user-role">@Model.Role</p>
     </div>
 
     <div class="ticket-stats">
@@ -130,5 +131,10 @@
     .rater-name {
         color: #2563eb;
         font-weight: 500;
+    }
+
+    .user-role {
+        color: #666;
+        font-size: 0.9em;
     }
 </style>

@@ -121,6 +121,7 @@ namespace ASI.Basecode.Services.Services
             {
                 Name = $"{user.Fname} {user.Lname}",
                 Email = user.Email,
+                Role = user.Role,
                 ProfilePictureUrl = "https://placehold.co/150x150",
                 TotalTicketsAssigned = assignments.Count(),
                 TotalTicketsSolved = assignments.Count(a => a.Ticket.Status == "Resolved"),
