@@ -130,115 +130,17 @@
                 </div>
             </div>
         </form>
-
-
-        @*
         <div class="overflow-x-auto max-h-96">
             <table class="w-full min-w-[540px] overflow-x-auto max-h-96" data-tab-for="order" data-page="active">
                 <thead>
                     <tr>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Title</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Category</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Priority</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Status</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Created On</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Assigned To</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Actions</th>
-                    </tr>
-                </thead>
-                
-                <tbody>
-                    @foreach (var ticket in Model)
-                    {
-                        <tr>
-                            <!-- Title -->
-                            <td class="py-2 pl-2 border-b border-b-gray-50 max-w-xs">
-                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
-                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
-                                    @ticket.Title
-                                </span>
-                            </td>
-
-                            <!-- Category -->
-                            <td class="py-2 pl-2 border-b border-b-gray-50 max-w-xs">
-                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
-                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
-                                    @ticket.Category
-                                </span>
-                            </td>
-
-                            <!-- Priority -->
-                            <td class="py-2 pl-2 border-b border-b-gray-50 max-w-x">
-                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
-                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
-                                    @ticket.Priority
-                                </span>
-                            </td>
-
-                            <!-- Status -->
-                            <td class="py-2 pl-2 border-b border-b-gray-50 max-w-x">
-                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
-                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
-                                    @ticket.Status
-                                </span>
-                            </td>
-
-                            <!-- Created On -->
-                            <td class="py-2 pl-2 border-b border-b-gray-50 max-w-x">
-                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
-                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
-                                    @ticket.CreatedOn.ToString("g")
-                                </span>
-                            </td>
-
-                            <!-- Assigned To -->
-                            <td class="py-2 pl-2 border-b border-b-gray-50 max-w-xs">
-                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
-                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
-                                    @(ticket.AssignedToName ?? "Unassigned")
-                                </span>
-                            </td>
-
-
-                            <!-- Actions -->
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <button class="assign-btn text-blue-600 hover:text-blue-900 mr-2" onclick="showAssignModal(@ticket.TicketId)">Assign</button>
-                                <a asp-action="Details" asp-route-id="@ticket.TicketId"
-                               class="details-btn text-green-600 hover:text-green-900 mr-2">Details</a>
-                                
-
-                                <button type="button" onclick="editTicketModal(@ticket.TicketId)"
-                                    id="editTicketButton"
-                                    class="edit-btn text-red-600 hover:text-red-900 mr-2"
-                                    data-toggle="modal"
-                                    data-target="#editTicketModal">
-                                    <i class="fas fa-pen"></i>
-                                </button>
-                                <button class="delete-btn text-red-600 hover:text-red-900"
-                                    onclick="deleteTicket(@ticket.TicketId)">
-                                    <i class="fas fa-trash"></i> <!-- Trash icon for Delete -->
-                                </button>
-                                
-                            </td>
-                        </tr>
-                    }
-
-                </tbody>
-                
-
-            </table>
-        </div>*@
-        <div class="overflow-x-auto max-h-96">
-            <table class="w-full min-w-[540px] overflow-x-auto max-h-96" data-tab-for="order" data-page="active">
-                <thead>
-                    <tr>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Title</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Category</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Priority</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Status</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Created On</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Assigned To</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Actions</th>
+                        <th class="w-1/6 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Title</th>
+                        <th class="w-1/6 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Category</th>
+                        <th class="w-1/6 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Priority</th>
+                        <th class="w-1/6 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Status</th>
+                        <th class="w-1/6 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Created On</th>
+                        <th class="w-1/6 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Assigned To</th>
+                        <th class="w-1/6 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -308,7 +210,6 @@
                                     onclick="deleteTicket(@ticket.TicketId)">
                                     <i class="fas fa-trash"></i> <!-- Trash icon for Delete -->
                                 </button>
-
                             </td>
                         </tr>
                     }
@@ -318,184 +219,38 @@
 
     </div>
 </div>
-        
-@*
-<div class="py-2 px-0 bg-absolute flex items-center sticky top-0 left-0 right-0 z-30">
-    <ul class="flex items-center text-sm m-0">
-        <li class="mr-2">
-            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">T I C K E T S</a>
-        </li>
-    </ul>
-    <ul class="ml-auto flex items-center">
-        <div class="relative">
-            <div class="notification">
-                <button alt="notification" class="notifs hover-pointer dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600 mr-4">
-                    <i class="ri-notification-3-line"></i>
-                </button>
-            </div>
-            <div class="dropdown">
-                <div class="container py-4 max-h-140 overflow-y-auto bg-white shadow-lg rounded-lg absolute right-0 mt-2">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="mb-0">Earlier</h5>
-                        <a href="#" class="text-primary text-decoration-none">See all</a>
-                    </div>
-
-                    <div class="list-group">
-                        <!-- Friend Request Acceptance -->
-                        <div class="list-group-item border-0 d-flex align-items-center gap-3">
-                            <div class="position-relative">
-                                <img src="/placeholder.svg?height=40&width=40" class="rounded-circle" width="40" height="40" alt="Profile picture">
-                                <div class="position-absolute bottom-0 end-0 bg-primary rounded-circle p-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="white" viewBox="0 0 16 16">
-                                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <p class="mb-0"><strong>Jid Cotejo</strong> accepted your friend request.</p>
-                                <small class="text-muted">12h</small>
-                            </div>
-                        </div>
-
-                        <!-- Education Update -->
-                        <div class="list-group-item border-0 d-flex align-items-center gap-3">
-                            <div class="position-relative">
-                                <img src="/placeholder.svg?height=40&width=40" class="rounded-circle" width="40" height="40" alt="Profile picture">
-                                <div class="position-absolute bottom-0 end-0 bg-primary rounded-circle p-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="white" viewBox="0 0 16 16">
-                                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <p class="mb-0"><strong>André Erasmo</strong> is at <strong>Cebu Institute of Technology - University</strong> with <strong>Justine Jam Cotejo</strong></p>
-                                <div class="d-flex align-items-center gap-2">
-                                    <small class="text-muted">13h</small>
-                                    <small class="text-muted">42 reactions</small>
-                                    <small class="text-muted">1 comment</small>
-                                </div>
-                            </div>
-                            <div class="text-primary">•</div>
-                        </div>
-
-                        <!-- Story Views -->
-                        <div class="list-group-item border-0 d-flex align-items-center gap-3">
-                            <div class="position-relative">
-                                <img src="/placeholder.svg?height=40&width=40" class="rounded" width="40" height="40" alt="Story thumbnail">
-                            </div>
-                            <div class="flex-grow-1">
-                                <p class="mb-0">Your last story got 415 views before it expired. You can create a new story.</p>
-                                <small class="text-muted">2d</small>
-                            </div>
-                        </div>
-
-                        <!-- Featured List -->
-                        <div class="list-group-item border-0 d-flex align-items-center gap-3">
-                            <div class="position-relative">
-                                <img src="/placeholder.svg?height=40&width=40" class="rounded-circle" width="40" height="40" alt="Profile picture">
-                            </div>
-                            <div class="flex-grow-1">
-                                <p class="mb-0">You're featured on <strong>Dennis E. Albiso</strong>'s public weekly engagement list.</p>
-                                <small class="text-muted">3d</small>
-                            </div>
-                            <div class="text-primary">•</div>
-                        </div>
-                    </div>
-
-                    <button class="btn btn-light w-100 mt-3">See previous notifications</button>
-                </div>
-            </div>
-        </div>
-        <!-- Profile Section -->
-        <div class="flex items-center">
-            <div class="text-left mr-1">
-                <div class="text-gray-800 font-regular text-xs">@HttpContextAccessor.HttpContext.Session.GetString("UserName")</div>
-            </div>
-            <img src="https://placehold.co/32x32" alt="Profile" class="w-10 h-10 rounded-md object-cover" />
-        </div>
-    </ul>
-</div>
-
-<div class="grid grid-cols-1 gap-6 pb-6 h-screen w-full overflow-hidden">
-    <div class="bg-white h-full border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-2">
-
-
-        <div class="container mt-4">
-            <h2>Tickets</h2>
-            <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#createTicketModal">
-                Create New Ticket
-            </button>
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Priority</th>
-                        <th>Status</th>
-                        <th>Created On</th>
-                        <th>Assigned To</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var ticket in Model)
-                    {
-                        <tr>
-                            <td>@ticket.Title</td>
-                            <td>@ticket.Category</td>
-                            <td>@ticket.Priority</td>
-                            <td>@ticket.Status</td>
-                            <td>@ticket.CreatedOn.ToString("g")</td>
-                            <td>@(ticket.AssignedToName ?? "Unassigned")</td>
-                            <td>
-                                <a asp-action="Details" asp-route-id="@ticket.TicketId" class="btn btn-info btn-sm">View</a>
-                                <button class="btn btn-warning btn-sm" onclick="editTicket(@ticket.TicketId)">Edit</button>
-                                <button class="btn btn-danger btn-sm" onclick="deleteTicket(@ticket.TicketId)">Delete</button>
-                                <button class="btn btn-primary btn-sm" onclick="showAssignModal(@ticket.TicketId)">Assign</button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div>
-            <canvas id="order-chart"></canvas>
-        </div>
-    </div>
-</div>*@
 
 <!-- Create Ticket Modal -->
 <div class="modal fade" id="createTicketModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Create New Ticket</h5>
-                <button type="button" class="close" data-dismiss="modal">
+    <div class="modal-dialog modal-lg max-w-md mx-auto">
+        <div class="modal-content rounded-lg shadow-xl">
+            <div class="modal-header text-center bg-gradient-to-r from-blue-100 to-purple-700 rounded-t-lg p-4 d-flex justify-content-center align-items-center position-relative">
+                <h5 class="modal-title text-2xl font-bold text-center text-indigo-900">Create Ticket</h5>
+                <button type="button" class="close position-absolute" data-dismiss="modal" style="top: 10px; right: 10px;">
                     <span>&times;</span>
                 </button>
             </div>
             <form id="createTicketForm">
-                <div class="modal-body">
+                <div class="modal-body p-6 space-y-4">
                     <div class="form-group">
-                        <label for="Title">Title</label>
-                        <input name="Title" id="Title" class="form-control" required />
+                        <label for="Title" class="block text-sm font-medium text-indigo-700 mb-1">Ticket Name</label>
+                        <input name="Title" id="Title" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;" />
                     </div>
                     <div class="form-group">
-                        <label for="Content">Description</label>
-                        <textarea name="Content" id="Content" class="form-control" rows="4" required></textarea>
+                        <label for="Content" class="block text-sm font-medium text-indigo-700 mb-1">Description</label>
+                        <textarea name="Content" id="Content" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md h-32 focus:outline-none focus:ring-2 focus:ring-blue-400" rows="4" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="Category">Category</label>
-                        <select name="Category" id="Category" class="form-control" required>
+                        <label for="Category" class="block text-sm font-medium text-indigo-700 mb-1">Category</label>
+                        <select name="Category" id="Category" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;">
                             <option value="Bug">Bug</option>
                             <option value="Feature">Feature Request</option>
                             <option value="Support">Support</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="Priority">Priority</label>
-                        <select name="Priority" id="Priority" class="form-control" required>
+                        <label for="Priority" class="block text-sm font-medium text-indigo-700 mb-1">Priority</label>
+                        <select name="Priority" id="Priority" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;">
                             <option value="1">Low</option>
                             <option value="2">Medium</option>
                             <option value="3">High</option>
@@ -503,19 +258,30 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Attachments</label>
-                        <input type="file" id="attachmentInput" class="form-control-file" multiple />
+                        <label class="block text-sm font-medium text-indigo-700 mb-1">Attachments</label>
+                        <div class="flex items-center space-x-4">
+                            <label for="attachmentInput" class="px-4 py-2 bg-indigo-900 text-white rounded-md hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                                Choose Files
+                            </label>
+                            <span class="text-sm text-indigo-900" id="fileChosen">No file chosen</span>
+                        </div>
+                        <input type="file" id="attachmentInput" class="hidden" multiple />
                         <div id="attachmentsList" class="mt-2"></div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Create Ticket</button>
+                <div class="modal-footer p-6 pt-0 flex justify-end space-x-4 mt-3 mb-0">
+                    <button type="button" class="btn px-4 py-2 text-gray-700 mt-3 rounded-md focus:outline-none, focus:ring" style="padding: 5px 10px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn text-[#161571] rounded-md mt-3 hover:bg-[#BCC5FF]" style="background-color: #D1D7FF; padding: 5px 10px;">Create Ticket</button>
                 </div>
+
+
+
+
             </form>
         </div>
     </div>
 </div>
+
 <!-- Edit Ticket Modal -->
 <div class="modal fade" id="editTicketModal" tabindex="-1" role="dialog" aria-labelledby="editTicketModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -572,28 +338,29 @@
 
 <!-- Assign Ticket Modal -->
 <div class="modal fade" id="assignTicketModal" tabindex="-1" role="dialog" aria-labelledby="assignTicketModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Assign Ticket</h5>
-                <button type="button" class="close" data-dismiss="modal">
+    <div class="modal-dialog modal-lg max-w-md mx-auto">
+        <div class="modal-content rounded-lg shadow-xl">
+            <div class="modal-header text-center bg-gradient-to-r from-blue-100 to-purple-700 rounded-t-lg p-4 d-flex justify-content-center align-items-center position-relative">
+                <h5 class="modal-title text-2xl font-bold text-center text-indigo-900">Assign Ticket</h5>
+                <button type="button" class="close position-absolute" data-dismiss="modal" style="top: 10px; right: 10px;">
                     <span>&times;</span>
                 </button>
             </div>
             <form id="assignTicketForm">
                 <input type="hidden" id="ticketId" name="TicketId" />
-                <div class="modal-body">
+                <div class="modal-body p-6 space-y-4">
                     <div class="form-group">
-                        <label for="AssignedTo">Assign To</label>
-                        <select name="AssignedTo" id="AssignedTo" class="form-control" required>
+                        <label for="AssignedTo" class="block text-sm font-medium text-indigo-700 mb-1">Assign To</label>
+                        <select name="AssignedTo" id="AssignedTo" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;">
                             <!-- Options will be populated dynamically -->
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" onclick="removeAssignment()">Remove Assignment</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Assign</button>
+                <div class="modal-footer p-6 pt-0 flex justify-end space-x-4 mt-3">
+                    <button type="button" class="btn px-4 py-2 mt-3 text-gray-700 hover:bg-gray-100 rounded-md" style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn text-green mt-3 rounded-md hover:bg-green" style="background-color: #98A6FB; padding: 5px 10px;" onclick="removeAssignment()">Remove Assignment</button>
+                  
+                    <button type="submit" class="btn text-[#161571] mt-3 rounded-md hover:bg-[#BCC5FF]" style="background-color: #D1D7FF; padding: 5px 10px;">Assign</button>
                 </div>
             </form>
         </div>
@@ -622,7 +389,7 @@
 
             function displayPendingAttachment(file, index) {
                 const html = `
-                            <div class="attachment-item d-flex justify-content-between align-items-center mb-2">
+                            <div class="attachment-item d-flex text-indigo-900 justify-content-between align-items-center mb-2">
                                 <span>${file.name}</span>
                                 <button type="button" class="btn btn-danger btn-sm" onclick="window.removePendingAttachment(${index})">
                                     <i class="fas fa-times"></i>
@@ -779,4 +546,24 @@
             max-height: 400px;
             overflow-y: auto;
         }
+        /* Adjust the table column and title behavior */
+        .table-column {
+            width: 15%; /* Reduced width for a more compact layout */
+        }
+
+        .title-column {
+            word-wrap: break-word; /* Ensures title wraps when it's too long */
+            overflow: hidden; /* Hides any overflow */
+            text-overflow: ellipsis; /* Adds ellipsis for truncated text */
+            max-width: 120px; /* Limit the max width of the title */
+        }
+
+        .table-cell {
+            word-wrap: break-word;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        
+
     </style>
