@@ -11,7 +11,7 @@
 body {
     background-color: var(--violet-color);
     max-width: 100%;
-    overflow-x: hidden;
+    /*overflow-x: hidden;*/
 }
 /*-----------SIDEBAR REGION---------------*/
 .sidebar {
@@ -176,7 +176,9 @@ body {
 }
 
 /*---------------SIDEBAR ENDREGION--------------*/
+/*--------------Tickets-----------------*/
 
+/*---------------Tickets end------------*/
 .icon-container {
     display: flex;
     align-items: center;

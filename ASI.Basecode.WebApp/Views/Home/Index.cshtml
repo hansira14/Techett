@@ -316,7 +316,8 @@
                         <tr>
                             <!-- Title -->
                             <td class="py-2 pl-2 border-b border-b-gray-50 max-w-xs">
-                                <a href="@Url.Action("Tickets", "Ticket")"
+
+                                <a href="@Url.Action("Details", "Ticket", new { id = ticket.TicketId })"
                                class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
                                style="text-overflow: ellipsis; display: block; max-width: 100%;">
                                     @ticket.Title
