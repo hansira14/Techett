@@ -470,35 +470,35 @@
 
 <!-- Create Ticket Modal -->
 <div class="modal fade" id="createTicketModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Create New Ticket</h5>
-                <button type="button" class="close" data-dismiss="modal">
+    <div class="modal-dialog max-w-md mx-auto">
+        <div class="modal-content rounded-lg shadow-xl">
+            <div class="modal-header text-center bg-gradient-to-r from-blue-100 to-purple-700 rounded-t-lg p-4 d-flex justify-content-center align-items-center position-relative">
+                <h5 class="modal-title text-2xl font-bold text-center text-indigo-900">Create Ticket</h5>
+                <button type="button" class="close position-absolute" data-dismiss="modal" style="top: 10px; right: 10px;">
                     <span>&times;</span>
                 </button>
             </div>
             <form id="createTicketForm">
-                <div class="modal-body">
+                <div class="modal-body p-6 space-y-4">
                     <div class="form-group">
-                        <label for="Title">Title</label>
-                        <input name="Title" id="Title" class="form-control" required />
+                        <label for="Title" class="block text-sm font-medium text-indigo-700 mb-1">Ticket Name</label>
+                        <input name="Title" id="Title" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;" />
                     </div>
                     <div class="form-group">
-                        <label for="Content">Description</label>
-                        <textarea name="Content" id="Content" class="form-control" rows="4" required></textarea>
+                        <label for="Content" class="block text-sm font-medium text-indigo-700 mb-1">Description</label>
+                        <textarea name="Content" id="Content" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md h-32 focus:outline-none focus:ring-2 focus:ring-blue-400" rows="4" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="Category">Category</label>
-                        <select name="Category" id="Category" class="form-control" required>
+                        <label for="Category" class="block text-sm font-medium text-indigo-700 mb-1">Category</label>
+                        <select name="Category" id="Category" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;">
                             <option value="Bug">Bug</option>
                             <option value="Feature">Feature Request</option>
                             <option value="Support">Support</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="Priority">Priority</label>
-                        <select name="Priority" id="Priority" class="form-control" required>
+                        <label for="Priority" class="block text-sm font-medium text-indigo-700 mb-1">Priority</label>
+                        <select name="Priority" id="Priority" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;">
                             <option value="1">Low</option>
                             <option value="2">Medium</option>
                             <option value="3">High</option>
@@ -506,15 +506,25 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Attachments</label>
-                        <input type="file" id="attachmentInput" class="form-control-file" multiple />
+                        <label class="block text-sm font-medium text-indigo-700 mb-1">Attachments</label>
+                        <div class="flex items-center space-x-4">
+                            <label for="attachmentInput" class="px-4 py-2 bg-indigo-900 text-white rounded-md hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                                Choose Files
+                            </label>
+                            <span class="text-sm text-indigo-900" id="fileChosen">No file chosen</span>
+                        </div>
+                        <input type="file" id="attachmentInput" class="hidden" multiple />
                         <div id="attachmentsList" class="mt-2"></div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Create Ticket</button>
+                <div class="modal-footer p-6 pt-0 flex justify-end space-x-4 mt-3 mb-0">
+                    <button type="button" class="btn px-4 py-2 text-gray-700 mt-3 rounded-md focus:outline-none, focus:ring" style="padding: 5px 10px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn text-[#161571] rounded-md mt-3 hover:bg-[#BCC5FF]" style="background-color: #D1D7FF; padding: 5px 10px;">Create Ticket</button>
                 </div>
+
+
+
+
             </form>
         </div>
     </div>
