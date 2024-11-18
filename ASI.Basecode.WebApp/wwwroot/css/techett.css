@@ -177,6 +177,8 @@ body {
 
 /*---------------SIDEBAR ENDREGION--------------*/
 
+/*USER VIEW*/
+
 .icon-container {
     display: flex;
     align-items: center;
@@ -203,6 +205,7 @@ body {
     border-radius:10px;
     padding: 16px;
 }
+/*SETTINGS*/
 .dashboard-text {
     color: var(--darkviolet-color);
 }
@@ -210,3 +213,82 @@ body {
 .my-tickets-text {
     color: #000000;
 }
+.flex-center {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    text-align: center; 
+    gap: 8px; 
+}
+
+.profile-img {
+    position: relative;
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.flex.flex-col label {
+    color: #161571;
+}
+.text-primary {
+    color: #161571;
+}
+.custom-form-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px; 
+}
+
+.custom-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px; 
+}
+
+.custom-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+    .custom-form-group label {
+        margin-bottom: 5px;
+    }
+
+.custom-form-control {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 10px !important; 
+}
+.bg-gray-50 {
+    background-color: #D1D7FF;
+}
+.custom-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 30px; 
+}
+
+
+.custom-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.custom-form-control {
+    height: 40px; 
+    width: 300px; 
+    padding: 4px 8px; 
+    font-size: 14px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+}
+
+.custom-form-control:focus {
+    border-color: #5513EE; 
+    outline: none; 
+}
+
+   
