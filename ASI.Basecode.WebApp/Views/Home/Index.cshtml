@@ -220,25 +220,36 @@
                     <h5 class="text-sm font-medium text-gray-400 mb-4">Chart Viewer</h5>
                     <!-- Grid container for the buttons and radio buttons -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        <!-- Button 1: Weekly Resolution Rate -->
-                        <div class="flex items-center gap-2">
-                            <button class="btn btn-outline-blue w-full" onclick="showChart('weekly', false)">Weekly Resolution Rate</button>
-                            <input type="radio" id="weeklyColor" name="chartColor" class="ml-2" onclick="showChart('weekly', true)">
+                        <div class="flex items-center w-full relative pl-8">
+                            <input type="radio" id="weeklyColor" name="chartColor" class="ml-1" onclick="showChart('weekly', true)">
+                            <div class="btn w-full" onclick="showChart('weekly', false)">
+                                <span>Weekly Resolution Rate</span>
+                            </div>
                         </div>
                         <!-- Button 2: Monthly Tickets -->
-                        <div class="flex items-center gap-2">
-                            <button class="btn btn-outline-green w-full" onclick="showChart('monthly', false)">Monthly Tickets</button>
-                            <input type="radio" id="monthlyColor" name="chartColor" class="ml-2" onclick="showChart('monthly', true)">
+                        <div class="flex items-center w-full relative pl-8">
+                            <input type="radio" id="monthlyColor" name="chartColor" class="ml-1" onclick="showChart('monthly', true)">
+                            <div>
+                                <span class="btn btn-green w-full" onclick="showChart('monthly', false)">Monthly Tickets</span>
+                            </div>
                         </div>
                         <!-- Button 3: Ticket Distribution -->
-                        <div class="flex items-center gap-2">
-                            <button class="btn btn-outline-yellow w-full" onclick="showChart('distribution', false)">Ticket Distribution</button>
-                            <input type="radio" id="distributionColor" name="chartColor" class="ml-2" onclick="showChart('distribution', true)">
+                        <div class="flex items-center w-full relative pl-8">
+                            <input type="radio" id="distributionColor" name="chartColor" class="ml-1" onclick="showChart('distribution', true)">
+                            <div>
+                                <span class="btn w-full" onclick="showChart('distribution', false)">Ticket Distribution</span>
+                            </div>
+                            
+                            
                         </div>
                         <!-- Button 4: Ticket Trends -->
-                        <div class="flex items-center gap-2">
-                            <button class="btn btn-outline-red w-full" onclick="showChart('trends', false)">Ticket Trends</button>
-                            <input type="radio" id="trendsColor" name="chartColor" class="ml-2" onclick="showChart('trends', true)">
+                        <div class="flex items-center w-full relative pl-8">
+                            <input type="radio" id="trendsColor" name="chartColor" class="ml-1" onclick="showChart('trends', true)">
+                            <div>
+                                <span class="btn w-full" onclick="showChart('trends', false)">Ticket Trends</span>
+                            </div>
+                            
+                            
                         </div>
                     </div>
                 </div>
@@ -674,6 +685,10 @@
         }
     </script>
     <script>
+        window.onload = function() {
+            // Trigger the chart to display when the page loads by calling the 'showChart' function
+            showChart('distribution', true);
+        }
         function showChart(chartType, isColorSelected) {
             let chartData;
             let chartColors;
@@ -684,7 +699,7 @@
             if (isColorSelected) {
                 switch (chartType) {
                     case 'weekly':
-                        chartData = [12, 19, 3, 5, 2, 3]; // Example weekly data
+                        chartData = [12, 19, 3, 5, 2, 3]; 
                         chartColors = ['#3b82f6']; // Blue color for Weekly chart
                         break;
                     case 'monthly':
@@ -693,7 +708,7 @@
                         break;
                     case 'distribution':
                         chartData = [40, 25, 15, 20]; // Example distribution data (percentages or quantities)
-                        chartColors = ['#f59e0b', '#10b981', '#3b82f6', '#ef4444']; // Colors for distribution
+                        chartColors = ['#f59e0b', '#10b981', '#3b82f6', '#ef4444', '7E8EF1']; // Colors for distribution
                         chartTypeForRendering = 'pie'; // Change to 'pie' for distribution
                         break;
                     case 'trends':
@@ -718,7 +733,7 @@
             window.chartInstance = new Chart(ctx, {
                 type: chartTypeForRendering,  
                 data: {
-                    labels: chartType === 'distribution' ? ['New', 'In Progress', 'Closed', 'Pending'] : ['January', 'February', 'March', 'April', 'May', 'June'], 
+                    labels: chartType === 'distribution' ? ['Total Tickets', 'Open Tickets', 'In Progress', 'Closed', 'Pending'] : ['January', 'February', 'March', 'April', 'May', 'June'], 
                     datasets: [{
                         label: chartType + ' Chart',
                         data: chartData,
