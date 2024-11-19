@@ -15,7 +15,7 @@
 <div class="py-2 px-0 bg-absolute flex items-center sticky top-0 left-0 right-0 z-30">
     <ul class="flex items-center text-sm m-0">
         <li class="mr-2">
-            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">D A S H B O A R D</a>
+            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">Hi! @HttpContextAccessor.HttpContext.Session.GetString("UserName")</a>
         </li>
     </ul>
     <ul class="ml-auto flex items-center">
@@ -107,7 +107,7 @@
         </div>
     </ul>
 </div>
-
+@*
 @if (User.IsInRole("admin") || User.IsInRole("superadmin"))
 {
     <!-- Row 1 - Charts -->
@@ -209,10 +209,202 @@
         </div>
     </div>
 }
-<div/>
+<div/>*@
 
+@if (User.IsInRole("admin") || User.IsInRole("superadmin"))
+{
+    <div class="grid grid-cols-1 gap-6 mb-6">
+        <div class="h-100 border border-[#7E8EF1] border-opacity-100 p-6 shadow-md shadow-#7E8EF1/5 rounded-[15px]">
+            <div class="card-body" style="background-color: transparent;">
+                <div class="mb-6">
+                    <h5 class="text-sm font-medium text-gray-400 mb-4">Chart Viewer</h5>
+                    <!-- Grid container for the buttons and radio buttons -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div class="flex items-center w-full relative pl-8">
+                            <input type="radio" id="weeklyColor" name="chartColor" class="ml-1" onclick="showChart('weekly', true)">
+                            <div class="btn w-full" onclick="showChart('weekly', false)">
+                                <span>Weekly Resolution Rate</span>
+                            </div>
+                        </div>
+                        <!-- Button 2: Monthly Tickets -->
+                        <div class="flex items-center w-full relative pl-8">
+                            <input type="radio" id="monthlyColor" name="chartColor" class="ml-1" onclick="showChart('monthly', true)">
+                            <div>
+                                <span class="btn btn-green w-full" onclick="showChart('monthly', false)">Monthly Tickets</span>
+                            </div>
+                        </div>
+                        <!-- Button 3: Ticket Distribution -->
+                        <div class="flex items-center w-full relative pl-8">
+                            <input type="radio" id="distributionColor" name="chartColor" class="ml-1" onclick="showChart('distribution', true)">
+                            <div>
+                                <span class="btn w-full" onclick="showChart('distribution', false)">Ticket Distribution</span>
+                            </div>
+                            
+                            
+                        </div>
+                        <!-- Button 4: Ticket Trends -->
+                        <div class="flex items-center w-full relative pl-8">
+                            <input type="radio" id="trendsColor" name="chartColor" class="ml-1" onclick="showChart('trends', true)">
+                            <div>
+                                <span class="btn w-full" onclick="showChart('trends', false)">Ticket Trends</span>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="dynamicChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-2">
+        <div class="flex justify-between mb-4 items-start">
+            <div class="font-medium uppercase">T i c k e t s</div>
+        </div>
+        <form action="" class="flex items-center mb-4">
+            <div class="relative w-full mr-2">
+                <input type="text" class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500" placeholder="Search tickets">
+                <i class="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 text-gray-400"></i>
+            </div>
+            <div class="relative">
+                <select class="text-sm py-2 pl-3 pr-10 bg-gray-50 border border-gray-100 rounded-md focus:border-blue-500 outline-none appearance-none bg-select-arrow bg-no-repeat bg-[length:16px_16px] bg-[right_16px_center]">
+                    <option value="">Filter</option>
+                    <option value="option1">Name</option>
+                    <option value="option2">Department</option>
+                </select>
+            </div>
+            <div class="relative flex items-center ml-2">
+                <div class="create-now">
+                    <button type="button" id="addTicketButton" data-toggle="modal" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" data-target="#createTicketModal">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="overflow-x-auto max-h-60">
+            <table class="w-full min-w-[540px]  h-full" data-tab-for="order" data-page="active">
+                <thead>
+                    <tr>
+                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Title</th>
+                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Category</th>
+                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Priority</th>
+                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Status</th>
+                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ticket in Model)
+                    {
+                        <tr>
+                            <!-- Title -->
+                            <td class="py-2 pl-2 border-b border-b-gray-50 max-w-xs">
+                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
+                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
+                                    @ticket.Title
+                                </span>
+                            </td>
+
+                            <!-- Category -->
+                            <td class="py-2 pl-2 border-b border-b-gray-50 max-w-xs">
+                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
+                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
+                                    @ticket.Category
+                                </span>
+                            </td>
+
+                            <!-- Priority -->
+                            <td class="py-2 pl-2 border-b border-b-gray-50">
+                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
+                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
+                                    @ticket.Priority
+                                </span>
+                            </td>
+
+                            <!-- Status -->
+                            <td class="py-2 pl-2 border-b border-b-gray-50">
+                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
+                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
+                                    @ticket.Status
+                                </span>
+                            </td>
+
+
+                            <!-- Actions -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button class="assign-btn text-blue-600 hover:text-blue-900 mr-2" onclick="showAssignModal(@ticket.TicketId)">Assign</button>
+                                <a asp-action="Details" asp-route-id="@ticket.TicketId"
+                               class="details-btn text-green-600 hover:text-green-900 mr-2">Details</a>
+
+                                <button type="button" onclick="editTicketModal(@ticket.TicketId)"
+                                    id="editTicketButton"
+                                    class="edit-btn text-red-600 hover:text-red-900 mr-2"
+                                    data-toggle="modal"
+                                    data-target="#editTicketModal">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                <button class="delete-btn text-red-600 hover:text-red-900"
+                                    onclick="deleteTicket(@ticket.TicketId)">
+                                    <i class="fas fa-trash"></i> <!-- Trash icon for Delete -->
+                                </button>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-1">
+        <!-- Keep Articles normal width -->
+        <div class="flex justify-between mb-4 items-start">
+            <div class="font-medium uppercase">A r t i c l e s</div>
+        </div>
+        <form action="" class="flex items-center mb-4">
+            <div class="relative w-full mr-2">
+                <input type="text" class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500" placeholder="Search articles">
+                <i class="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 text-gray-400"></i>
+            </div>
+            <select class="text-sm py-2 pl-4 pr-10 bg-gray-50 border border-gray-100 rounded-md focus:border-blue-500 outline-none appearance-none bg-select-arrow bg-no-repeat bg-[length:16px_16px] bg-[right_16px_center]">
+                <option value="">All</option>
+            </select>
+        </form>
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[540px]">
+                <thead>
+                    <tr>
+                        <th class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Articles</th>
+                        <th class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Department</th>
+                        <th class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="py-2 pl-2 border-b border-b-gray-50">
+                            <a href="@Url.Action("Tickets", "Admin")" class="text-gray-600 text-sm font-medium hover:text-blue-500 truncate">Resolved issues</a>
+                        </td>
+                        <td class="py-2 pl-2 border-b border-b-gray-50">
+                            <span class="text-[13px] font-medium text-gray-400">CASE</span>
+                        </td>
+                        <td class="py-2 pl-2 border-b border-b-gray-50">
+                            <span class="text-[13px] font-medium text-gray-400">Resolved</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 @if (User.IsInRole("User") || User.IsInRole("Agent"))
-{    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4 p-4 md:p-6">
+{   <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4 p-4 md:p-6">
         <Card class="card-content">
             <CardContent className="flex items-center gap-4 p-6">
                 <div style="display: flex; align-items: center; gap: 15px;">
@@ -271,202 +463,6 @@
     </div>
 }</div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-    <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-2">
-        <div class="flex justify-between mb-4 items-start">
-            <div class="font-medium uppercase">T i c k e t s</div>
-        </div>
-        <form action="" class="flex items-center mb-4">
-            <div class="relative w-full mr-2">
-                <input type="text" class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500" placeholder="Search tickets">
-                <i class="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 text-gray-400"></i>
-            </div>
-            <div class="relative">
-                <select class="text-sm py-2 pl-3 pr-10 bg-gray-50 border border-gray-100 rounded-md focus:border-blue-500 outline-none appearance-none bg-select-arrow bg-no-repeat bg-[length:16px_16px] bg-[right_16px_center]">
-                    <option value="">Filter</option>
-                    <option value="option1">Name</option>
-                    <option value="option2">Department</option>
-                </select>
-            </div>
-            <div class="relative flex items-center ml-2">
-                <div class="create-now">
-                        <button type="button" id="addTicketButton" data-toggle="modal" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" data-target="#createTicketModal">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                </div>
-            </div>
-        </form>
-
-        <div class="overflow-x-auto">
-            <table class="w-full min-w-[540px]" data-tab-for="order" data-page="active">
-                <thead>
-                    <tr>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Title</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Category</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Priority</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Status</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Created On</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Assigned To</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var ticket in Model)
-                    {
-                        <tr>
-                            <!-- Title -->
-                            <td class="py-2 pl-2 border-b border-b-gray-50 max-w-xs">
-
-                                <a href="@Url.Action("Details", "Ticket", new { id = ticket.TicketId })"
-                               class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
-                               style="text-overflow: ellipsis; display: block; max-width: 100%;">
-                                    @ticket.Title
-                                </a>
-                            </td>
-
-                            <!-- Category -->
-                            <td class="py-2 pl-2 border-b border-b-gray-50">
-                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
-                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
-                                    @ticket.Category
-                                </span>
-                            </td>
-
-                            <!-- Priority -->
-                            <td class="py-2 pl-2 border-b border-b-gray-50">
-                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
-                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
-                                    @ticket.Priority
-                                </span>
-                            </td>
-
-                            <!-- Status -->
-                            <td class="py-2 pl-2 border-b border-b-gray-50">
-                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
-                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
-                                    @ticket.Status
-                                </span>
-                            </td>
-
-                            <!-- Created On -->
-                            <td class="py-2 pl-2 border-b border-b-gray-50">
-                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
-                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
-                                    @ticket.CreatedOn.ToString("g")
-                                </span>
-                            </td>
-
-                            <!-- Assigned To -->
-                            <td class="py-2 pl-2 border-b border-b-gray-50">
-                                <span class="text-gray-600 text-sm font-medium hover:text-blue-500 block truncate overflow-hidden whitespace-nowrap"
-                                  style="text-overflow: ellipsis; display: block; max-width: 100%;">
-                                    @(ticket.AssignedToName ?? "Unassigned")
-                                </span>
-                            </td>
-
-
-                            <!-- Actions -->
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <a asp-action="Details" asp-route-id="@ticket.TicketId"
-                               class="details-btn text-green-600 hover:text-green-900 mr-2">Details</a>
-                                <button class="edit-btn text-blue-600 hover:text-blue-900 mr-2"
-                                    onclick="editTicket(@ticket.TicketId)">
-                                    <i class="fas fa-pen"></i> <!-- Pen icon for Edit -->
-                                </button>
-                                <button class="delete-btn text-red-600 hover:text-red-900"
-                                    onclick="deleteTicket(@ticket.TicketId)">
-                                    <i class="fas fa-trash"></i> <!-- Trash icon for Delete -->
-                                </button>
-                            </td>
-                        </tr>
-                    }
-
-                </tbody>@*
-                <thead>
-                    <tr>
-                        <th class="text-[10px] tracking-wide font-medium text-gray-400 py-1 px-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Title</th>
-                        <th class="text-[10px] tracking-wide font-medium text-gray-400 py-1 px-2 bg-gray-50 text-left">Category</th>
-                        <th class="text-[10px] tracking-wide font-medium text-gray-400 py-1 px-2 bg-gray-50 text-left">Priority</th>
-                        <th class="text-[10px] tracking-wide font-medium text-gray-400 py-1 px-2 bg-gray-50 text-left">Status</th>
-                        <th class="text-[10px] tracking-wide font-medium text-gray-400 py-1 px-2 bg-gray-50 text-left">Created On</th>
-                        <th class="text-[10px] tracking-wide font-medium text-gray-400 py-1 px-2 bg-gray-50 text-left">Assigned To</th>
-                        <th class="text-[10px] tracking-wide font-medium text-gray-400 py-1 px-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var ticket in Model)
-                    {
-                        <tr>
-                            <!-- Title -->
-                            <td class="py-1 px-2 text-[12px] text-gray-600 truncate">@ticket.Title</td>
-                            <!-- Category -->
-                            <td class="py-1 px-2 text-[12px] text-gray-600 truncate">@ticket.Category</td>
-                            <!-- Priority -->
-                            <td class="py-1 px-2 text-[12px] text-gray-600 truncate">@ticket.Priority</td>
-                            <!-- Status -->
-                            <td class="py-1 px-2 text-[12px] text-gray-600 truncate">@ticket.Status</td>
-                            <!-- Created On -->
-                            <td class="py-1 px-2 text-[12px] text-gray-600 truncate">@ticket.CreatedOn.ToString("g")</td>
-                            <!-- Assigned To -->
-                            <td class="py-1 px-2 text-[12px] text-gray-600 truncate">@ticket.AssignedToName "Unassigned"</td>
-                            <!-- Actions -->
-                            <td class="py-1 px-2 text-[12px]">
-                                <a asp-action="Details" asp-route-id="@ticket.TicketId" class="text-green-600 hover:text-green-900">Details</a>
-                                <button class="text-blue-600 hover:text-blue-900" onclick="editTicket(@ticket.TicketId)">
-                                    <i class="fas fa-pen"></i>
-                                </button>
-                                <button class="text-red-600 hover:text-red-900" onclick="deleteTicket(@ticket.TicketId)">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>*@
-
-            </table>
-        </div>
-    </div>
-
-    <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-1">
-        <!-- Keep Articles normal width -->
-        <div class="flex justify-between mb-4 items-start">
-            <div class="font-medium uppercase">A r t i c l e s</div>
-        </div>
-        <form action="" class="flex items-center mb-4">
-            <div class="relative w-full mr-2">
-                <input type="text" class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500" placeholder="Search articles">
-                <i class="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 text-gray-400"></i>
-            </div>
-            <select class="text-sm py-2 pl-4 pr-10 bg-gray-50 border border-gray-100 rounded-md focus:border-blue-500 outline-none appearance-none bg-select-arrow bg-no-repeat bg-[length:16px_16px] bg-[right_16px_center]">
-                <option value="">All</option>
-            </select>
-        </form>
-        <div class="overflow-x-auto">
-            <table class="w-full min-w-[540px]">
-                <thead>
-                    <tr>
-                        <th class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Articles</th>
-                        <th class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Department</th>
-                        <th class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="py-2 pl-2 border-b border-b-gray-50">
-                            <a href="@Url.Action("Tickets", "Admin")" class="text-gray-600 text-sm font-medium hover:text-blue-500 truncate">Resolved issues</a>
-                        </td>
-                        <td class="py-2 pl-2 border-b border-b-gray-50">
-                            <span class="text-[13px] font-medium text-gray-400">CASE</span>
-                        </td>
-                        <td class="py-2 pl-2 border-b border-b-gray-50">
-                            <span class="text-[13px] font-medium text-gray-400">Resolved</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
 
 <!-- Create Ticket Modal -->
 <div class="modal fade" id="createTicketModal" tabindex="-1">
@@ -688,123 +684,85 @@
             }
         }
     </script>
-}
-@*
-<div id="addTicketModal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="modal-content bg-white w-1/3 rounded-lg shadow-lg relative p-8">
-        <span class="close absolute top-3 right-3 text-gray-400 hover:text-gray-600 cursor-pointer text-2xl">&times;</span>
-
-        <!-- Title section with gradient frame -->
-        <div class="heading-frame" style="width: 100%; height: 100px; background: linear-gradient(to right, #7E8EF1 100%, #E8ECFF 80%); display: flex; align-items: center; justify-content: center; border-top-left-radius: 10px; border-top-right-radius: 10px; margin: 0; padding: 0;">
-            <h1 style="font-size: 2.5rem; color: white; font-weight: bold; margin: 0;">Create Ticket</h1>
-        </div>
-
-        <form id="ticketForm" style="padding-top: 20px;">
-            <!-- Subject Field -->
-            <div class="form-group mb-4">
-                <label for="subject" class="block text-gray-700 text-lg font-medium mb-2">Subject:</label>
-                <input type="text" id="subject" name="subject" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-            </div>
-
-            <!-- Status Field -->
-            <div class="form-group mb-4">
-                <label for="status" class="block text-gray-700 text-lg font-medium mb-2">Status:</label>
-                <select id="status" name="status" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    <option value="">Select Status</option>
-                    <option value="open">Open</option>
-                    <option value="inProgress">In Progress</option>
-                    <option value="closed">Closed</option>
-                </select>
-            </div>
-
-            <!-- Priority Field -->
-            <div class="form-group mb-4">
-                <label for="priority" class="block text-gray-700 text-lg font-medium mb-2">Priority:</label>
-                <select id="priority" name="priority" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    <option value="">Select Priority</option>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                </select>
-            </div>
-
-            <!-- Department Field -->
-            <div class="form-group mb-4">
-                <label for="department" class="block text-gray-700 text-lg font-medium mb-2">Department:</label>
-                <select id="department" name="department" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    <option value="">Select Department</option>
-                    <option value="hr">HR</option>
-                    <option value="it">IT</option>
-                    <option value="sales">Sales</option>
-                    <option value="support">Support</option>
-                </select>
-            </div>
-
-            <!-- Support System Field -->
-            <div class="form-group mb-4">
-                <label for="supportSystem" class="block text-gray-700 text-lg font-medium mb-2">Support System:</label>
-                <select id="supportSystem" name="supportSystem" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    <option value="">Select Support System</option>
-                    <option value="email">Email</option>
-                    <option value="chat">Chat</option>
-                    <option value="phone">Phone</option>
-                </select>
-            </div>
-
-            <!-- Description Field -->
-            <div class="form-group mb-6">
-                <label for="description" class="block text-gray-700 text-lg font-medium mb-2">Description:</label>
-                <textarea id="description" name="description" rows="5" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex justify-between mt-6">
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Create Ticket</button>
-                <button type="reset" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none">Reset</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-
-    // Show modal without reloading the page
-    document.getElementById('addTicketButton').addEventListener('click', function (event) {
-        event.preventDefault(); // Prevent form submission
-
-        // Show the modal here
-        document.querySelector('.modal').style.display = 'block';
-        console.log('Modal opened');
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-
-        const ticketForm = document.getElementById('ticketForm');
-        const submitButton = ticketForm.querySelector('button[type="submit"]');
-
-        // pag open/close sa modal
-        var modal = document.getElementById("addTicketModal");
-        var btn = document.querySelector(".create-now button");
-        var span = document.getElementsByClassName("close")[0];
-
-        btn.onclick = function () {
-            modal.style.display = "block";
-            ticketForm.reset(); // reset form
-
+    <script>
+        window.onload = function() {
+            // Trigger the chart to display when the page loads by calling the 'showChart' function
+            showChart('distribution', true);
         }
+        function showChart(chartType, isColorSelected) {
+            let chartData;
+            let chartColors;
+            let chartOptions;
+            let chartTypeForRendering = 'line'; 
 
-        span.onclick = function () {
-            modal.style.display = "none";
-        }
-
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
+            // Check if the color radio button is selected and set chart data and color
+            if (isColorSelected) {
+                switch (chartType) {
+                    case 'weekly':
+                        chartData = [12, 19, 3, 5, 2, 3]; 
+                        chartColors = ['#3b82f6']; // Blue color for Weekly chart
+                        break;
+                    case 'monthly':
+                        chartData = [5, 10, 15, 20, 25, 30]; // Example monthly data
+                        chartColors = ['#10b981']; // Green color for Monthly chart
+                        break;
+                    case 'distribution':
+                        chartData = [40, 25, 15, 20]; // Example distribution data (percentages or quantities)
+                        chartColors = ['#f59e0b', '#10b981', '#3b82f6', '#ef4444', '7E8EF1']; // Colors for distribution
+                        chartTypeForRendering = 'pie'; // Change to 'pie' for distribution
+                        break;
+                    case 'trends':
+                        chartData = [4, 8, 12, 7, 5, 10]; // Example trends data
+                        chartColors = ['#ef4444']; // Red color for Trends chart
+                        break;
+                    default:
+                        chartData = [0, 0, 0, 0, 0, 0]; // Default data
+                        chartColors = ['#000000']; // Default color
+                }
+            } else {
+                chartData = [0, 0, 0, 0, 0, 0];
+                chartColors = ['#d1d5db']; // Default grey color
             }
-        }
 
-    });
-</script>*@
+            // Update the chart with new data and color
+            var ctx = document.getElementById('dynamicChart').getContext('2d');
+            if (window.chartInstance) {
+                window.chartInstance.destroy(); // Destroy the previous chart if it exists
+            }
+
+            window.chartInstance = new Chart(ctx, {
+                type: chartTypeForRendering,  
+                data: {
+                    labels: chartType === 'distribution' ? ['Total Tickets', 'Open Tickets', 'In Progress', 'Closed', 'Pending'] : ['January', 'February', 'March', 'April', 'May', 'June'], 
+                    datasets: [{
+                        label: chartType + ' Chart',
+                        data: chartData,
+                        backgroundColor: chartColors,  // Use the defined color array
+                        borderColor: chartColors,      // Use the same color for the border
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        // Specific options for pie charts
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.label + ': ' + tooltipItem.raw + '%';  // For pie chart percentage
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+    </script>
+
+}
+
 <style>
     body {
         margin: 0;
@@ -836,6 +794,77 @@
         height: 100%;
         width: 100%;
     }
+    .chart-container {
+        position: relative;
+        height: 300px; /* Adjust height as needed */
+    }
+    .btn {
+        font-size: 14px;
+        padding: 5px 10px;
+    }
+    /* Tailwind classes for custom button colors */
+.btn-outline-blue {
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.btn-outline-green {
+    border-color: #10b981;
+    color: #10b981;
+}
+
+.btn-outline-yellow {
+    border-color: #f59e0b;
+    color: #f59e0b;
+}
+
+.btn-outline-red {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.btn-outline-blue:hover {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.btn-outline-green:hover {
+    background-color: #10b981;
+    color: white;
+}
+
+.btn-outline-yellow:hover {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.btn-outline-red:hover {
+    background-color: #ef4444;
+    color: white;
+}
+
+/* Add active button styles */
+input[type="radio"]:checked + button {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+input[type="radio"]:checked + button.btn-outline-blue {
+    color: #3b82f6;
+}
+
+input[type="radio"]:checked + button.btn-outline-green {
+    color: #10b981;
+}
+
+input[type="radio"]:checked + button.btn-outline-yellow {
+    color: #f59e0b;
+}
+
+input[type="radio"]:checked + button.btn-outline-red {
+    color: #ef4444;
+}
+
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
