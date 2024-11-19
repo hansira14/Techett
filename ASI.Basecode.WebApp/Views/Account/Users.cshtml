@@ -120,84 +120,106 @@
         </div>
     </ul>
 </div>
+<div class="flex flex-col h-full flex-grow" style="min-height: calc(100vh - 85px); margin-bottom: 20px; ">
+    <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-3 flex-grow">
 
-<div class="grid grid-cols-1 gap-6 pb-6 h-screen w-full overflow-hidden">
-    <div class="bg-white h-full border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-2">
-        <div class="container mt-4">
-            <h2>User Management</h2>
-            <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#createUserModal">
-                Create New User
-            </button>
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Team</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var user in Model)
-                    {
-                        <tr>
-                            <td><a href="@Url.Action("Profile", "Account", new { id = user.UserId })"
-                                    class="text-blue-600 hover:text-blue-900">@($"{user.Fname} {user.Lname}")</a></td>
-                            <td>@user.Email</td>
-                            <td>@user.Role</td>
-                            <td>@user.TeamName</td>
-                            <td>@(user.IsActive == true ? "Active" : "Inactive")</td>
-                            <td>
-                                <a asp-action="ViewUser" asp-route-id="@user.UserId" class="btn btn-info btn-sm">View</a>
-                                <button class="btn btn-warning btn-sm" onclick="editUser(@user.UserId)">Edit</button>
-                                <button class="btn btn-danger btn-sm" onclick="deleteUser(@user.UserId)">Delete</button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <form action="" class="flex items-center mb-4">
+            <div class="relative w-full mr-2">
+                <input type="text" class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500" placeholder="Search users">
+                <i class="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 text-gray-400"></i>
+            </div>
+            <div class="relative">
+                <select class="text-sm py-2 pl-3 pr-10 bg-gray-50 border border-gray-100 rounded-md focus:border-blue-500 outline-none appearance-none bg-select-arrow bg-no-repeat bg-[length:16px_16px] bg-[right_16px_center]">
+                    <option value="">Filter</option>
+                    <option value="option1">Name</option>
+                    <option value="option2">Department</option>
+                </select>
+            </div>
+            <div class="relative flex items-center ml-2">
+                <div class="create-now">
+                    <button type="button" id="addUserButton" data-toggle="modal" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" data-target="#createUserModal">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <div class="grid grid-cols-1 gap-6 pb-6 h-screen w-full overflow-hidden">
+            <div class="bg-white h-full border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-2">
+                <div class="container mt-4">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Team</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <a href="@Url.Action("Profile", "Account", new { id = user.UserId })"
+                                       class="text-blue-600 hover:text-blue-900">@($"{user.Fname} {user.Lname}")</a>
+                                    </td>
+                                    <td>@user.Email</td>
+                                    <td>@user.Role</td>
+                                    <td>@user.TeamName</td>
+                                    <td>@(user.IsActive == true ? "Active" : "Inactive")</td>
+                                    <td>
+                                        <a asp-action="ViewUser" asp-route-id="@user.UserId" class="btn btn-info btn-sm">View</a>
+                                        <button class="btn btn-warning btn-sm" onclick="editUser(@user.UserId)">Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteUser(@user.UserId)">Delete</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+
 <!-- Create User Modal -->
 <div class="modal fade" id="createUserModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Create New User</h5>
-                <button type="button" class="close" data-dismiss="modal">
+    <div class="modal-dialog modal-lg max-w-md mx-auto">
+        <div class="modal-content rounded-lg shadow-xl">
+            <div class="modal-header text-center bg-gradient-to-r from-blue-100 to-purple-700 rounded-t-lg p-4 d-flex justify-content-center align-items-center position-relative">
+                <h5 class="modal-title text-2xl font-bold text-center text-indigo-900">Create User Account</h5>
+                <button type="button" class="close position-absolute" data-dismiss="modal" style="top: 10px; right: 10px;">
                     <span>&times;</span>
                 </button>
             </div>
             <form id="createUserForm" asp-action="CreateUser" method="post">
-                <div class="modal-body">
+                <div class="modal-body p-6 space-y-4">
                     <div class="form-group">
-                        <label for="Fname">First Name</label>
-                        <input name="Fname" id="Fname" class="form-control" required />
+                        <label for="Fname" class="block text-sm font-medium text-indigo-700 mb-1">First Name</label>
+                        <input name="Fname" id="Fname" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;" />
                     </div>
                     <div class="form-group">
-                        <label for="Lname">Last Name</label>
-                        <input name="Lname" id="Lname" class="form-control" required />
+                        <label for="Lname" class="block text-sm font-medium text-indigo-700 mb-1">Last Name</label>
+                        <input name="Lname" id="Lname" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;" />
                     </div>
                     <div class="form-group">
-                        <label for="Email">Email</label>
-                        <input name="Email" id="Email" type="email" class="form-control" required />
+                        <label for="Email" class="block text-sm font-medium text-indigo-700 mb-1">Email</label>
+                        <input name="Email" id="Email" type="email" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;" />
                     </div>
                     <div class="form-group">
-                        <label for="Password">Password</label>
-                        <input name="Password" id="Password" type="password" class="form-control" required />
+                        <label for="Password" class="block text-sm font-medium text-indigo-700 mb-1">Password</label>
+                        <input name="Password" id="Password" type="password" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;" />
                     </div>
                     <div class="form-group">
-                        <label for="ConfirmPassword">Confirm Password</label>
-                        <input name="ConfirmPassword" id="ConfirmPassword" type="password" class="form-control"
-                            required />
+                        <label for="ConfirmPassword" class="block text-sm font-medium text-indigo-700 mb-1">Confirm Password</label>
+                        <input name="ConfirmPassword" id="ConfirmPassword" type="password" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;" />
                     </div>
                     <div class="form-group">
-                        <label for="Role">Role</label>
-                        <select name="Role" id="Role" class="form-control" required>
+                        <label for="Role" class="block text-sm font-medium text-indigo-700 mb-1">Role</label>
+                        <select name="Role" id="Role" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;">
                             @if (User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role &&
                             c.Value.Equals("SuperAdmin", StringComparison.OrdinalIgnoreCase)))
                             {
@@ -213,9 +235,9 @@
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Create User</button>
+                <div class="modal-footer p-6 pt-0 flex justify-end space-x-4 mt-3 mb-0">
+                    <button type="button" class="btn px-4 py-2 text-gray-700 mt-3 rounded-md focus:outline-none, focus:ring" style="padding: 5px 10px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn text-[#161571] rounded-md mt-3 hover:bg-[#BCC5FF]" style="background-color: #D1D7FF; padding: 5px 10px;">Create User</button>
                 </div>
             </form>
         </div>
