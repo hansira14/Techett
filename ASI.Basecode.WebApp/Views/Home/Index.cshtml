@@ -15,7 +15,7 @@
 <div class="py-2 px-0 bg-absolute flex items-center sticky top-0 left-0 right-0 z-30">
     <ul class="flex items-center text-sm m-0">
         <li class="mr-2">
-            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">D A S H B O A R D</a>
+            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">Hi! @HttpContextAccessor.HttpContext.Session.GetString("UserName")</a>
         </li>
     </ul>
     <ul class="ml-auto flex items-center">
@@ -210,28 +210,47 @@
     </div>
 }
 <div/>*@
+
 @if (User.IsInRole("admin") || User.IsInRole("superadmin"))
 {
     <div class="grid grid-cols-1 gap-6 mb-6">
         <div class="h-100 border border-[#7E8EF1] border-opacity-100 p-6 shadow-md shadow-#7E8EF1/5 rounded-[15px]">
             <div class="card-body" style="background-color: transparent;">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title text-uppercase">Chart Viewer</h5>
-                    <div>
-                        <button class="btn btn-outline-primary mx-1" onclick="showChart('weekly')">Weekly Resolution Rate</button>
-                        <button class="btn btn-outline-primary mx-1" onclick="showChart('monthly')">Monthly Tickets</button>
-                        <button class="btn btn-outline-primary mx-1" onclick="showChart('distribution')">Ticket Distribution</button>
-                        <button class="btn btn-outline-primary mx-1" onclick="showChart('trends')">Ticket Trends</button>
+                <div class="mb-6">
+                    <h5 class="text-sm font-medium text-gray-400 mb-4">Chart Viewer</h5>
+                    <!-- Grid container for the buttons and radio buttons -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <!-- Button 1: Weekly Resolution Rate -->
+                        <div class="flex items-center gap-2">
+                            <button class="btn btn-outline-blue w-full" onclick="showChart('weekly', false)">Weekly Resolution Rate</button>
+                            <input type="radio" id="weeklyColor" name="chartColor" class="ml-2" onclick="showChart('weekly', true)">
+                        </div>
+                        <!-- Button 2: Monthly Tickets -->
+                        <div class="flex items-center gap-2">
+                            <button class="btn btn-outline-green w-full" onclick="showChart('monthly', false)">Monthly Tickets</button>
+                            <input type="radio" id="monthlyColor" name="chartColor" class="ml-2" onclick="showChart('monthly', true)">
+                        </div>
+                        <!-- Button 3: Ticket Distribution -->
+                        <div class="flex items-center gap-2">
+                            <button class="btn btn-outline-yellow w-full" onclick="showChart('distribution', false)">Ticket Distribution</button>
+                            <input type="radio" id="distributionColor" name="chartColor" class="ml-2" onclick="showChart('distribution', true)">
+                        </div>
+                        <!-- Button 4: Ticket Trends -->
+                        <div class="flex items-center gap-2">
+                            <button class="btn btn-outline-red w-full" onclick="showChart('trends', false)">Ticket Trends</button>
+                            <input type="radio" id="trendsColor" name="chartColor" class="ml-2" onclick="showChart('trends', true)">
+                        </div>
                     </div>
                 </div>
+
                 <div class="chart-container">
                     <canvas id="dynamicChart" height="250"></canvas>
                 </div>
             </div>
-
         </div>
     </div>
 }
+
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
     <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-2">
@@ -267,8 +286,6 @@
                         <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Category</th>
                         <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Priority</th>
                         <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Status</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Created On</th>
-                        <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Assigned To</th>
                         <th class="w-1/4 text-[10px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Actions</th>
                     </tr>
                 </thead>
@@ -308,19 +325,6 @@
                                 </span>
                             </td>
 
-                            <!-- Created On -->
-                            <td class="py-2 pl-2 border-b border-b-gray-50">
-                                <span class="text-gray-600 text-sm font-medium">
-                                    @ticket.CreatedOn.ToString("g")
-                                </span>
-                            </td>
-
-                            <!-- Assigned To -->
-                            <td class="py-2 pl-2 border-b border-b-gray-50">
-                                <span class="text-gray-600 text-sm font-medium">
-                                    @(ticket.AssignedToName ?? "Unassigned")
-                                </span>
-                            </td>
 
                             <!-- Actions -->
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -670,57 +674,76 @@
         }
     </script>
     <script>
-        let chart; // Store the Chart.js instance
+        function showChart(chartType, isColorSelected) {
+            let chartData;
+            let chartColors;
+            let chartOptions;
+            let chartTypeForRendering = 'line'; 
 
-        // Function to initialize the chart
-        function initializeChart(type = 'line', label = 'Resolution Rate', data = [65, 59, 80, 81, 56, 55, 40], labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']) {
-            const ctx = document.getElementById('dynamicChart').getContext('2d');
+            // Check if the color radio button is selected and set chart data and color
+            if (isColorSelected) {
+                switch (chartType) {
+                    case 'weekly':
+                        chartData = [12, 19, 3, 5, 2, 3]; // Example weekly data
+                        chartColors = ['#3b82f6']; // Blue color for Weekly chart
+                        break;
+                    case 'monthly':
+                        chartData = [5, 10, 15, 20, 25, 30]; // Example monthly data
+                        chartColors = ['#10b981']; // Green color for Monthly chart
+                        break;
+                    case 'distribution':
+                        chartData = [40, 25, 15, 20]; // Example distribution data (percentages or quantities)
+                        chartColors = ['#f59e0b', '#10b981', '#3b82f6', '#ef4444']; // Colors for distribution
+                        chartTypeForRendering = 'pie'; // Change to 'pie' for distribution
+                        break;
+                    case 'trends':
+                        chartData = [4, 8, 12, 7, 5, 10]; // Example trends data
+                        chartColors = ['#ef4444']; // Red color for Trends chart
+                        break;
+                    default:
+                        chartData = [0, 0, 0, 0, 0, 0]; // Default data
+                        chartColors = ['#000000']; // Default color
+                }
+            } else {
+                chartData = [0, 0, 0, 0, 0, 0];
+                chartColors = ['#d1d5db']; // Default grey color
+            }
 
-            if (chart) chart.destroy(); // Destroy the previous chart instance
+            // Update the chart with new data and color
+            var ctx = document.getElementById('dynamicChart').getContext('2d');
+            if (window.chartInstance) {
+                window.chartInstance.destroy(); // Destroy the previous chart if it exists
+            }
 
-            chart = new Chart(ctx, {
-                type: type,
+            window.chartInstance = new Chart(ctx, {
+                type: chartTypeForRendering,  
                 data: {
-                    labels: labels,
+                    labels: chartType === 'distribution' ? ['New', 'In Progress', 'Closed', 'Pending'] : ['January', 'February', 'March', 'April', 'May', 'June'], 
                     datasets: [{
-                        label: label,
-                        data: data,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        tension: 0.1
+                        label: chartType + ' Chart',
+                        data: chartData,
+                        backgroundColor: chartColors,  // Use the defined color array
+                        borderColor: chartColors,      // Use the same color for the border
+                        borderWidth: 2,
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: true
+                    maintainAspectRatio: false,
+                    plugins: {
+                        // Specific options for pie charts
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.label + ': ' + tooltipItem.raw + '%';  // For pie chart percentage
+                                }
+                            }
+                        }
+                    }
                 }
             });
         }
-
-        // Default chart on page load
-        document.addEventListener('DOMContentLoaded', function () {
-            initializeChart();
-        });
-
-        // Function to show the desired chart
-        function showChart(chartType) {
-            switch (chartType) {
-                case 'weekly':
-                    initializeChart('line', 'Resolution Rate', [65, 59, 80, 81, 56, 55, 40], ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
-                    break;
-                case 'monthly':
-                    initializeChart('bar', 'Monthly Tickets', [12, 19, 3, 5, 2, 3], ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']);
-                    break;
-                case 'distribution':
-                    initializeChart('pie', 'Ticket Distribution', [12, 19, 3], ['Open', 'Closed', 'Pending']);
-                    break;
-                case 'trends':
-                    initializeChart('line', 'Ticket Trends', [12, 19, 3, 5, 2, 3], ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']);
-                    break;
-                default:
-                    console.error('Unknown chart type:', chartType);
-            }
-        }
+        
     </script>
 
 }
@@ -764,6 +787,69 @@
         font-size: 14px;
         padding: 5px 10px;
     }
+    /* Tailwind classes for custom button colors */
+.btn-outline-blue {
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.btn-outline-green {
+    border-color: #10b981;
+    color: #10b981;
+}
+
+.btn-outline-yellow {
+    border-color: #f59e0b;
+    color: #f59e0b;
+}
+
+.btn-outline-red {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.btn-outline-blue:hover {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.btn-outline-green:hover {
+    background-color: #10b981;
+    color: white;
+}
+
+.btn-outline-yellow:hover {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.btn-outline-red:hover {
+    background-color: #ef4444;
+    color: white;
+}
+
+/* Add active button styles */
+input[type="radio"]:checked + button {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+input[type="radio"]:checked + button.btn-outline-blue {
+    color: #3b82f6;
+}
+
+input[type="radio"]:checked + button.btn-outline-green {
+    color: #10b981;
+}
+
+input[type="radio"]:checked + button.btn-outline-yellow {
+    color: #f59e0b;
+}
+
+input[type="radio"]:checked + button.btn-outline-red {
+    color: #ef4444;
+}
+
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
