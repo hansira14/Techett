@@ -1,4 +1,3 @@
-
 @if (User.IsInRole("admin") || User.IsInRole("superadmin")) //charts for admins and superadmins
 {
     <!-- Row 1 - Charts -->
@@ -55,8 +54,8 @@
                         <div class="card bg-primary text-white">
                             <div class="card-body">
                                 <h6 class="card-subtitle mb-2">Total Tickets</h6>
-                                <h2 class="card-title mb-0">245</h2>
-                                <small class="text-white-50">↑ 12% increase</small>
+                                <h2 class="card-title mb-0" id="totalTicketsCount">-</h2>
+                                <small class="text-white-50" id="totalTicketsChange">-</small>
                             </div>
                         </div>
                     </div>
@@ -66,8 +65,8 @@
                         <div class="card bg-warning text-white">
                             <div class="card-body">
                                 <h6 class="card-subtitle mb-2">Open Tickets</h6>
-                                <h2 class="card-title mb-0">85</h2>
-                                <small class="text-white-50">↑ 5% increase</small>
+                                <h2 class="card-title mb-0" id="openTicketsCount">-</h2>
+                                <small class="text-white-50" id="openTicketsChange">-</small>
                             </div>
                         </div>
                     </div>
@@ -77,8 +76,8 @@
                         <div class="card bg-success text-white">
                             <div class="card-body">
                                 <h6 class="card-subtitle mb-2">Resolved</h6>
-                                <h2 class="card-title mb-0">142</h2>
-                                <small class="text-white-50">↑ 18% increase</small>
+                                <h2 class="card-title mb-0" id="resolvedTicketsCount">-</h2>
+                                <small class="text-white-50" id="resolvedTicketsChange">-</small>
                             </div>
                         </div>
                     </div>
@@ -88,8 +87,8 @@
                         <div class="card bg-danger text-white">
                             <div class="card-body">
                                 <h6 class="card-subtitle mb-2">Pending</h6>
-                                <h2 class="card-title mb-0">18</h2>
-                                <small class="text-white-50">↓ 3% decrease</small>
+                                <h2 class="card-title mb-0" id="pendingTicketsCount">-</h2>
+                                <small class="text-white-50" id="pendingTicketsChange">-</small>
                             </div>
                         </div>
                     </div>
@@ -159,87 +158,110 @@
 }
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Set default chart options with maintainAspectRatio
         const defaultOptions = {
             responsive: true,
             maintainAspectRatio: true,
-            aspectRatio: 2, // You can adjust this value to change height/width ratio
+            aspectRatio: 2
         };
 
-        // Initialize Bar Chart
-        const barCtx = document.getElementById('barChart').getContext('2d');
-        new Chart(barCtx, {
-            type: 'bar',
-            data: {
-                // Your data here
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Ticket Distribution',
-                    data: [12, 19, 3, 5, 2, 3],
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: defaultOptions
-        });
+        function initializeCharts() {
+            $.get('/Chart/GetChartData', function(data) {
+                // Bar Chart - Priority Distribution
+                const barCtx = document.getElementById('barChart').getContext('2d');
+                new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(data.priorityDistribution),
+                        datasets: [{
+                            label: 'Tickets by Priority',
+                            data: Object.values(data.priorityDistribution),
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(255, 99, 132, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(255, 99, 132, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: defaultOptions
+                });
 
-        // Initialize Pie Chart
-        const pieCtx = document.getElementById('pieChart').getContext('2d');
-        new Chart(pieCtx, {
-            type: 'pie',
-            data: {
-                // Your data here
-                labels: ['Open', 'Closed', 'Pending'],
-                datasets: [{
-                    data: [12, 19, 3],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: defaultOptions
-        });
+                // Pie Chart - Status Distribution
+                const pieCtx = document.getElementById('pieChart').getContext('2d');
+                new Chart(pieCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(data.statusDistribution),
+                        datasets: [{
+                            data: Object.values(data.statusDistribution),
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(255, 206, 86, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: defaultOptions
+                });
 
-        // Initialize Line Charts
-        const lineCtx1 = document.getElementById('lineChart1').getContext('2d');
-        new Chart(lineCtx1, {
-            type: 'line',
-            data: {
-                // Your data here
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'IDK',
-                    data: [12, 19, 3, 5, 2, 3],
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    tension: 0.1
-                }]
-            },
-            options: defaultOptions
-        });
+                // Line Chart - Trends
+                const lineCtx = document.getElementById('lineChart2').getContext('2d');
+                const dates = Array.from({length: 7}, (_, i) => {
+                    const d = new Date();
+                    d.setDate(d.getDate() - (6 - i));
+                    return d.toLocaleDateString();
+                });
 
-        const lineCtx2 = document.getElementById('lineChart2').getContext('2d');
-        new Chart(lineCtx2, {
-            type: 'line',
-            data: {
-                // Your data here
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Created Tickets',
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                    borderColor: 'rgba(153, 102, 255, 1)',
-                    tension: 0.1
-                }]
-            },
-            options: defaultOptions
-        });
+                new Chart(lineCtx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: Object.entries(data.ticketTrends).map(([status, counts], index) => ({
+                            label: status,
+                            data: counts,
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)'
+                            ][index],
+                            tension: 0.1,
+                            fill: false
+                        }))
+                    },
+                    options: {
+                        ...defaultOptions,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                // Update statistics cards
+                const stats = data.statistics;
+                Object.keys(stats).forEach(key => {
+                    const count = stats[key].count;
+                    const change = stats[key].change;
+                    const changeText = change >= 0 ? `↑ ${change}% increase` : `↓ ${Math.abs(change)}% decrease`;
+                    
+                    document.getElementById(`${key}Count`).textContent = count;
+                    document.getElementById(`${key}Change`).textContent = changeText;
+                });
+            });
+        }
+
+        initializeCharts();
     });
 </script>
