@@ -263,7 +263,7 @@
 }
 
 @**@
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-3">
     <div class="5 p-0 rounded-md col-span-2">
         <div class="flex justify-between mb-2 items-start">
             <div class="font-medium uppercase">T i c k e t s</div>
@@ -290,7 +290,7 @@
         </form>
         
         <!-- Tickets as cards -->
-        <div class="grid grid-cols-1 gap-6 mb-4 overflow-y-auto pr-4" style="max-height: calc(3 * 140px);">
+        <div class="grid grid-cols-1 gap-6 mb-3 overflow-y-auto pr-4" style="max-height: calc(3 * 202px);">
             <!-- Right padding only using pr-4 -->
             @foreach (var ticket in Model)
             {
@@ -306,7 +306,7 @@
                         <div class="text-gray-600 text-sm mb-2">
                             <span class="font-bold">Status:   </span> @ticket.Status
                         </div>
-                        <div class="text-gray-600 text-sm mb-4">
+                        <div class="text-gray-600 text-sm mb-3">
                             <span class="font-bold">Agent:    </span> @(ticket.AssignedToName ?? "Unassigned")
                         </div>
                     </a>
@@ -323,12 +323,12 @@
     </div>
         
 
-    <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-1">
+    <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-3 rounded-md col-span-1">
         <!-- Keep Articles normal width -->
-        <div class="flex justify-between mb-4 items-start">
+        <div class="flex justify-between mb-2 items-start">
             <div class="font-medium uppercase">A r t i c l e s</div>
         </div>
-        <form action="" class="flex items-center mb-4">
+        <form action="" class="flex items-center mb-2">
             <div class="relative w-full mr-2">
                 <input type="text" class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500" placeholder="Search articles">
                 <i class="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 text-gray-400"></i>
