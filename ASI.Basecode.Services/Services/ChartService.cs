@@ -12,11 +12,16 @@ namespace ASI.Basecode.Services
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IArticleRepository _articleRepository;
+        private readonly IUpdateRepository _ticketUpdateRepository;
 
-        public ChartService(ITicketRepository ticketRepository, IArticleRepository articleRepository)
+        public ChartService(
+            ITicketRepository ticketRepository, 
+            IArticleRepository articleRepository,
+            IUpdateRepository ticketUpdateRepository)
         {
             _ticketRepository = ticketRepository;
             _articleRepository = articleRepository;
+            _ticketUpdateRepository = ticketUpdateRepository;
         }
 
         public Dictionary<string, int> GetTicketDistributionByPriority()
@@ -41,10 +46,12 @@ namespace ASI.Basecode.Services
 
         public Dictionary<string, List<int>> GetTicketTrends(int days = 7)
         {
-            var endDate = DateTime.Now;
-            var startDate = endDate.AddDays(-days);
-            var tickets = _ticketRepository.GetAllTickets()
-                .Where(t => t.CreatedOn >= startDate)
+            var endDate = DateTime.Now.Date;
+            var startDate = endDate.AddDays(-(days - 1));
+            
+            var tickets = _ticketRepository.GetAllTickets().ToList();
+            var updates = _ticketUpdateRepository.GetAllUpdates()
+                .OrderBy(u => u.UpdatedOn)
                 .ToList();
 
             var trends = new Dictionary<string, List<int>>();
@@ -53,13 +60,56 @@ namespace ASI.Basecode.Services
             foreach (var status in statuses)
             {
                 var statusCounts = new List<int>();
+                
                 for (var date = startDate; date <= endDate; date = date.AddDays(1))
                 {
-                    var count = tickets.Count(t => 
-                        t.Status == status && 
-                        t.CreatedOn.Date == date.Date);
+                    int count;
+                    if (status == "Resolved")
+                    {
+                        // Count tickets that were resolved on this specific date
+                        count = tickets.Count(t => t.ResolvedOn?.Date == date);
+                    }
+                    else if (status == "In Progress")
+                    {
+                        // Get tickets that were in progress at the end of this date
+                        var ticketsInProgress = updates
+                            .Where(u => u.UpdatedOn.Date <= date)
+                            .GroupBy(u => u.TicketId)
+                            .Where(g => g.OrderByDescending(u => u.UpdatedOn)
+                                        .First().Status == "In Progress")
+                            .Count();
+                        count = ticketsInProgress;
+                    }
+                    else // Open tickets
+                    {
+                        // Get total tickets created before this date
+                        var totalTickets = tickets.Count(t => 
+                            (t.CreatedOn.Month < date.Month && t.CreatedOn.Year <= date.Year) ||
+                            (t.CreatedOn.Month == date.Month && t.CreatedOn.Day < date.Day && t.CreatedOn.Year <= date.Year)
+                        );
+                        
+                        // Get tickets that were resolved before this date
+                        var resolvedTickets = tickets.Count(t => 
+                            t.ResolvedOn.HasValue && (
+                                (t.ResolvedOn.Value.Month < date.Month && t.ResolvedOn.Value.Year <= date.Year) ||
+                                (t.ResolvedOn.Value.Month == date.Month && t.ResolvedOn.Value.Day < date.Day && t.ResolvedOn.Value.Year <= date.Year)
+                            )
+                        );
+                        
+                        // Get tickets that were in progress at the end of this date
+                        var inProgressTickets = updates
+                            .Where(u => u.UpdatedOn.Date <= date)
+                            .GroupBy(u => u.TicketId)
+                            .Count(g => g.OrderByDescending(u => u.UpdatedOn)
+                                        .First().Status == "In Progress");
+                        
+                        // Open tickets = Total - Resolved - InProgress
+                        count = totalTickets - resolvedTickets - inProgressTickets;
+                    }
+                    
                     statusCounts.Add(count);
                 }
+                
                 trends[status] = statusCounts;
             }
 
