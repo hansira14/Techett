@@ -1,4 +1,5 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.Security.Claims
 @model ASI.Basecode.Services.ServiceModels.TicketViewModel
 @await Html.PartialAsync("_FeedbackModal", Model.TicketId)
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -18,11 +19,16 @@
                 <div class="card-header d-flex justify-content-between align-items-center py-2">
                     <h4 style="margin: 0; font-size: 1rem;">@Model.Title</h4>
                     <div>
+                        @{
+                            var isSuperAdmin = User.IsInRole(Roles.SuperAdmin);
+                            var isAdmin = User.IsInRole(Roles.Admin);
+                            var isAgent = User.IsInRole(Roles.Agent);
+                        }
+
                         @if (Model.Status != "Resolved" && 
-                             (User.IsInRole("SuperAdmin") || 
-                              User.IsInRole("Admin") || 
+                             (isSuperAdmin || isAdmin || 
                               Model.CreatedBy == ViewBag.CurrentUserId ||
-                              (User.IsInRole("Agent") && Model.AssignedToId == ViewBag.CurrentUserId)))
+                              (isAgent && Model.AssignedToId == ViewBag.CurrentUserId)))
                         {
                             <button class="btn custom-btn violet-btn" onclick="markAsResolved()">Mark as Resolved</button>
                             <button class="btn custom-btn blue-btn" onclick="editMode()">Edit</button>
