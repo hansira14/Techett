@@ -162,7 +162,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 }
 
                 _userService.AddUser(model, int.Parse(UserId));
-                return Json(new { success = true });
+                return Json(new { success = true, message = "User created successfully!" });
             }
             catch (InvalidDataException ex)
             {
