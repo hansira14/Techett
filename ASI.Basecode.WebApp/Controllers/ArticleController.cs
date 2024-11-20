@@ -141,6 +141,7 @@ public class ArticleController : ControllerBase<ArticleController>
     {
         try 
         {
+            var article = _articleService.GetArticleById(id);
             _articleService.DeleteArticle(id);
             return Json(new { success = true });
         }
@@ -148,6 +149,7 @@ public class ArticleController : ControllerBase<ArticleController>
         {
             return Json(new { success = false, message = ex.Message });
         }
+        
     }
 
     private int GetCurrentUserId()
