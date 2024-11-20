@@ -1,47 +1,11 @@
 @model int
-@*
+
 <div class="modal fade" id="feedbackModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Provide Feedback</h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span>
-                </button>
-            </div>
-            <form id="feedbackForm">
-                <div class="modal-body">
-                    <input type="hidden" name="TicketId" value="@Model" />
-                    <div class="form-group">
-                        <label>Rating</label>
-                        <div class="rating">
-                            @for (int i = 5; i >= 1; i--)
-                            {
-                                <input type="radio" name="Rating" value="@i" id="star@i" required>
-                                <label for="star@i">★</label>
-                            }
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="Remarks">Comments</label>
-                        <textarea name="Remarks" class="form-control" rows="4" required></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Submit Feedback</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-*@
-<div class="modal fade" id="feedbackModal" tabindex="-1">
-    <div class="modal-dialog max-w-md mx-auto">
+    <div class="modal-dialog modal-lg max-w-md mx-auto">
         <div class="modal-content rounded-lg shadow-xl">
-            <div class="modal-header text-center bg-gradient-to-r from-blue-100 to-purple-700 rounded-t-lg p-4">
-                <h5 class="modal-title text-2xl font-weight-bold text-center text-indigo-900">Provide Feedback</h5>
-                <button type="button" class="close text-white text-xl-center font-bold" data-dismiss="modal">
+            <div class="modal-header text-center bg-gradient-to-r from-blue-100 to-purple-700 rounded-t-lg p-4 d-flex justify-content-center align-items-center position-relative">
+                <h5 class="modal-title text-2xl font-bold text-center text-indigo-900">Provide Feedback</h5>
+                <button type="button" class="close position-absolute" data-dismiss="modal" style="top: 10px; right: 10px;">
                     <span>&times;</span>
                 </button>
             </div>

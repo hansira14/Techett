@@ -5,14 +5,17 @@
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6" style="margin-top: 15px;">
-    <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-2">
-        <div class="flex justify-between mb-4 items-start" style="font-size: 0.9rem;">
-            <div class="font-medium uppercase">T i c k e t s</div>
-        </div>
+
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-3" style="margin-top: 15px;">
+    <div class="bg-none rounded-md col-span-2">
+        
         <div class="tickets-container" style="font-size: 0.85rem;">
+
+
+
             <div class="card" style="margin-bottom: 0.75rem;">
-                <div class="card-header d-flex justify-content-between align-items-center" style="padding: 0.5rem;">
+                <div class="card-header d-flex justify-content-between align-items-center py-2">
                     <h4 style="margin: 0; font-size: 1rem;">@Model.Title</h4>
                     <div>
                         @if (Model.Status != "Resolved")
@@ -20,7 +23,7 @@
                             <button class="btn custom-btn violet-btn" onclick="markAsResolved()">Mark as Resolved</button>
                             <button class="btn custom-btn blue-btn" onclick="editMode()">Edit</button>
                         }
-                        <a href="/Ticket/Tickets" class="btn custom-btn blu-btn">Back to List</a>
+                        <a href="/Ticket/Tickets" class="btn custom-btn blu-btn text-sm h-6 w-34">Back to List</a>
                     </div>
 
                 </div>
@@ -92,7 +95,7 @@
             </div>
         </div>
         <!-- Updates History -->
-        <div class="card mt-4">
+        <div class="card mt-1">
             <div class="card-header" >
                 <h4>Update History</h4>
             </div>
@@ -103,7 +106,7 @@
             </div>
         </div>
         <!-- Attachments -->
-        <div class="card mt-4" style="font-size: 0.85rem;">
+        <div class="card mt-3" style="font-size: 0.85rem;">
             <div class="card-header d-flex justify-content-between align-items-center" style="padding: 0.5rem;">
                 <h5 style="margin: 0; font-size: 1rem;">Attachments</h5>
                 @if (Model.Status != "Resolved")
