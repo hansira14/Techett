@@ -31,13 +31,15 @@ namespace ASI.Basecode.WebApp.Controllers
             var statusData = _chartService.GetTicketStatusDistribution();
             var trendData = _chartService.GetTicketTrends();
             var statistics = _chartService.GetTicketStatistics();
+            var articleTrends = _chartService.GetArticleCreationTrends();
 
             return Json(new
             {
                 priorityDistribution = priorityData,
                 statusDistribution = statusData,
                 ticketTrends = trendData,
-                statistics = statistics
+                statistics = statistics,
+                articleTrends = articleTrends
             });
         }
     }

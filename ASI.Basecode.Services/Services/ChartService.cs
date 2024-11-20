@@ -11,10 +11,12 @@ namespace ASI.Basecode.Services
     public class ChartService : IChartService
     {
         private readonly ITicketRepository _ticketRepository;
+        private readonly IArticleRepository _articleRepository;
 
-        public ChartService(ITicketRepository ticketRepository)
+        public ChartService(ITicketRepository ticketRepository, IArticleRepository articleRepository)
         {
             _ticketRepository = ticketRepository;
+            _articleRepository = articleRepository;
         }
 
         public Dictionary<string, int> GetTicketDistributionByPriority()
@@ -110,6 +112,25 @@ namespace ASI.Basecode.Services
             return lastMonthCount > 0 
                 ? Math.Round(((currentCount - lastMonthCount) * 100.0 / lastMonthCount), 1)
                 : 100;
+        }
+
+        public List<int> GetArticleCreationTrends(int days = 7)
+        {
+            var endDate = DateTime.Now.Date;
+            var startDate = endDate.AddDays(-(days - 1));
+            
+            var articles = _articleRepository.GetAllArticles()
+                .Where(a => a.CreatedOn >= startDate && a.IsDeleted == false)
+                .ToList();
+
+            var trendData = new List<int>();
+            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                var count = articles.Count(a => a.CreatedOn.Date == date);
+                trendData.Add(count);
+            }
+
+            return trendData;
         }
     }
 } 
