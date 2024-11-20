@@ -86,14 +86,4 @@ public class AssignmentController : ControllerBase<AssignmentController>
             return Json(new { success = false, message = ex.Message });
         }
     }
-
-    private int GetCurrentUserId()
-    {
-        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
-        if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
-        {
-            return userId;
-        }
-        throw new UnauthorizedAccessException("User is not authenticated");
-    }
 }

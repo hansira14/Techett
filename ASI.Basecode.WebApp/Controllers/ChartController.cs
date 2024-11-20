@@ -5,6 +5,7 @@ using AutoMapper;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.WebApp.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -24,6 +25,7 @@ namespace ASI.Basecode.WebApp.Controllers
             _chartService = chartService;
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("GetChartData")]
         public IActionResult GetChartData()
         {
