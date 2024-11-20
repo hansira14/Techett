@@ -34,7 +34,7 @@
     @{
         var isLoginOrRegister = false;
         var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-
+    
         if (ViewContext.RouteData.Values["Controller"]?.ToString() == "Account" && 
             ViewContext.RouteData.Values["Action"]?.ToString() is string action)
         {
