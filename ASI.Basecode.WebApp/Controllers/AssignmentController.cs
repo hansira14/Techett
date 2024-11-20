@@ -35,7 +35,7 @@ public class AssignmentController : ControllerBase<AssignmentController>
     [Authorize(Policy = "RequireAdminRole")]
     public IActionResult GetAgents()
     {
-        var agents = _userService.GetAllUsers().Where(u => u.Role == "Agent");
+        var agents = _userService.GetAllUsers().Where(u => u.Role.Equals("Agent", StringComparison.OrdinalIgnoreCase));
         return Json(agents);
     }
 

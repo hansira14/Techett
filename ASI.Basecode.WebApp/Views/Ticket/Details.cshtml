@@ -18,7 +18,11 @@
                 <div class="card-header d-flex justify-content-between align-items-center py-2">
                     <h4 style="margin: 0; font-size: 1rem;">@Model.Title</h4>
                     <div>
-                        @if (Model.Status != "Resolved")
+                        @if (Model.Status != "Resolved" && 
+                             (User.IsInRole("SuperAdmin") || 
+                              User.IsInRole("Admin") || 
+                              Model.CreatedBy == ViewBag.CurrentUserId ||
+                              (User.IsInRole("Agent") && Model.AssignedToId == ViewBag.CurrentUserId)))
                         {
                             <button class="btn custom-btn violet-btn" onclick="markAsResolved()">Mark as Resolved</button>
                             <button class="btn custom-btn blue-btn" onclick="editMode()">Edit</button>
@@ -55,11 +59,13 @@
                             <input type="hidden" name="TicketId" value="@Model.TicketId" />
                             <div class="form-group">
                                 <label for="Title" style="font-size: 0.9rem;">Title</label>
-                                <input name="Title" id="Title" class="form-control" value="@Model.Title" required />
+                                <input name="Title" id="Title" class="form-control" value="@Model.Title" 
+                                       @(User.IsInRole("Agent") ? "readonly" : "") required />
                             </div>
                             <div class="form-group">
                                 <label for="Content" style="font-size: 0.9rem;">Description</label>
-                                <textarea name="Content" id="Content" class="form-control" rows="4" required>@Model.Content</textarea>
+                                <textarea name="Content" id="Content" class="form-control" rows="4" 
+                                          @(User.IsInRole("Agent") ? "readonly" : "") required>@Model.Content</textarea>
                             </div>
                             <div class="form-group">
                                 <label for="Category" style="font-size: 0.9rem;">Category</label>
@@ -437,8 +443,8 @@
                     type: 'POST',
                     data: {
                         TicketId: @Model.TicketId,
-                        Title: '@Model.Title',
-                        Content: '@Model.Content',
+                        Title: '@Html.Raw(Json.Serialize(Model.Title))',
+                        Content: '@Html.Raw(Json.Serialize(Model.Content))',
                         Category: '@Model.Category',
                         Priority: '@Model.Priority',
                         Status: 'Resolved'

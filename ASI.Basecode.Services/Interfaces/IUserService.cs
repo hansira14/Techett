@@ -14,4 +14,5 @@ public interface IUserService
     void UpdateUser(UserViewModel model, int adminId);
     void DeleteUser(int id);
     UserProfileViewModel GetUserProfile(int userId);
+    IEnumerable<AgentViewModel> GetAllAgents();
 }

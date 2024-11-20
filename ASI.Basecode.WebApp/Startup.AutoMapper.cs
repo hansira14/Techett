@@ -101,6 +101,12 @@ namespace ASI.Basecode.WebApp
                         opt => opt.MapFrom(src => src.UserId))
                     .ForMember(dest => dest.AgentId,
                         opt => opt.MapFrom(src => src.AgentId));
+
+                CreateMap<User, AgentViewModel>()
+                    .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                    .ForMember(dest => dest.Fname, opt => opt.MapFrom(src => src.Fname))
+                    .ForMember(dest => dest.Lname, opt => opt.MapFrom(src => src.Lname))
+                    .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
             }
         }
     }

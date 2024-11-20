@@ -147,5 +147,43 @@ namespace ASI.Basecode.Services.Services
 
             return profile;
         }
+
+        public IEnumerable<AgentViewModel> GetAllAgents()
+        {
+            var agents = _repository.GetUsers()
+                .Where(u => u.Role == "Agent")
+                .ToList();
+
+            var agentViewModels = new List<AgentViewModel>();
+
+            foreach (var agent in agents)
+            {
+                var assignments = _assignmentRepository.GetUserAssignments(agent.UserId)
+                    .ToList();
+
+                var feedbacks = _feedbackRepository.GetAllFeedbacks()
+                    .Where(f => f.AgentId == agent.UserId);
+
+                var agentViewModel = new AgentViewModel
+                {
+                    UserId = agent.UserId,
+                    Fname = agent.Fname,
+                    Lname = agent.Lname,
+                    Email = agent.Email,
+                    TicketsResolved = assignments.Count(a => a.Ticket.Status == "Resolved"),
+                    TotalTicketsAssigned = assignments.Count,
+                    AverageResolveTime = assignments
+                        .Where(a => a.Ticket.Status == "Resolved" && a.Ticket.ResolvedOn.HasValue)
+                        .Select(a => (a.Ticket.ResolvedOn.Value - a.AssignedOn).TotalHours)
+                        .DefaultIfEmpty()
+                        .Average(),
+                    Rating = feedbacks.Any() ? feedbacks.Average(f => f.Rating) : null
+                };
+
+                agentViewModels.Add(agentViewModel);
+            }
+
+            return agentViewModels;
+        }
     }
 }
