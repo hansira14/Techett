@@ -101,6 +101,12 @@ namespace ASI.Basecode.WebApp
                         opt => opt.MapFrom(src => src.UserId))
                     .ForMember(dest => dest.AgentId,
                         opt => opt.MapFrom(src => src.AgentId));
+
+                CreateMap<PreferenceViewModel, Preference>();
+                CreateMap<Preference, PreferenceViewModel>()
+                    .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                    .ForMember(dest => dest.IsEmailingOn, opt => opt.MapFrom(src => src.IsEmailingOn))
+                    .ForMember(dest => dest.ViewType, opt => opt.MapFrom(src => src.ViewType));
             }
         }
     }

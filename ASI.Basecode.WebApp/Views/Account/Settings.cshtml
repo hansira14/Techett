@@ -6,7 +6,6 @@
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
 
 <div class="py-2 px-0 bg-absolute flex items-center  top-0 left-0 right-0 z-30">
@@ -112,15 +111,26 @@
         <div class="flex justify-center">
             <h2 class="text-xl font-semibold text-gray-600 mb-6">Account Settings</h2>
         </div>
-
         <!-- Profile Picture Section -->
-        <div class="flex items-center justify-center text-center mb-8 ">
+        <div class="flex items-center justify-center text-center mb-8">
             <div class="relative">
-                <img src="https://placehold.co/128x128" alt="Profile" class="w-32 h-32 rounded-full object-cover">
-                <div class="absolute bottom-0 right-0 bg-indigo-600 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer">
+                <!-- Profile Picture -->
+                <img id="profile-picture" src="https://placehold.co/128x128" alt="Profile" class="w-32 h-32 rounded-full object-cover">
+
+                <!-- Camera Icon -->
+                <label for="file-upload" class="absolute bottom-0 right-0 bg-indigo-600 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer">
                     <i class="ri-camera-line text-white"></i>
-                </div>
+                </label>
+
+                <!-- Hidden File Input -->
+                <input type="file"
+                       id="file-upload"
+                       class="hidden"
+                       accept="image/*"
+                       onchange="updateProfilePicture(event)" />
             </div>
+
+            <!-- User Information -->
             <div class="ml-6">
                 <h3 class="text-lg font-semibold text-gray-800">
                     @HttpContextAccessor.HttpContext.Session.GetString("UserRole")
@@ -147,13 +157,13 @@
                     </div>
 
                     <div class="custom-form-group">
-                        <label for="ContactNo">Contact No.</label>
-                        <input type="tel" id="ContactNo" name="ContactNo" class="custom-form-control" />
-                    </div>
-
-                    <div class="custom-form-group">
                         <label for="Password">Password</label>
                         <input type="password" id="Password" name="Password" class="custom-form-control" />
+                    </div>
+
+                    <div>
+                        <label for="ConfirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                        <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
                     </div>
                 </div>
             </form>
@@ -162,47 +172,114 @@
         </div>
 
 
-    <!-- Account Preferences Section -->
-    <div class="bg-white shadow-md p-8 mb-8" style="border-radius: 25px;">
-        <h2 class="text-xl font-semibold text-gray-600 mb-6">Account Preferences</h2>
+        <!-- Account Preferences Section -->
+        <div class="bg-white shadow-md p-8 mb-8" style="border-radius: 25px;">
+            <h2 class="text-xl font-semibold text-gray-600 mb-6">Account Preferences</h2>
 
-        <div class="space-y-4">
-            <!-- Notifications Toggle -->
-            <div class="preference-row">
-                <div>
-                    <h3 class="text-sm font-medium text-gray-800">Notifications</h3>
-                    <p class="text-xs text-gray-500">Receive notifications about updates and activities</p>
-                </div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" class="sr-only peer" checked>
-                    <div class="toggle-bg w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-[#5513EE]">
+            <div class="space-y-4">
+                <!-- Notifications Toggle -->
+                <div class="preference-row">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-800">Notifications</h3>
+                        <p class="text-xs text-gray-500">Receive notifications about updates and activities</p>
                     </div>
-                </label>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" checked>
+                        <div class="toggle-bg w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-[#5513EE]">
+                        </div>
+                    </label>
+                </div>
+                @*
+                <!-- Dark Mode Toggle -->
+                <div class="preference-row">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-800">Dark Mode</h3>
+                        <p class="text-xs text-gray-500">Enable dark mode for a better viewing experience</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer">
+                        <div class="toggle-bg w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-[#5513EE]">
+                        </div>
+                    </label>
+                </div>*@
             </div>
 
-            <!-- Dark Mode Toggle -->
-            <div class="preference-row">
-                <div>
-                    <h3 class="text-sm font-medium text-gray-800">Dark Mode</h3>
-                    <p class="text-xs text-gray-500">Enable dark mode for a better viewing experience</p>
-                </div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" class="sr-only peer">
-                    <div class="toggle-bg w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-[#5513EE]">
-                    </div>
-                </label>
-            </div>
+
+        <!-- Save Button -->
+        <div class="mt-8 flex justify-end">
+            <button type="button" onclick="saveChanges()" class="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                Save Changes
+            </button>
         </div>
-
-
-    <!-- Save Button -->
-    <div class="mt-8 flex justify-end">
-        <button type="submit" class="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-            Save Changes
-        </button>
     </div>
 </div>
-</div>
+<script>
+    
+    // Function to update the profile picture preview
+    function updateProfilePicture(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                // Update the image source with the uploaded file
+                document.getElementById("profile-picture").src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+    
+     
+    function uploadToServer(file) {
+        const formData = new FormData();
+        formData.append("profilePicture", file);
+    
+        fetch('/api/upload-profile-picture', {
+            method: 'POST',
+            body: formData
+        }).then(response => response.json())
+          .then(data => console.log("Upload success:", data))
+          .catch(error => console.error("Upload failed:", error));
+    }
+
+
+    function saveChanges() {
+        // Gather form data
+        const formData = {
+            firstName: document.getElementById('FirstName').value,
+            lastName: document.getElementById('LastName').value,
+            password: document.getElementById('Password').value,
+            confirmPassword: document.getElementById('ConfirmPassword').value
+        };
+
+        // Simple password match validation
+        if (formData.password !== formData.confirmPassword) {
+            alert("Passwords do not match!");
+            return;
+        }
+
+        // Send data to the server
+        fetch('/Preference/UpdatePreference', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Details updated successfully!');
+                    // Optionally reload or update the UI
+                } else {
+                    alert('Failed to update details.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+    }
+    
+</script>
 <style>
     body {
         margin: 0;
