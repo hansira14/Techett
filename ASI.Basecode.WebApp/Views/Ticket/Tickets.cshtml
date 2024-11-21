@@ -383,6 +383,24 @@
     </div>
 </div>
 
+<script>
+    document.querySelector('.dropdown-toggle').addEventListener('click', function () {
+        const dropdownMenu = this.nextElementSibling;
+        dropdownMenu.classList.toggle('hidden');
+    });
+
+</script>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        transition: background-color 0.4s ease;
+    }
+</style>
+
 @section Scripts {
     <script>
         $(document).ready(function () {

@@ -8,6 +8,7 @@
             <a asp-controller="Home" asp-action="Index">
                 <i class="fa-solid fa-house sidebar-icon"></i>
                 <span>Dashboard</span>
+                <i id="dashboardArrow" class="fa-solid fa-chevron-right dropdown-arrow"></i>
             </a>
         </li>
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Tickets" ? "active" : "")">
@@ -21,6 +22,8 @@
                 <i class="fa-solid fa-book sidebar-icon"></i>
                 <span>Articles</span>
             </a>
+        </li>
+            </ul>
         </li>
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Users" ? "active" : "")">
             <a asp-controller="Account" asp-action="Users">
@@ -46,6 +49,7 @@
                 <span>About Us</span>
             </a>
         </li>
+    </ul>
 
     </ul>
     <div class="signout">
