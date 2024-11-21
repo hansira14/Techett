@@ -6,6 +6,7 @@ using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
 using static ASI.Basecode.Resources.Constants.Enums;
@@ -18,6 +19,7 @@ namespace ASI.Basecode.Services.Services
         private readonly IFeedbackRepository _feedbackRepository;
         private readonly IAssignmentRepository _assignmentRepository;
         private readonly IMapper _mapper;
+        private readonly IPreferenceRepository _preferenceRepository;
 
         public UserService(
             IUserRepository repository,
@@ -53,6 +55,13 @@ namespace ASI.Basecode.Services.Services
                 user.IsActive = true;
 
                 _repository.AddUser(user);
+
+                var defaultPreference = new Preference
+                {
+                    UserId = user.UserId,
+                    IsEmailingOn = false, 
+                    ViewType = "List" 
+                };
             }
             else
             {
