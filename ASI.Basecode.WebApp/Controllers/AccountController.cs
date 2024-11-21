@@ -1,4 +1,5 @@
 ﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Services;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
@@ -27,6 +28,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly TokenProviderOptionsFactory _tokenProviderOptionsFactory;
         private readonly IConfiguration _appConfiguration;
         private readonly IUserService _userService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
         private readonly IMapper _mapper;
 
         /// <summary>
@@ -48,6 +50,7 @@ namespace ASI.Basecode.WebApp.Controllers
                             IConfiguration configuration,
                             IMapper mapper,
                             IUserService userService,
+                            IUserAuthorizationService userAuthorizationService,
                             TokenValidationParametersFactory tokenValidationParametersFactory,
                             TokenProviderOptionsFactory tokenProviderOptionsFactory) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
@@ -57,6 +60,7 @@ namespace ASI.Basecode.WebApp.Controllers
             this._tokenValidationParametersFactory = tokenValidationParametersFactory;
             this._appConfiguration = configuration;
             this._userService = userService;
+            this._userAuthorizationService = userAuthorizationService;
             this._mapper = mapper;
         }
 
@@ -68,6 +72,10 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous]
         public ActionResult Login()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             TempData["returnUrl"] = System.Net.WebUtility.UrlDecode(HttpContext.Request.Query["ReturnUrl"]);
             this._sessionManager.Clear();
             this._session.SetString("SessionId", Guid.NewGuid().ToString());
@@ -104,33 +112,6 @@ namespace ASI.Basecode.WebApp.Controllers
             }
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        public IActionResult Register(UserViewModel model)
-        {
-            try
-            {
-                _userService.AddUser(model,123); //HELPP
-                return RedirectToAction("Login", "Account");
-            }
-            catch(InvalidDataException ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-            }
-            catch (Exception)
-            {
-                TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
-            }
-            return View();
-        }
-
         /// <summary>
         /// Sign Out current account and return login view.
         /// </summary>
@@ -143,6 +124,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "RequireAdminRole")]
         public IActionResult Users()
         {
             var users = _userService.GetAllUsers();
@@ -161,6 +143,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "RequireAdminRole")]
         public IActionResult CreateUser(UserViewModel model)
         {
             if (!ModelState.IsValid)
@@ -173,8 +156,13 @@ namespace ASI.Basecode.WebApp.Controllers
 
             try
             {
+                if (!_userAuthorizationService.CanAssignRole(model.Role))
+                {
+                    return Json(new { success = false, message = "You don't have permission to assign this role." });
+                }
+
                 _userService.AddUser(model, int.Parse(UserId));
-                return Json(new { success = true });
+                return Json(new { success = true, message = "User created successfully!" });
             }
             catch (InvalidDataException ex)
             {
@@ -187,6 +175,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "RequireAdminRole")]
         public IActionResult EditUser(EditUserViewModel model)
         {
             if (!ModelState.IsValid)
@@ -199,6 +188,30 @@ namespace ASI.Basecode.WebApp.Controllers
 
             try
             {
+                var existingUser = _userService.GetUserById(model.UserId);
+                if (existingUser == null)
+                {
+                    return Json(new { success = false, message = "User not found" });
+                }
+
+                if (!_userAuthorizationService.CanModifyUser(existingUser.Role))
+                {
+                    return Json(new { success = false, message = "You don't have permission to modify this user." });
+                }
+
+                if (!_userAuthorizationService.CanAssignRole(model.Role))
+                {
+                    return Json(new { success = false, message = "You don't have permission to assign this role." });
+                }
+
+                if (model.UserId == int.Parse(UserId))
+                {
+                    if (model.Role != existingUser.Role)
+                    {
+                        return Json(new { success = false, message = "You cannot modify your own role." });
+                    }
+                }
+
                 var userViewModel = new UserViewModel
                 {
                     UserId = model.UserId,
@@ -222,20 +235,37 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 return Json(new { success = false, message = Resources.Messages.Errors.ServerError });
             }
+
         }
 
-        [HttpGet]
+        [HttpDelete]
+        [Authorize(Policy = "RequireAdminRole")]
         [Route("Account/DeleteUser/{id}")]
         public IActionResult DeleteUser(int id)
         {
             try
             {
+                var userToDelete = _userService.GetUserById(id);
+                if (userToDelete == null)
+                {
+                    return Json(new { success = false, message = "User not found" });
+                }
+
+                if (!_userAuthorizationService.CanModifyUser(userToDelete.Role))
+                {
+                    return Json(new { success = false, message = "You don't have permission to delete this user." });
+                }
+
                 _userService.DeleteUser(id);
                 return Json(new { success = true });
             }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
             catch
             {
-                return Json(new { success = false });
+                return Json(new { success = false, message = Resources.Messages.Errors.ServerError });
             }
         }
 
@@ -257,5 +287,25 @@ namespace ASI.Basecode.WebApp.Controllers
                 return Json(new { success = false, message = Resources.Messages.Errors.ServerError });
             }
         }
+        public IActionResult Settings()
+        {
+            return View();
+        }
+        public IActionResult AboutUs()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Profile(int id)
+        {
+            var profile = _userService.GetUserProfile(id);
+            if (profile == null)
+            {
+                return NotFound();
+            }
+            return View(profile);
+        }
     }
 }
+

@@ -1,6 +1,7 @@
 ﻿using ASI.Basecode.Data;
 using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Repositories;
+using ASI.Basecode.Services;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
@@ -47,6 +48,8 @@ namespace ASI.Basecode.WebApp
             this._services.AddScoped<ITicketService, TicketService>();
             this._services.AddScoped<IUpdateService, UpdateService>();
             this._services.AddScoped<IAssignmentService, AssignmentService>();
+            this._services.AddScoped<IUserAuthorizationService, UserAuthorizationService>();
+            this._services.AddScoped<IArticleAttachmentService, ArticleAttachmentService>();
 
             // Repositories
             this._services.AddScoped<IUserRepository, UserRepository>();
@@ -62,6 +65,7 @@ namespace ASI.Basecode.WebApp
             this._services.AddScoped<ITicketRepository, TicketRepository>();
             this._services.AddScoped<IUpdateRepository, UpdateRepository>();
             this._services.AddScoped<IAssignmentRepository, AssignmentRepository>();
+            this._services.AddScoped<IArticleAttachmentRepository, ArticleAttachmentRepository>();
 
             // Manager Class
             this._services.AddScoped<SignInManager>();

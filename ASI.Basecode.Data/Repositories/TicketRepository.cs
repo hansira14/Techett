@@ -36,11 +36,22 @@ public class TicketRepository : BaseRepository, ITicketRepository
     }
     public Ticket GetTicketById(int id)
     {
-        return this.GetDbSet<Ticket>().Find(id);
+        return this.GetDbSet<Ticket>()
+            .Include(t => t.CreatedByNavigation)
+            .Include(t => t.ResolvedByNavigation)
+            .Include(t => t.Assignments)
+                .ThenInclude(a => a.AssignedToNavigation)
+            .FirstOrDefault(t => t.TicketId == id);
     }
     public void DeleteTicket(Ticket ticket)
     {
         this.GetDbSet<Ticket>().Remove(ticket);
         this.UnitOfWork.SaveChanges();
+    }
+    public int GetResolvedTicketsCount(int userId)
+    {
+        return this.GetDbSet<Ticket>()
+            .Count(t => t.ResolvedBy == userId && 
+                       t.Status == "Resolved");
     }
 }

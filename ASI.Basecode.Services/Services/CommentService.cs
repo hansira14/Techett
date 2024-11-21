@@ -23,7 +23,7 @@ public class CommentService : ICommentService
     {
         var comments = _commentRepository.GetAllComments()
             .Where(c => c.TicketId == ticketId)
-            .OrderByDescending(c => c.CommentedOn);
+            .OrderBy(c => c.CommentedOn);
         return _mapper.Map<IEnumerable<CommentViewModel>>(comments);
     }
 
@@ -41,5 +41,10 @@ public class CommentService : ICommentService
         {
             _commentRepository.DeleteComment(comment);
         }
+    }
+
+    public Comment GetCommentById(int commentId)
+    {
+        return _commentRepository.GetCommentById(commentId);
     }
 }

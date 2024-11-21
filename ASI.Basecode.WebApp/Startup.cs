@@ -119,6 +119,8 @@ namespace ASI.Basecode.WebApp
             services.AddSingleton<IFileProvider>(
                 new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+
+            services.AddHttpContextAccessor();
         }
 
         /// <summary>

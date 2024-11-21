@@ -1,61 +1,52 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model ASI.Basecode.Services.ServiceModels.TicketViewModel
+@await Html.PartialAsync("_FeedbackModal", Model.TicketId)
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
 
-<div class="container mt-4">
-    <div class="row">
-        <!-- Left side - Comments -->
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Comments</h4>
-                </div>
-                <div class="card-body">
-                    <div id="commentsList" class="comments-list" style="max-height: 600px; overflow-y: auto;">
-                        <!-- Comments will be loaded here -->
-                    </div>
-                    <div class="mt-3">
-                        <form id="addCommentForm">
-                            <input type="hidden" name="TicketId" value="@Model.TicketId" />
-                            <div class="form-group">
-                                <textarea name="Comment" class="form-control" rows="3" placeholder="Add a comment..." required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Right side - Ticket Details -->
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3>@Model.Title</h3>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-3" style="margin-top: 15px;">
+    <div class="bg-none rounded-md col-span-2">
+        
+        <div class="tickets-container" style="font-size: 0.85rem;">
+
+
+
+            <div class="card" style="margin-bottom: 0.75rem;">
+                <div class="card-header d-flex justify-content-between align-items-center py-2">
+                    <h4 style="margin: 0; font-size: 1rem;">@Model.Title</h4>
                     <div>
-                        <button class="btn btn-primary" onclick="editMode()">Edit</button>
-                        <a href="/Ticket" class="btn btn-secondary">Back to List</a>
+                        @if (Model.Status != "Resolved")
+                        {
+                            <button class="btn custom-btn violet-btn" onclick="markAsResolved()">Mark as Resolved</button>
+                            <button class="btn custom-btn blue-btn" onclick="editMode()">Edit</button>
+                        }
+                        <a href="/Ticket/Tickets" class="btn custom-btn blu-btn text-sm h-6 w-34">Back to List</a>
                     </div>
+
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding: 0.5rem; max-height: 150px; overflow-y: auto;">
                     <div id="viewMode">
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Status:</strong> @Model.Status</p>
-                                <p><strong>Priority:</strong> @Model.Priority</p>
-                                <p><strong>Category:</strong> @Model.Category</p>
+                                <p style="margin-bottom: 0.25rem;"><strong>Status:</strong> @Model.Status</p>
+                                <p style="margin-bottom: 0.25rem;"><strong>Priority:</strong> @Model.Priority</p>
+                                <p style="margin-bottom: 0.25rem;"><strong>Category:</strong> @Model.Category</p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>Created On:</strong> @Model.CreatedOn.ToString("g")</p>
-                                <p><strong>Created By:</strong> @Model.CreatedByName</p>
+                                <p style="margin-bottom: 0.25rem;"><strong>Created On:</strong> @Model.CreatedOn.ToString("g")</p>
+                                <p style="margin-bottom: 0.25rem;"><strong>Created By:</strong> @Model.CreatedByName</p>
                                 @if (Model.ResolvedOn.HasValue)
                                 {
-                                    <p><strong>Resolved On:</strong> @Model.ResolvedOn.Value.ToString("g")</p>
+                                    <p style="margin-bottom: 0.25rem;"><strong>Resolved On:</strong> @Model.ResolvedOn.Value.ToString("g")</p>
                                 }
                             </div>
                         </div>
-                        <div class="mt-4">
-                            <h5>Description</h5>
-                            <p>@Model.Content</p>
+                        <div class="mt-3">
+                            <h5 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Description</h5>
+                            <p style="margin-bottom: 0;">@Model.Content</p>
                         </div>
                     </div>
 
@@ -63,15 +54,15 @@
                         <form id="editTicketForm">
                             <input type="hidden" name="TicketId" value="@Model.TicketId" />
                             <div class="form-group">
-                                <label for="Title">Title</label>
+                                <label for="Title" style="font-size: 0.9rem;">Title</label>
                                 <input name="Title" id="Title" class="form-control" value="@Model.Title" required />
                             </div>
                             <div class="form-group">
-                                <label for="Content">Description</label>
+                                <label for="Content" style="font-size: 0.9rem;">Description</label>
                                 <textarea name="Content" id="Content" class="form-control" rows="4" required>@Model.Content</textarea>
                             </div>
                             <div class="form-group">
-                                <label for="Category">Category</label>
+                                <label for="Category" style="font-size: 0.9rem;">Category</label>
                                 <select name="Category" id="Category" class="form-control" required>
                                     <option value="Bug" selected="@(Model.Category == "Bug")">Bug</option>
                                     <option value="Feature" selected="@(Model.Category == "Feature")">Feature Request</option>
@@ -79,7 +70,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="Priority">Priority</label>
+                                <label for="Priority" style="font-size: 0.9rem;">Priority</label>
                                 <select name="Priority" id="Priority" class="form-control" required>
                                     <option value="1" selected="@(Model.Priority == 1)">Low</option>
                                     <option value="2" selected="@(Model.Priority == 2)">Medium</option>
@@ -87,7 +78,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="Status">Status</label>
+                                <label for="Status" style="font-size: 0.9rem;">Status</label>
                                 <select name="Status" id="Status" class="form-control" required>
                                     <option value="Open" selected="@(Model.Status == "Open")">Open</option>
                                     <option value="In Progress" selected="@(Model.Status == "In Progress")">In Progress</option>
@@ -103,31 +94,88 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<!-- Updates History -->
-<div class="card mt-4">
-    <div class="card-header">
-        <h4>Update History</h4>
-    </div>
-    <div class="card-body">
-        <div id="updatesList">
-            <!-- Updates will be loaded here -->
+        <!-- Updates History -->
+        <div class="card mt-1">
+            <div class="card-header" >
+                <h4>Update History</h4>
+            </div>
+            <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+                <div id="updatesList">
+                    <!-- Updates will be loaded here -->
+                </div>
+            </div>
+        </div>
+        <!-- Attachments -->
+        <div class="card mt-3" style="font-size: 0.85rem;">
+            <div class="card-header d-flex justify-content-between align-items-center" style="padding: 0.5rem;">
+                <h5 style="margin: 0; font-size: 1rem;">Attachments</h5>
+                @if (Model.Status != "Resolved")
+                {
+                    <div>
+                        <input type="file" id="attachmentInput" class="d-none" multiple />
+                        <button class="btn btn-primary btn-sm" onclick="$('#attachmentInput').click()">
+                            <i class="fas fa-plus"></i> Add Attachments
+                        </button>
+                    </div>
+                }
+            </div>
+            <div class="card-body" style="padding: 0.5rem; max-height: 200px; overflow-y: auto;">
+                <div id="attachmentsList">
+                    <!-- Attachments will be loaded here -->
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Attachments -->
-<div class="card mt-4">
-    <div class="card-header">
-        <h4>Attachments</h4>
-    </div>
-    <div class="card-body">
-        <div id="attachmentsList">
-            <!-- Attachments will be loaded here -->
+    <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-1">
+        <div class="flex justify-between mb-4 items-start">
+            <div class="font-medium">C o m m e n t s</div>
         </div>
+        <div class="comments-container">
+            <div class="card">
+                <div class="card-body comments-list flex-grow h-full">
+                    <div id="commentsList" style="height: 100vh; max-height: 400px; overflow-y: auto;">
+                        <!-- Comments will be loaded here -->
+                    </div>
+                    <div class="comment-form" style="margin-top: 10px;">
+                        <form id="addCommentForm">
+                            <input type="hidden" name="TicketId" value="@Model.TicketId" />
+                            <div class="form-group">
+                                <textarea name="Comment"
+                                          class="form-control"
+                                          rows="3"
+                                          placeholder="Add a comment..."
+                                          style="
+                                          resize: none;
+                                          background-color: #fefefe;
+                                          color: #333;
+                                          border: 1px solid #ccc;
+                                          padding: 10px;
+                                          width: 100%;
+                                        "
+                                        required></textarea>
+                            </div>
+                            <button type="submit"
+                                    class="btn"
+                                    style="background-color: #4682b4;
+                                    color: #fff;
+                                    border: none;
+                                    padding: 10px 15px;
+                                    cursor: pointer;
+                                    float: right;
+                                    border-radius: 10px;">
+                                Send
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
     </div>
+
+
 </div>
 
 @section Scripts {
@@ -179,10 +227,10 @@
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <strong>${comment.userName}</strong>
-                                    <small class="text-muted ml-2">${new Date(comment.commentedOn).toLocaleString()}</small>
+                                    <small class="text-muted ml-2" style="font-size: 11px;">${new Date(comment.commentedOn).toLocaleString()}</small>
                                 </div>
-                                <button class="btn btn-danger btn-sm" onclick="deleteComment(${comment.commentId})">
-                                    <i class="fas fa-trash"></i>
+                                <button  onclick="deleteComment(${comment.commentId})">
+                                    <i class="fas fa-trash" style="font-size: 12px; margin-right: 7px; color: red;"></i>
                                 </button>
                             </div>
                             <p class="mb-0 mt-2">${comment.comment}</p>
@@ -191,6 +239,9 @@
                     `;
                 });
                 $('#commentsList').html(html);
+                // Scroll to bottom of comments list after loading
+                var commentsList = document.getElementById('commentsList');
+                commentsList.scrollTop = commentsList.scrollHeight;
             });
         }
 
@@ -220,6 +271,47 @@
             loadUpdates();
 
             loadAttachments();
+
+            $('#attachmentInput').change(function(e) {
+                if ('@Model.Status' === 'Resolved') {
+                    toastr.error('Cannot add attachments to resolved tickets');
+                    $(this).val('');
+                    return;
+                }
+                
+                const files = e.target.files;
+                if (files.length > 0) {
+                    const formData = new FormData();
+                    formData.append('ticketId', @Model.TicketId);
+                    
+                    for (let i = 0; i < files.length; i++) {
+                        formData.append('file', files[i]);
+                    }
+
+                    $.ajax({
+                        url: '/Attachment/Upload',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            if (response.success) {
+                                loadAttachments();
+                                $(this).val('');
+                            } else {
+                                toastr.error(response.message || 'Failed to upload attachment');
+                            }
+                        },
+                        error: function() {
+                            toastr.error('An error occurred while uploading the attachment');
+                        }
+                    });
+                }
+            });
+
+            if ('@Model.Status' === 'Resolved') {
+                checkAndShowFeedback();
+            }
         });
 
         function deleteComment(commentId) {
@@ -247,18 +339,20 @@
                 var html = '';
                 updates.forEach(function(update) {
                     html += `
-                        <div class="update-item mb-3">
+                        <div class="update-item mb-1">
                             <div class="d-flex justify-content-between align-items-start">
-                                <div>
+                                <div class="status-priority text-center">
                                     <strong>${update.updatedByName}</strong>
-                                    <small class="text-muted ml-2">${new Date(update.updatedOn).toLocaleString()}</small>
+                                            
+                                                <small class="text-muted ml-2" style="font-size: 11px;">${new Date(update.updatedOn).toLocaleString()}</small>
                                 </div>
                             </div>
-                            <p class="mb-0 mt-2">${update.message}</p>
-                            <div class="mt-1">
+                            <p>${update.message}</p>
+                            <div class="mb-2">
                                 ${update.status ? `<small class="text-muted">Status: ${update.status}</small>` : ''}
                                 ${update.priority ? `<small class="text-muted ml-2">Priority: ${update.priority}</small>` : ''}
                             </div>
+                                    
                             <hr>
                         </div>
                     `;
@@ -292,8 +386,8 @@
                                         <small class="text-muted d-block">${formatFileSize(attachment.filesize)}</small>
                                     </div>
                                 </div>
-                                <button class="btn btn-danger btn-sm" onclick="deleteAttachment(${attachment.attachmentId})">
-                                    <i class="fas fa-trash"></i>
+                                <button onclick="deleteAttachment(${attachment.attachmentId})">
+                                    <i class="fas fa-trash" style="font-size: 12px; margin-right: 7px; color: red;"></i>
                                 </button>
                             </div>
                         </div>
@@ -312,6 +406,11 @@
         }
 
         function deleteAttachment(attachmentId) {
+            if ('@Model.Status' === 'Resolved') {
+                toastr.error('Cannot delete attachments for resolved tickets');
+                return;
+            }
+            
             if (confirm('Are you sure you want to delete this attachment?')) {
                 $.ajax({
                     url: '/Attachment/Delete',
@@ -330,5 +429,117 @@
                 });
             }
         }
+
+        function markAsResolved() {
+            if (confirm('Are you sure you want to mark this ticket as resolved?')) {
+                $.ajax({
+                    url: '/Ticket/EditTicket',
+                    type: 'POST',
+                    data: {
+                        TicketId: @Model.TicketId,
+                        Title: '@Model.Title',
+                        Content: '@Model.Content',
+                        Category: '@Model.Category',
+                        Priority: '@Model.Priority',
+                        Status: 'Resolved'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            loadUpdates();
+                            showFeedbackModal();
+                            location.reload();
+                        } else {
+                            toastr.error(response.message || 'Failed to resolve ticket');
+                        }
+                    },
+                    error: function() {
+                        toastr.error('An error occurred while resolving the ticket');
+                    }
+                });
+            }
+        }
+
+        function checkAndShowFeedback() {
+            $.get('/Feedback/CheckFeedbackStatus', { ticketId: @Model.TicketId }, function(response) {
+                if (!response.hasFeedback && '@Model.CreatedBy' === '@ViewBag.CurrentUserId') {
+                    showFeedbackModal();
+                }
+            });
+        }
+
+        function showFeedbackModal() {
+            $('#feedbackModal').modal('show');
+        }
+
+        $('#feedbackForm').submit(function(e) {
+            e.preventDefault();
+            var formData = {
+                TicketId: @Model.TicketId,
+                Rating: parseInt($('input[name="Rating"]:checked').val()),
+                Remarks: $('textarea[name="Remarks"]').val()
+            };
+
+            $.ajax({
+                url: '/Feedback/SubmitFeedback',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    if (response.success) {
+                        $('#feedbackModal').modal('hide');
+                        toastr.success('Thank you for your feedback!');
+                    } else {
+                        toastr.error(response.message || 'Failed to submit feedback');
+                    }
+                },
+                error: function() {
+                    toastr.error('An error occurred while submitting feedback');
+                }
+            });
+        });
+
+        
     </script>
 }
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            transition: background-color 0.4s ease;
+        }
+
+        .custom-btn {
+            padding: 5px 10px;
+            border: none;
+            color: #fff;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .violet-btn {
+            background-color: green;
+        }
+
+        .blue-btn {
+            background-color: #4682b4;
+        }
+
+        .blu-btn {
+            background-color: blue;
+        }
+
+        .custom-btn:hover {
+            opacity: 0.9;
+        }
+
+        .custom-btn:active {
+            transform: scale(0.95);
+        }
+
+
+    </style>

@@ -115,6 +115,11 @@ namespace ASI.Basecode.WebApp.Mvc
         /// <param name="context">context</param>
         public override void OnActionExecuting(ActionExecutingContext context)
         {
+            if (context.HttpContext.Response.StatusCode == 403)
+            {
+                context.Result = new RedirectToActionResult("Forbidden", "Home", null);
+            }
+            base.OnActionExecuting(context);
         }
 
         /// <summary>
@@ -144,5 +149,14 @@ namespace ASI.Basecode.WebApp.Mvc
 
             this._logger.LogError(logContent.ToString());
         }
+        public int GetCurrentUserId()
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return userId;
+            }
+            throw new UnauthorizedAccessException("User is not authenticated");
+        }   
     }
 }

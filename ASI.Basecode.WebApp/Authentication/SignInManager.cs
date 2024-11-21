@@ -90,6 +90,7 @@ namespace ASI.Basecode.WebApp.Authentication
 
                 new Claim("UserId", userId, ClaimValueTypes.String, Const.Issuer),
                 new Claim("UserName", name, ClaimValueTypes.String, Const.Issuer),
+                new Claim(ClaimTypes.Role, user.Role, ClaimValueTypes.String, Const.Issuer)
             };
             return new ClaimsIdentity(claims, Const.AuthenticationScheme);
         }

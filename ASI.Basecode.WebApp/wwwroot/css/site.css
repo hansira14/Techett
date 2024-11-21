@@ -85,3 +85,18 @@ body {
 .w-1000px {
     width: 1000px;
 }
+
+.article-meta {
+    margin: 1rem 0;
+    color: #666;
+}
+
+.meta-item {
+    margin-right: 2rem;
+}
+
+.article-content {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}

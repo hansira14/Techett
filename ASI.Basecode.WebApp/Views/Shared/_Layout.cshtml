@@ -1,4 +1,6 @@
-﻿@using static ASI.Basecode.Resources.Views.Screen
+﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using static ASI.Basecode.Resources.Views.Screen
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -12,39 +14,52 @@
     <link rel="icon" href="@Url.Content("~/img/logo-light.png")" type="image/png">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="~/css/techett.css" />
-    <!--<link rel="stylesheet" href="~/css/style.css" />-->
+    @*<link rel="stylesheet" href="~/css/style.css" />*@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
     @RenderSection("Styles", required: false)
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body>
+    @*
+    <partial name="_AdminSidebar" />
+    <div class="container" style="centered;" : "margin-left: 250px;" )">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>*@
     @{
-        var userRole = Context.Session.GetString("UserRole");
-        var isLoginOrRegister = ViewContext.RouteData.Values["Controller"].ToString() == "Account" &&
-        (ViewContext.RouteData.Values["Action"].ToString() == "Login" || ViewContext.RouteData.Values["Action"].ToString() == "Register");
+        var isLoginOrRegister = false;
+        var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+        if (ViewContext.RouteData.Values["Controller"]?.ToString() == "Account" && 
+            ViewContext.RouteData.Values["Action"]?.ToString() is string action)
+        {
+            isLoginOrRegister = action.Equals("Login", StringComparison.OrdinalIgnoreCase) || 
+                               action.Equals("Register", StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     @if (!isLoginOrRegister)
     {
-        switch (userRole)
+        switch (userRole?.ToUpperInvariant())
         {
-            case "superadmin":
-                @Html.Partial("_AdminSidebar")
+            case "SUPERADMIN":
+            case "ADMIN":
+                @await Html.PartialAsync("_AdminSidebar")
                 break;
-            case "admin":
-                @Html.Partial("_AdminSidebar")
-                break;
-            case "agent":
-                @Html.Partial("_UserSidebar")
-                break;
-            case "user":
-                @Html.Partial("_UserSidebar")
+            case "AGENT":
+            case "USER":
+                @await Html.PartialAsync("_UserSidebar")
                 break;
             default:
-                @Html.Partial("_AdminSidebar")
+                <script>window.location.href = '@Url.Action("Login", "Account")';</script>
                 break;
         }
     }
@@ -55,16 +70,16 @@
             @RenderBody()
         </main>
     </div>
-    @Html.Partial("_Header")
     
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.js"></script>
-    <script src="https://kit.fontawesome.com/7a7c645416.js" crossorigin="anonymous"></script>
-    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>*@
+    @*<script src="https://kit.fontawesome.com/7a7c645416.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.7/umd/popper.min.js"></script>*@
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
         // Configure Toastr options
         toastr.options = {
@@ -74,9 +89,9 @@
             progressBar: true
         };
     </script>
+    <script src="~/js/site.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/popper.js/dist/umd/popper.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
