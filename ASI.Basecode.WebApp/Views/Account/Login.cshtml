@@ -10,6 +10,8 @@
 <div>
     @Html.AntiForgeryToken()
 </div>
+
+
 <div class="container">
     <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-xl-10">
@@ -18,7 +20,7 @@
                     <div class="col-lg-6">
                         <div class="card-body p-md-5 mx-md-4">
                             <div class="text-center">
-                                <img src="~/img/logo.png" style="width: 185px;" alt="logo">
+                                <img src="~/img/logo.png" style="margin-left: 55px;width: 180px; height: 180px;" alt="logo">
                             </div>
                             <form method="post" action="/Account/Login" id="loginForm">
                                 <div class="form-outline mb-4">
@@ -85,7 +87,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </form>
                         </div>
                     </div>
@@ -97,7 +98,6 @@
         </div>
     </div>
 </div>
-
 
 @section scripts {
     <script>
