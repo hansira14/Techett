@@ -306,6 +306,25 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             return View(profile);
         }
+
+        [HttpGet]
+        [Authorize(Policy = "RequireAdminRole")]
+        public IActionResult Agents()
+        {
+            try
+            {
+                var agents = _userService.GetAllAgents();
+                return View(agents);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching agents");
+                return View("Error", new ErrorViewModel 
+                { 
+                    RequestId = HttpContext.TraceIdentifier
+                });
+            }
+        }
     }
 }
 

@@ -2,16 +2,19 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-
+using ASI.Basecode.Data.Repositories;
+using ASI.Basecode.Data.Interfaces;
 namespace ASI.Basecode.Services.Services
 {
     public class UserAuthorizationService : IUserAuthorizationService
     {
+        private readonly IAssignmentRepository _assignmentRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserAuthorizationService(IHttpContextAccessor httpContextAccessor)
+        public UserAuthorizationService(IHttpContextAccessor httpContextAccessor, IAssignmentRepository assignmentRepository)
         {
             _httpContextAccessor = httpContextAccessor;
+            _assignmentRepository = assignmentRepository;
         }
 
         public bool CanModifyUser(string targetUserRole)
@@ -74,7 +77,7 @@ namespace ASI.Basecode.Services.Services
             return currentUserId == commentUserId;
         }
 
-        public bool CanModifyTicket(int ticketCreatorId)
+        public bool CanModifyTicket(int ticketCreatorId, int? ticketId = null)
         {
             var currentUser = _httpContextAccessor.HttpContext?.User;
             if (currentUser == null) return false;
@@ -84,6 +87,7 @@ namespace ASI.Basecode.Services.Services
             var userIdClaim = currentUser.Claims
                 .FirstOrDefault(c => c.Type == "UserId");
 
+            // SuperAdmin and Admin can modify all tickets
             if (userRole?.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase) == true ||
                 userRole?.Equals(Roles.Admin, StringComparison.OrdinalIgnoreCase) == true)
             {
@@ -92,7 +96,15 @@ namespace ASI.Basecode.Services.Services
 
             if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int currentUserId))
             {
-                return currentUserId == ticketCreatorId;
+                // Check if user is the creator
+                if (currentUserId == ticketCreatorId) return true;
+
+                // Check if user is the assigned agent
+                if (ticketId.HasValue && userRole?.Equals(Roles.Agent, StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    var assignment = _assignmentRepository.GetAssignmentByTicketId(ticketId.Value);
+                    return assignment?.AssignedTo == currentUserId;
+                }
             }
 
             return false;

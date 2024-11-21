@@ -4,7 +4,7 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
-
+    
 namespace ASI.Basecode.Services.Services;
 
 public class AssignmentService : IAssignmentService

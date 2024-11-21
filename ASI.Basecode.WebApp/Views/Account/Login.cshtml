@@ -39,9 +39,53 @@
                                         @Login
                                     </button>
                                     <div>
-                                        <a class="text-muted" href="#!">@ForgotPass</a>
+                                        <!-- Forgot Password Button -->
+                                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#forgotPasswordModal">Forgot Password?</button>
                                     </div>
                                 </div>
+
+                                <!-- Forgot Password Modal -->
+                                <div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+                                    <div class="modal-dialog custom-modal-width mx-auto">
+                                        <div class="modal-content rounded-lg shadow-xl">
+                                            <div class="modal-header text-center gradient-to-r rounded-t-lg p-4 d-flex justify-content-center align-items-center position-relative">
+                                                <h5 class="modal-title text-2xl font-bold text-center text-indigo-900">Forgot Password</h5>
+                                                <button type="button" class="close position-absolute" data-dismiss="modal" style="top: 10px; right: 10px;">
+                                                    <span>&times;</span>
+                                                </button>
+                                            </div>
+                                            <form id="forgotPasswordForm">
+                                                <div class="modal-body p-6 space-y-4">
+                                                    <!-- Last Name -->
+                                                    <div class="form-group">
+                                                        <label for="lastName" class="block text-sm font-medium text-indigo-700 mb-1">Last Name</label>
+                                                        <input type="text" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" id="lastName" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;" />
+                                                    </div>
+                                                    <!-- First Name -->
+                                                    <div class="form-group">
+                                                        <label for="firstName" class="block text-sm font-medium text-indigo-700 mb-1">First Name</label>
+                                                        <input type="text" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" id="firstName" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;" />
+                                                    </div>
+                                                    <!-- Email -->
+                                                    <div class="form-group">
+                                                        <label for="email" class="block text-sm font-medium text-indigo-700 mb-1">Email</label>
+                                                        <input type="email" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" id="email" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;" />
+                                                    </div>
+                                                    <!-- Description -->
+                                                    <div class="form-group">
+                                                        <label for="description" class="block text-sm font-medium text-indigo-700 mb-1">Description</label>
+                                                        <textarea class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" id="description" rows="4" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary text-black" data-dismiss="modal" style="background-color: transparent; color:black; border-color: transparent;">Close</button>
+                                                    <button type="button" class="btn" id="sendEmailBtn" style="background-color: #D1D7FF; border-color: #D1D7FF;">Submit</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </form>
                         </div>
                     </div>
@@ -54,6 +98,7 @@
     </div>
 </div>
 
+
 @section scripts {
     <script>
         // Check for error message and display Toastr notification
@@ -62,5 +107,37 @@
             toastr.error(errorMessage);
         }
     </script>
+    <script>
+        document.getElementById("sendEmailBtn").addEventListener("click", function () {
+            var lastName = document.getElementById("lastName").value;
+            var firstName = document.getElementById("firstName").value;
+            var email = document.getElementById("email").value;
+            var description = document.getElementById("description").value;
+
+            // Validate input
+            if (!lastName || !firstName || !email || !description) {
+                alert("Please fill out all fields.");
+                return;
+            }
+
+            // Create the mailto link with form data
+            var mailtoLink = "mailto:cosepv@gmail.com?subject=Forgot Password Request&body=" +
+                "Last Name: " + encodeURIComponent(lastName) + "%0D%0A" +
+                "First Name: " + encodeURIComponent(firstName) + "%0D%0A" +
+                "Email: " + encodeURIComponent(email) + "%0D%0A" +
+                "Description: " + encodeURIComponent(description);
+
+            // Open the default email client with the pre-filled data
+            window.location.href = mailtoLink;
+
+
+            $('#forgotPasswordModal').modal('hide');
+        });
+    </script>
 }
+<style>
+    .custom-modal-width {
+        max-width: 450px;
+    }
+</style>
 

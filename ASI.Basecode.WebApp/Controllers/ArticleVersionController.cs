@@ -2,6 +2,7 @@ using System;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.WebApp.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -52,7 +53,7 @@ public class ArticleVersionController : ControllerBase<ArticleVersionController>
             return Json(new { success = false, message = "Failed to load version details" });
         }
     }
-
+    [Authorize(Policy = "RequireAdminRole")]
     [HttpPost]
     public IActionResult RestoreVersion(int versionId)
     {

@@ -50,6 +50,7 @@ namespace ASI.Basecode.WebApp
             this._services.AddScoped<IAssignmentService, AssignmentService>();
             this._services.AddScoped<IUserAuthorizationService, UserAuthorizationService>();
             this._services.AddScoped<IArticleAttachmentService, ArticleAttachmentService>();
+            this._services.AddScoped<IChartService, ChartService>();
 
             // Repositories
             this._services.AddScoped<IUserRepository, UserRepository>();

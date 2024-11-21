@@ -1,0 +1,74 @@
+@using ASI.Basecode.Services.ServiceModels
+@model IEnumerable<AgentViewModel>
+
+@{
+    ViewData["Title"] = "Agents";
+}
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+<div class="py-2 px-0 bg-absolute flex items-center sticky top-0 left-0 right-0 z-30">
+    <ul class="flex items-center text-sm m-0">
+        <li class="mr-2">
+            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">A G E N T S</a>
+        </li>
+    </ul>
+</div>
+
+<div class="flex flex-col h-full flex-grow min-h-[calc(100vh-85px)] mb-3">
+    <div class="rounded-md col-span-3 flex-grow">
+        <div class="overflow-x-auto bg-white rounded-md shadow">
+            <table class="table-auto w-full">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-gray-600">NAME</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-gray-600">EMAIL</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-gray-600">TICKETS RESOLVED</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-gray-600">AVG RESOLVE TIME</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-gray-600">RATING</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var agent in Model)
+                    {
+                        <tr class="hover:bg-gray-50 border-b">
+                            <td class="py-2 px-4 text-sm text-gray-800">
+                                <a href="@Url.Action("Profile", "Account", new { id = agent.UserId })"
+                                   class="text-blue-600 hover:text-blue-800">@($"{agent.Fname} {agent.Lname}")</a>
+                            </td>
+                            <td class="py-2 px-4 text-sm text-gray-800">@agent.Email</td>
+                            <td class="py-2 px-4 text-sm text-gray-800">
+                                @agent.TicketsResolved / @agent.TotalTicketsAssigned
+                            </td>
+                            <td class="py-2 px-4 text-sm text-gray-800">
+                                @(agent.AverageResolveTime.HasValue ? $"{agent.AverageResolveTime:F1} hours" : "N/A")
+                            </td>
+                            <td class="py-2 px-4 text-sm text-gray-800">
+                                @(agent.Rating.HasValue ? $"{agent.Rating:F1} / 5.0" : "No ratings")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        transition: background-color 0.4s ease;
+    }
+
+    td {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style> 

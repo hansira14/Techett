@@ -108,7 +108,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     return Json(new { success = false, message = "Cannot edit resolved tickets" });
                 }
 
-                if (!_userAuthorizationService.CanModifyTicket(ticket.CreatedBy))
+                if (!_userAuthorizationService.CanModifyTicket(ticket.CreatedBy, ticket.TicketId))
                 {
                     return Json(new { success = false, message = "You don't have permission to modify this ticket" });
                 }

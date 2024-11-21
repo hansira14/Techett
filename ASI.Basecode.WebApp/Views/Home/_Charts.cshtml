@@ -1,0 +1,307 @@
+@if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin")) //charts for admins and superadmins
+{
+    <!-- Row 1 - Charts -->
+    <div class="row mb-4">
+            <!-- Bar Chart -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body" style="background-color: transparent;">
+                        <h5 class="card-title text-uppercase">Ticket Distribution</h5>
+                        <canvas id="barChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pie Chart -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-uppercase">Ticket Status</h5>
+                        <canvas id="pieChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Line Chart -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-uppercase">Article Creation Trend</h5>
+                        <canvas id="lineChart1" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Row 2 - Stats and Chart -->
+    <div class="row mb-4">
+            
+
+            <!-- Column 2 - Line Chart -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-uppercase">Ticket Trends</h5>
+                        <canvas id="lineChart2" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- Column 1 - Stats Cards -->
+            <div class="col-md-4">
+                <div class="row">
+                    <!-- Total Tickets -->
+                    <div class="col-6 mb-6 mt-5">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2">Total Tickets</h6>
+                                <h2 class="card-title mb-0" id="totalTicketsCount">-</h2>
+                                <small class="text-white-50" id="totalTicketsChange">-</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Open Tickets -->
+                    <div class="col-6 mb-3 mt-5">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2">Open Tickets</h6>
+                                <h2 class="card-title mb-0" id="openTicketsCount">-</h2>
+                                <small class="text-white-50" id="openTicketsChange">-</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resolved Tickets -->
+                    <div class="col-6 mb-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2">Resolved</h6>
+                                <h2 class="card-title mb-0" id="resolvedTicketsCount">-</h2>
+                                <small class="text-white-50" id="resolvedTicketsChange">-</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Tickets -->
+                    <div class="col-6 mb-3">
+                        <div class="card bg-danger text-white">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2">Pending</h6>
+                                <h2 class="card-title mb-0" id="pendingTicketsCount">-</h2>
+                                <small class="text-white-50" id="pendingTicketsChange">-</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+}
+@if (User.IsInRole("User") || User.IsInRole("Agent"))
+{
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4 p-4 md:p-6">
+        <Card class="card-content">
+            <CardContent className="flex items-center gap-4 p-6">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="icon-container">
+                        <i class="fa-solid fa-chart-simple"></i>
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium leading-none bold-text">Total Tickets</p>
+                        <p className="text-xl">86,575,443</p>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+
+        <Card class="card-content">
+            <CardContent className="flex items-center gap-4 p-6">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="icon-container">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium leading-none bold-text">Pending Tickets</p>
+                        <p className="text-xl">324,243,2455</p>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+
+        <Card class="card-content">
+            <CardContent className="flex items-center gap-4 p-6">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="icon-container">
+                        <i class="fa-regular fa-folder-open"></i>
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium leading-none bold-text">Opened Tickets</p>
+                        <p className="text-xl">453,472,384</p>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+
+        <Card class="card-content">
+            <CardContent className="flex items-center gap-4 p-6">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="icon-container">
+                        <i class="fa-solid fa-folder-closed"></i>
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium leading-none bold-text">Closed Tickets</p>
+                        <p className="text-xl">453,472,384</p>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    </div>
+}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const defaultOptions = {
+            responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 2
+        };
+
+        function initializeCharts() {
+            $.get('/Chart/GetChartData', function(data) {
+                // Bar Chart - Priority Distribution
+                const barCtx = document.getElementById('barChart').getContext('2d');
+                new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(data.priorityDistribution),
+                        datasets: [{
+                            label: 'Tickets by Priority',
+                            data: Object.values(data.priorityDistribution),
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(255, 99, 132, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(255, 99, 132, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: defaultOptions
+                });
+
+                // Pie Chart - Status Distribution
+                const pieCtx = document.getElementById('pieChart').getContext('2d');
+                new Chart(pieCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(data.statusDistribution),
+                        datasets: [{
+                            data: Object.values(data.statusDistribution),
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(255, 206, 86, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: defaultOptions
+                });
+
+                // Line Chart - Trends
+                const lineCtx = document.getElementById('lineChart2').getContext('2d');
+                const dates = Array.from({length: 7}, (_, i) => {
+                    const d = new Date();
+                    d.setDate(d.getDate() - (6 - i));
+                    return d.toLocaleDateString();
+                });
+
+                new Chart(lineCtx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: Object.entries(data.ticketTrends).map(([status, counts], index) => ({
+                            label: status,
+                            data: counts,
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)'
+                            ][index],
+                            tension: 0.1,
+                            fill: false
+                        }))
+                    },
+                    options: {
+                        ...defaultOptions,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                // Line Chart 1 - Article Creation Trends
+                const line1Ctx = document.getElementById('lineChart1').getContext('2d');
+                const articleDates = Array.from({length: 7}, (_, i) => {
+                    const d = new Date();
+                    d.setDate(d.getDate() - (6 - i));
+                    return d.toLocaleDateString();
+                });
+
+                new Chart(line1Ctx, {
+                    type: 'line',
+                    data: {
+                        labels: articleDates,
+                        datasets: [{
+                            label: 'Articles Created',
+                            data: data.articleTrends || [],
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                            tension: 0.1,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        ...defaultOptions,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: false,
+                                text: 'Article Creation Trend'
+                            }
+                        }
+                    }
+                });
+
+                // Update statistics cards
+                const stats = data.statistics;
+                Object.keys(stats).forEach(key => {
+                    const count = stats[key].count;
+                    const change = stats[key].change;
+                    const changeText = change >= 0 ? `↑ ${change}% increase` : `↓ ${Math.abs(change)}% decrease`;
+                    
+                    document.getElementById(`${key}Count`).textContent = count;
+                    document.getElementById(`${key}Change`).textContent = changeText;
+                });
+            });
+        }
+
+        initializeCharts();
+    });
+</script>

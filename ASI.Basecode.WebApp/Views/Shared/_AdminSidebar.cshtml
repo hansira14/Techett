@@ -8,6 +8,7 @@
             <a asp-controller="Home" asp-action="Index">
                 <i class="fa-solid fa-house sidebar-icon"></i>
                 <span>Dashboard</span>
+                <i id="dashboardArrow" class="fa-solid fa-chevron-right dropdown-arrow"></i>
             </a>
         </li>
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Tickets" ? "active" : "")">
@@ -22,13 +23,20 @@
                 <span>Articles</span>
             </a>
         </li>
+            </ul>
+        </li>
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Users" ? "active" : "")">
             <a asp-controller="Account" asp-action="Users">
                 <i class="fa-solid fa-user sidebar-icon"></i> 
                 <span>Users</span>
             </a>
         </li>
-
+        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Agents" ? "active" : "")">
+            <a asp-controller="Account" asp-action="Agents">
+                <i class="fa-solid fa-user-tie sidebar-icon"></i> 
+                <span>Agents</span>
+            </a>
+        </li>
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Settings" ? "active" : "")">
             <a asp-controller="Account" asp-action="Settings">
                 <i class="fa-solid fa-gear sidebar-icon"></i> 
@@ -41,12 +49,13 @@
                 <span>About Us</span>
             </a>
         </li>
+    </ul>
 
     </ul>
     <div class="signout">
         <form id="logoutForm" asp-action="SignOutUser" asp-controller="Account" method="post">
             <button type="submit" id="logoutButton" class="btn">
-                <i class="fas fa-sign-out-alt sid    ebar-icon"></i>
+                <i class="fas fa-sign-out-alt sidebar-icon"></i>
                 <span>Logout</span>
             </button>
         </form>
