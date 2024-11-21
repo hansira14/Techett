@@ -1,4 +1,5 @@
-﻿﻿<div class="sidebar">
+﻿
+﻿<div class="sidebar">
     <div class="logo">
         <img id="logo-img" src="~/img/logo-light.png" alt="Logo" />
     </div>
@@ -8,7 +9,6 @@
             <a asp-controller="Home" asp-action="Index">
                 <i class="fa-solid fa-house sidebar-icon"></i>
                 <span>Dashboard</span>
-                <i id="dashboardArrow" class="fa-solid fa-chevron-right dropdown-arrow"></i>
             </a>
         </li>
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Tickets" ? "active" : "")">
@@ -23,7 +23,11 @@
                 <span>Articles</span>
             </a>
         </li>
-            </ul>
+        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Agents" ? "active" : "")">
+            <a asp-controller="Account" asp-action="Agents">
+                <i class="fa-solid fa-user-tie sidebar-icon"></i> 
+                <span>Agents</span>
+            </a>
         </li>
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Users" ? "active" : "")">
             <a asp-controller="Account" asp-action="Users">
@@ -31,12 +35,7 @@
                 <span>Users</span>
             </a>
         </li>
-        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Agents" ? "active" : "")">
-            <a asp-controller="Account" asp-action="Agents">
-                <i class="fa-solid fa-user-tie sidebar-icon"></i> 
-                <span>Agents</span>
-            </a>
-        </li>
+        
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Settings" ? "active" : "")">
             <a asp-controller="Account" asp-action="Settings">
                 <i class="fa-solid fa-gear sidebar-icon"></i> 
@@ -49,18 +48,15 @@
                 <span>About Us</span>
             </a>
         </li>
-    </ul>
 
     </ul>
-    <div class="signout">
-        <form id="logoutForm" asp-action="SignOutUser" asp-controller="Account" method="post">
-            <button type="submit" id="logoutButton" class="btn">
-                <i class="fas fa-sign-out-alt sidebar-icon"></i>
-                <span>Logout</span>
-            </button>
-        </form>
+    <div class="signout" >
+        <a asp-action="SignOutUser" asp-controller="Account" method="post" onclick="document.getElementById('logoutForm').submit(); return false;">
+            <i class="fas fa-sign-out-alt sidebar-icon"></i>
+            <span>Logout</span>
+        </a>
     </div>
-
+    
 </div>    
 <script>
     document.getElementById("logoutButton").addEventListener("click", function (event) {
@@ -74,41 +70,150 @@
             document.getElementById("logoutForm").submit();
         }, 200); // Delay in milliseconds
     });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        var dashboardLink = document.getElementById("dashboardLink");
-        var dashboardDropdown = document.getElementById("dashboardDropdown");
-        var dashboardArrow = document.getElementById("dashboardArrow");
-
-        // Toggle function for the Dashboard dropdown
-        function toggleDropdown() {
-            if (dashboardDropdown.style.display === "none" || dashboardDropdown.style.display === "") {
-                dashboardDropdown.style.display = "block";
-                dashboardArrow.classList.add("rotate-arrow");
-                localStorage.setItem("dashboardExpanded", "true"); // Store state in localStorage
-            } else {
-                dashboardDropdown.style.display = "none";
-                dashboardArrow.classList.remove("rotate-arrow");
-                localStorage.setItem("dashboardExpanded", "false");
-            }
-        }
-
-        // Check local storage for dropdown state on page load
-        var isExpanded = localStorage.getItem("dashboardExpanded");
-        if (isExpanded === "true") {
-            dashboardDropdown.style.display = "block";
-            dashboardArrow.classList.add("rotate-arrow");
-        }
-
-        // Add click event to the dashboard link to toggle the dropdown
-        dashboardLink.addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent navigation to handle toggle first
-            toggleDropdown();
-            // Navigate to Admin/Index after toggling
-            setTimeout(function () {
-                window.location.href = dashboardLink.href;
-            }, 100); // Adjust delay as needed
-        });
-    });
-
 </script>
+<style>
+    .sidebar {
+    width: 230px;
+    height: 100vh;
+    background-color: var(--white-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+    z-index: 1;
+    transition: background-color 0.4s ease;
+    transition: width 0.3s ease;
+    justify-content: space-between;
+}
+.sidebar-menu {
+    list-style: none; 
+    padding: 0;       
+    margin: 0;        
+}
+
+.sidebar-menu li {
+    list-style: none; 
+    margin: 0;        
+    padding: 0;
+    position: relative;
+}
+.logo{
+    border-bottom: 1px solid var(--blue-color);
+    background: linear-gradient(to top, var(--white-color) 1%, var(--white-color) 100%);
+}
+.logo img {
+    width: 200px;
+    height: 180px;
+    margin-bottom: 40px;
+}
+
+.sidebar-icon {
+    margin-right: 20px;
+    margin-left: 20px;
+    font-size: 15px;
+    color: #161571;
+}
+
+.sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    padding: 10px 10px;
+    color: var(--text-color);
+    text-decoration: none;
+    width: 210px;  
+    height: 45px;
+    margin-bottom: 5px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border-radius: 3px;
+    border-left: 8px solid var(--white-color);
+    font-weight: 500;
+    font-size: 16px;
+}
+.sidebar-menu li a:hover,
+.sidebar-menu li a.active {
+    border-left: 8px solid var(--violet-color);
+    color: var(--blue-color);
+}
+
+.sidebar-menu li a:hover .sidebar-icon {
+    color: var(--blue-color);
+}
+
+.sidebar-menu li.active a {
+    background-color: #D1D7FF;
+    border-left: 8px solid var(--blue-color);
+    color: var(--darviolet-color);
+    font-weight: 600;
+}
+
+.sidebar-menu li.active a:hover {
+    background-color: #D1D7FF;
+    border-left: 8px solid var(--blue-color);
+}
+
+.sidebar-submenu {
+    list-style: none;
+    display: none;
+    border-left: 2px solid var(--grey-color);
+    background-color: none;
+    color: none;
+}
+
+.sidebar-submenu li a {
+    font-size: 11px;
+    height: 25px;
+    text-decoration: none;
+    display: block;
+}
+
+.sidebar-submenu:hover {
+    color: green;
+}
+
+.sidebar-submenu .sidebar-icon {
+    font-size: 10px;
+}
+
+.signout {
+    width: 210px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    height: 45px;
+    font-weight: 500;
+    position: relative;
+}
+
+
+
+.signout a{
+    display: flex;
+    align-items: center;
+    align-content: center;
+    padding: 10px 10px;
+    color: var(--text-color);
+    text-decoration: none;
+    width: 210px;  
+    height: 45px;
+    border-radius: 3px;
+    border-left: 8px solid var(--white-color);
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.sidebar .signout a:hover {
+    color: red;
+    border-left: 8px solid red;
+}
+
+.signout a:hover .sidebar-icon {
+    color: red;
+}
+
+</style>
