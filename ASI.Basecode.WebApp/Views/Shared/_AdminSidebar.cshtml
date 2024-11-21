@@ -66,40 +66,5 @@
         }, 200); // Delay in milliseconds
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
-        var dashboardLink = document.getElementById("dashboardLink");
-        var dashboardDropdown = document.getElementById("dashboardDropdown");
-        var dashboardArrow = document.getElementById("dashboardArrow");
-
-        // Toggle function for the Dashboard dropdown
-        function toggleDropdown() {
-            if (dashboardDropdown.style.display === "none" || dashboardDropdown.style.display === "") {
-                dashboardDropdown.style.display = "block";
-                dashboardArrow.classList.add("rotate-arrow");
-                localStorage.setItem("dashboardExpanded", "true"); // Store state in localStorage
-            } else {
-                dashboardDropdown.style.display = "none";
-                dashboardArrow.classList.remove("rotate-arrow");
-                localStorage.setItem("dashboardExpanded", "false");
-            }
-        }
-
-        // Check local storage for dropdown state on page load
-        var isExpanded = localStorage.getItem("dashboardExpanded");
-        if (isExpanded === "true") {
-            dashboardDropdown.style.display = "block";
-            dashboardArrow.classList.add("rotate-arrow");
-        }
-
-        // Add click event to the dashboard link to toggle the dropdown
-        dashboardLink.addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent navigation to handle toggle first
-            toggleDropdown();
-            // Navigate to Admin/Index after toggling
-            setTimeout(function () {
-                window.location.href = dashboardLink.href;
-            }, 100); // Adjust delay as needed
-        });
-    });
 
 </script>
