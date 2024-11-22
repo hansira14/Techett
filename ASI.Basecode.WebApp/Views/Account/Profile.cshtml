@@ -3,58 +3,73 @@
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
+
 <body class="bg-gray-100">
 
     <!-- Main Content -->
     <div class="ml-38 pt-14 mt-20">
         <div class="relative">
             <div class="fixed top-0 left-0 w-full h-48 bg-gradient-to-r from-white to-blue-100 -z-10"></div>
-           
-            @await Html.PartialAsync("_Header")
 
-            
+            @await Html.PartialAsync("_Header")
         </div>
-        
-        <div class="mt-6 align-items-center justify-content-between">
-            <div class="user-profile">
-                
-                <!-- Profile Header -->
-                <div class="bg-none rounded-lg p-6 mb-4 mt-10">
-                    <h1 class="text-center text-xl font-semibold">@Model.Name</h1>
-                    <h2 class="text-center text-sm text-gray-500">@Model.Email</h2>
-                    <p class="text-center text-sm text-gray-400">@Model.Role</p>
-                </div>              
+    </div>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="mb-8 flex flex-col items-center sm:flex-row sm:items-start">
+            <img src="@Model.ProfilePictureUrl" alt="@Model.Name's profile picture"
+                class="h-24 w-24 sm:h-32 sm:w-32 rounded-full object-cover" />
+            <div class="mt-4 text-center sm:ml-6 sm:mt-0 sm:text-left">
+                <h1 class="text-2xl font-semibold">@Model.Name</h1>
+                <p class="text-sm text-gray-600">@Model.Email</p>
+                <p class="text-sm text-gray-600">@Model.Role</p>
             </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div class="ml-24 md:col-span-2">
-                <section class="mb-2">
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div class="md:col-span-2">
+                <div class="bg-white rounded-lg shadow p-6">
                     <h2 class="text-lg font-semibold mb-4">Ticket Statistics</h2>
                     <ul class="space-y-2">
-                        <li class="mt-2 text-sm text-gray-600">Total Tickets Assigned: <span class="mt-2 text-sm text-gray-600">@Model.TotalTicketsAssigned</span></li>
-                        <li class="mt-2 text-sm text-gray-600">Total Tickets Solved: <span class="mt-2 text-sm text-gray-600">@Model.TotalTicketsSolved</span></li>
-                        <li class="mt-2 text-sm text-gray-600">Pending Tickets: <span class="mt-2 text-sm text-gray-600">@Model.PendingTickets</span></li>
-                        <li class="mt-2 text-sm text-gray-600">Average Resolution Time: <span class="mt-2 text-sm text-gray-600">@(Model.AverageResolveTime.HasValue ? $"{Model.AverageResolveTime.Value:F1} hours" : "N/A")</span></li>
+                        <li class="text-sm text-gray-600">
+                            Total Tickets Assigned: <span class="font-medium">@Model.TotalTicketsAssigned</span>
+                        </li>
+                        <li class="text-sm text-gray-600">
+                            Total Tickets Solved: <span class="font-medium">@Model.TotalTicketsSolved</span>
+                        </li>
+                        <li class="text-sm text-gray-600">
+                            Pending Tickets: <span class="font-medium">@Model.PendingTickets</span>
+                        </li>
+                        <li class="text-sm text-gray-600">
+                            Average Resolution Time:
+                            <span class="font-medium">
+                                @(Model.AverageResolveTime.HasValue ? $"{Model.AverageResolveTime.Value:F1} hours" :
+                                    "N/A")
+                            </span>
+                        </li>
                     </ul>
-                </section>
-
+                </div>
             </div>
 
-            <div class="mr-7    ">
-                <div class="mb-4 w-80">
-                    <h2 class="text-lg font-semibold mb-2 grid grid-cols-1 md:grid-cols-4 gap-12">Feedback</h2>
+            <div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-lg font-semibold mb-4">Feedback</h2>
                     @if (Model.Feedbacks.Any())
                     {
-                        <ul class="space-y-4 border-opacity-100 p-4" style="border: 2px solid #7E8EF1;">
+                        <ul class="space-y-4">
                             @foreach (var feedback in Model.Feedbacks)
                             {
-                                <li>
-                                    <div class="feedback-header flex justify-between items-center">
+                                <li class="border-b pb-4 last:border-b-0 last:pb-0">
+                                    <div class="flex justify-between items-center mb-2">
                                         <div>
                                             <span class="block text-sm font-medium">@feedback.UserName</span>
-                                            <span class="text-xs text-gray-400">@((DateTime.Now - feedback.CreatedOn).TotalDays < 1 ? "Today" : (DateTime.Now - feedback.CreatedOn).TotalDays < 2 ? "Yesterday" : $"{(int)(DateTime.Now - feedback.CreatedOn).TotalDays} days ago")</span>
+                                            <span class="text-xs text-gray-400">
+                                                @((DateTime.Now - feedback.CreatedOn).TotalDays < 1 ? "Today" :
+                                                    (DateTime.Now - feedback.CreatedOn).TotalDays < 2 ? "Yesterday" :
+                                                    $"{(int)(DateTime.Now - feedback.CreatedOn).TotalDays} days ago")
+                                            </span>
                                         </div>
-                                        <div class="stars flex mr-5">
+                                        <div class="flex">
                                             @for (int i = 0; i < feedback.Rating; i++)
                                             {
                                                 <span class="text-yellow-500">&#9733;</span>
@@ -65,7 +80,7 @@
                                             }
                                         </div>
                                     </div>
-                                    <p class="mt-2 text-sm text-gray-600">@feedback.Remarks</p>
+                                    <p class="text-sm text-gray-600">@feedback.Remarks</p>
                                 </li>
                             }
                         </ul>
@@ -77,92 +92,92 @@
                 </div>
             </div>
         </div>
-
     </div>
-</body>
-<style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        display: flex;
-        justify-content: flex-start;
-        align-items: flex-start;
-        transition: background-color 0.4s ease;
-    }
-    .user-profile {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-        font-family: Arial, sans-serif;
-    }
 
-    .profile-header {
-        text-align: center;
-        margin-bottom: 30px;
-    }
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            transition: background-color 0.4s ease;
+        }
 
-    .profile-picture {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
+        .user-profile {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
 
-    .ticket-stats {
-        background-color: #f0f0f0;
-        padding: 20px;
-        border-radius: 5px;
-        margin-bottom: 30px;
-    }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-    .feedback-list {
-        margin-top: 30px;
-    }
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
 
-    .feedback-item {
-        border-bottom: 1px solid #ccc;
-        padding: 15px 0;
-    }
+        .ticket-stats {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
 
-    .feedback-header {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
+        .feedback-list {
+            margin-top: 30px;
+        }
 
-    .star {
-        color: gold;
-    }
+        .feedback-item {
+            border-bottom: 1px solid #ccc;
+            padding: 15px 0;
+        }
 
-    .feedback-info {
-        display: flex;
-        flex-direction: column;
-    }
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
 
-    .feedback-meta {
-        display: flex;
-        gap: 10px;
-        font-size: 0.9em;
-        color: #666;
-    }
+        .star {
+            color: gold;
+        }
 
-    .ticket-title {
-        color: #2563eb;
-        font-weight: 500;
-    }
+        .feedback-info {
+            display: flex;
+            flex-direction: column;
+        }
 
-    .feedback-date {
-        color: #666;
-    }
+        .feedback-meta {
+            display: flex;
+            gap: 10px;
+            font-size: 0.9em;
+            color: #666;
+        }
 
-    .rater-name {
-        color: #2563eb;
-        font-weight: 500;
-    }
+        .ticket-title {
+            color: #2563eb;
+            font-weight: 500;
+        }
 
-    .user-role {
-        color: #666;
-        font-size: 0.9em;
-    }
+        .feedback-date {
+            color: #666;
+        }
 
-</style>
+        .rater-name {
+            color: #2563eb;
+            font-weight: 500;
+        }
+
+        .user-role {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
