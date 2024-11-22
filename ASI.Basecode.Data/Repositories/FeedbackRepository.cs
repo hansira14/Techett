@@ -24,11 +24,6 @@ public class FeedbackRepository : BaseRepository, IFeedbackRepository
     {
         return this.GetDbSet<Feedback>().Find(id);
     }
-    public void DeleteFeedback(Feedback feedback)
-    {
-        this.GetDbSet<Feedback>().Remove(feedback);
-        this.UnitOfWork.SaveChanges();
-    }
     public IQueryable<Feedback> GetUserFeedbacks(int userId)
     {
         return this.GetDbSet<Feedback>()

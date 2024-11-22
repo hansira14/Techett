@@ -15,6 +15,7 @@ public class TicketRepository : BaseRepository, ITicketRepository
     public IQueryable<Ticket> GetAllTickets(string userRole, int userId)
     {
         var query = this.GetDbSet<Ticket>()
+            .Where(t => !t.IsDeleted.HasValue || !t.IsDeleted.Value)
             .Include(t => t.Assignments)
                 .ThenInclude(a => a.AssignedToNavigation)
             .Include(t => t.CreatedByNavigation)
@@ -50,16 +51,12 @@ public class TicketRepository : BaseRepository, ITicketRepository
     public Ticket GetTicketById(int id)
     {
         return this.GetDbSet<Ticket>()
+            .Where(t => !t.IsDeleted.HasValue || !t.IsDeleted.Value)
             .Include(t => t.CreatedByNavigation)
             .Include(t => t.ResolvedByNavigation)
             .Include(t => t.Assignments)
                 .ThenInclude(a => a.AssignedToNavigation)
             .FirstOrDefault(t => t.TicketId == id);
-    }
-    public void DeleteTicket(Ticket ticket)
-    {
-        this.GetDbSet<Ticket>().Remove(ticket);
-        this.UnitOfWork.SaveChanges();
     }
     public int GetResolvedTicketsCount(int userId)
     {

@@ -29,11 +29,6 @@ public class ArticleVersionRepository : BaseRepository, IArticleVersionRepositor
             .Include(v => v.Article)
             .FirstOrDefault(v => v.VersionId == versionId);
     }
-    public void DeleteArticleVersion(ArticleVersion version)    
-    {
-        this.GetDbSet<ArticleVersion>().Remove(version);
-        this.UnitOfWork.SaveChanges();
-    }
     public void UpdateArticle(Article article)
     {
         this.GetDbSet<Article>().Update(article);

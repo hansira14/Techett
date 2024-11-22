@@ -8,6 +8,5 @@ public interface IFeedbackRepository
     IQueryable<Feedback> GetAllFeedbacks();
     void AddFeedback(Feedback feedback);
     Feedback GetFeedbackById(int id);
-    void DeleteFeedback(Feedback feedback);
     IQueryable<Feedback> GetUserFeedbacks(int userId);
 }

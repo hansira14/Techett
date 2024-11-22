@@ -143,7 +143,10 @@ public class TicketService : ITicketService
         if (ticket == null)
             throw new InvalidOperationException("Ticket not found");
 
-        _ticketRepository.DeleteTicket(ticket);
+        // Implement soft delete
+        ticket.IsDeleted = true;
+        ticket.UpdatedOn = DateTime.Now;
+        _ticketRepository.UpdateTicket(ticket);
     }
 
     public PaginatedTicketsViewModel GetPaginatedTickets(string searchTerm, int page, int pageSize, 
