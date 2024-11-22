@@ -144,9 +144,7 @@ namespace ASI.Basecode.Services.Services
                 Name = $"{user.Fname} {user.Lname}",
                 Email = user.Email,
                 Role = user.Role,
-                ProfilePictureUrl = string.IsNullOrEmpty(user.ProfilePicUrl)
-                                    ? "/img/default-profile.png"
-                                    : user.ProfilePicUrl,
+                ProfilePictureUrl = string.IsNullOrEmpty(user.ProfilePicUrl) ? null : user.ProfilePicUrl,
                 TotalTicketsAssigned = assignments.Count(),
                 TotalTicketsSolved = assignments.Count(a => a.Ticket.Status == "Resolved"),
                 PendingTickets = assignments.Count(a => a.Ticket.Status != "Resolved"),
@@ -194,6 +192,7 @@ namespace ASI.Basecode.Services.Services
                     Fname = agent.Fname,
                     Lname = agent.Lname,
                     Email = agent.Email,
+                    ProfilePictureUrl = agent?.ProfilePicUrl ?? null,
                     TicketsResolved = assignments.Count(a => a.Ticket.Status == "Resolved"),
                     TotalTicketsAssigned = assignments.Count,
                     AverageResolveTime = assignments

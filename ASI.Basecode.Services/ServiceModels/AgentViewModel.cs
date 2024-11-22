@@ -12,5 +12,6 @@ namespace ASI.Basecode.Services.ServiceModels
         public int TotalTicketsAssigned { get; set; }
         public double? AverageResolveTime { get; set; }
         public double? Rating { get; set; }
+        public string ProfilePictureUrl { get; set; }
     }
 } 

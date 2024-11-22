@@ -120,7 +120,12 @@ namespace ASI.Basecode.WebApp
                     .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
                     .ForMember(dest => dest.Fname, opt => opt.MapFrom(src => src.Fname))
                     .ForMember(dest => dest.Lname, opt => opt.MapFrom(src => src.Lname))
-                    .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
+                    .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                    .ForMember(dest => dest.ProfilePictureUrl, 
+                        opt => opt.MapFrom(src => 
+                            string.IsNullOrEmpty(src.ProfilePicUrl)
+                                ? AvatarHelper.GetInitialAvatar(src.Fname, src.Lname)
+                                : src.ProfilePicUrl));
 
                 CreateMap<PreferenceViewModel, Preference>();
                 CreateMap<Preference, PreferenceViewModel>()
