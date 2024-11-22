@@ -35,5 +35,6 @@ namespace ASI.Basecode.Services.ServiceModels
         public string TeamName { get; set; }
         public DateTime CreatedOn { get; set; }
         public bool IsActive { get; set; }
+        public string ProfilePictureUrl { get; set; }
     }
 }

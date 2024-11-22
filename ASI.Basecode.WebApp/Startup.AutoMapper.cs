@@ -26,10 +26,18 @@ namespace ASI.Basecode.WebApp
         {
             public AutoMapperProfileConfiguration()
             {
-                CreateMap<UserViewModel, User>();
+                CreateMap<UserViewModel, User>()
+                    .ForMember(dest => dest.ProfilePicUrl, 
+                        opt => opt.MapFrom(src => src.ProfilePictureUrl));
+
                 CreateMap<User, UserViewModel>()
                     .ForMember(dest => dest.TeamName,
-                        opt => opt.MapFrom(src => src.Team != null ? src.Team.Name : null));
+                        opt => opt.MapFrom(src => src.Team != null ? src.Team.Name : null))
+                    .ForMember(dest => dest.ProfilePictureUrl,
+                        opt => opt.MapFrom(src => 
+                            string.IsNullOrEmpty(src.ProfilePicUrl)
+                                ? AvatarHelper.GetInitialAvatar(src.Fname, src.Lname)
+                                : src.ProfilePicUrl));
 
                 CreateMap<Article, ArticleViewModel>()
                     .ForMember(dest => dest.CreatedByName,

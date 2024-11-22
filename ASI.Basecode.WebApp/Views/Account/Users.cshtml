@@ -118,8 +118,13 @@
                                 <input type="checkbox" id="user-@user.UserId" class="checkbox">
                             </td>
                             <td class="py-2 px-4 text-sm text-gray-800 truncate max-w-[200px]">
-                                <a href="@Url.Action("Profile", "Account", new { id = user.UserId })"
-                                    class="text-blue-600 hover:text-blue-800">@($"{user.Fname} {user.Lname}")</a>
+                                <div class="flex items-center">
+                                    <img src="@(user.ProfilePictureUrl ?? AvatarHelper.GetInitialAvatar(user.Fname, user.Lname))" 
+                                         alt="Profile" 
+                                         class="w-8 h-8 rounded-full mr-3 object-cover" />
+                                    <a href="@Url.Action("Profile", "Account", new { id = user.UserId })"
+                                       class="text-blue-600 hover:text-blue-800">@($"{user.Fname} {user.Lname}")</a>
+                                </div>
                             </td>
                             <td class="py-2 px-4 text-sm text-gray-800 truncate max-w-[200px]">@user.Email</td>
                             <td class="py-2 px-4 text-sm text-gray-800 truncate max-w-[150px]">@user.Role</td>
@@ -568,9 +573,15 @@
                             <input type="checkbox" id="user-${user.userId}" class="checkbox">
                         </td>
                         <td class="py-2 px-4 text-sm text-gray-800 truncate max-w-[200px]">
-                            <a href="/Account/Profile?id=${user.userId}" class="text-blue-600 hover:text-blue-800">
-                                ${user.fname} ${user.lname}
-                            </a>
+                            <div class="flex items-center">
+                                <img src="${user.profilePictureUrl || getInitialAvatar(user.fname, user.lname)}" 
+                                     alt="Profile" 
+                                     class="w-8 h-8 rounded-full mr-3 object-cover" />
+                                <a href="/Account/Profile?id=${user.userId}" 
+                                   class="text-blue-600 hover:text-blue-800">
+                                    ${user.fname} ${user.lname}
+                                </a>
+                            </div>
                         </td>
                         <td class="py-2 px-4 text-sm text-gray-800 truncate max-w-[200px]">${user.email}</td>
                         <td class="py-2 px-4 text-sm text-gray-800 truncate max-w-[150px]">${user.role}</td>
@@ -656,7 +667,6 @@
             // Close dropdown
             $('#filterDropdown').addClass('hidden');
         });
-
         // Prevent dropdown from closing when clicking inside it
         $('#filterDropdown').click(function (e) {
             e.stopPropagation();
@@ -713,3 +723,26 @@
         cursor: pointer;
     }
 </style>
+
+<script>
+    function getInitialAvatar(firstName, lastName) {
+        if (!firstName && !lastName) return '';
+        
+        const initial = (firstName ? firstName[0] : '') + (lastName ? lastName[0] : '');
+        const colors = [
+            "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#34495e",
+            "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2c3e50",
+            "#f1c40f", "#e67e22", "#e74c3c", "#95a5a6", "#f39c12"
+        ];
+        
+        const colorIndex = Math.abs(initial.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % colors.length;
+        const backgroundColor = colors[colorIndex];
+        
+        const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'>
+            <rect width='40' height='40' fill='${backgroundColor}'/>
+            <text x='50%' y='50%' font-size='20' fill='white' text-anchor='middle' dy='.3em'>${initial}</text>
+        </svg>`;
+        
+        return `data:image/svg+xml;base64,${btoa(svg)}`;
+    }
+</script>
