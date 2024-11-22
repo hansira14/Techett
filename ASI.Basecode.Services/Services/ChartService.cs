@@ -4,7 +4,8 @@ using System.Linq;
 using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
 using ASI.Basecode.Data.Repositories;
-
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace ASI.Basecode.Services
 {
@@ -13,20 +14,40 @@ namespace ASI.Basecode.Services
         private readonly ITicketRepository _ticketRepository;
         private readonly IArticleRepository _articleRepository;
         private readonly IUpdateRepository _ticketUpdateRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ChartService(
             ITicketRepository ticketRepository, 
             IArticleRepository articleRepository,
-            IUpdateRepository ticketUpdateRepository)
+            IUpdateRepository ticketUpdateRepository,
+            IHttpContextAccessor httpContextAccessor)
         {
             _ticketRepository = ticketRepository;
             _articleRepository = articleRepository;
             _ticketUpdateRepository = ticketUpdateRepository;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        private (string role, int userId) GetCurrentUserInfo()
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+            var userRole = user?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            var userIdClaim = user?.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            
+            if (string.IsNullOrEmpty(userRole) || !int.TryParse(userIdClaim, out int userId))
+            {
+                return (null, 0);
+            }
+            
+            return (userRole, userId);
         }
 
         public Dictionary<string, int> GetTicketDistributionByPriority()
         {
-            var tickets = _ticketRepository.GetAllTickets().ToList();
+            var (role, userId) = GetCurrentUserInfo();
+            if (role == null) return new Dictionary<string, int>();
+
+            var tickets = _ticketRepository.GetAllTickets(role, userId).ToList();
             return tickets
                 .GroupBy(t => t.Priority)
                 .OrderBy(g => g.Key)
@@ -38,7 +59,10 @@ namespace ASI.Basecode.Services
 
         public Dictionary<string, int> GetTicketStatusDistribution()
         {
-            var tickets = _ticketRepository.GetAllTickets().ToList();
+            var (role, userId) = GetCurrentUserInfo();
+            if (role == null) return new Dictionary<string, int>();
+
+            var tickets = _ticketRepository.GetAllTickets(role, userId).ToList();
             return tickets
                 .GroupBy(t => t.Status)
                 .ToDictionary(g => g.Key, g => g.Count());
@@ -46,10 +70,13 @@ namespace ASI.Basecode.Services
 
         public Dictionary<string, List<int>> GetTicketTrends(int days = 7)
         {
+            var (role, userId) = GetCurrentUserInfo();
+            if (role == null) return new Dictionary<string, List<int>>();
+
             var endDate = DateTime.Now.Date;
             var startDate = endDate.AddDays(-(days - 1));
             
-            var tickets = _ticketRepository.GetAllTickets().ToList();
+            var tickets = _ticketRepository.GetAllTickets(role, userId).ToList();
             var updates = _ticketUpdateRepository.GetAllUpdates()
                 .OrderBy(u => u.UpdatedOn)
                 .ToList();
@@ -118,7 +145,10 @@ namespace ASI.Basecode.Services
 
         public Dictionary<string, object> GetTicketStatistics()
         {
-            var tickets = _ticketRepository.GetAllTickets().ToList();
+            var (role, userId) = GetCurrentUserInfo();
+            if (role == null) return new Dictionary<string, object>();
+
+            var tickets = _ticketRepository.GetAllTickets(role, userId).ToList();
             var now = DateTime.Now;
             var lastMonth = now.AddMonths(-1);
 

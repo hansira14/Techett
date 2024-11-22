@@ -12,13 +12,26 @@ public class TicketRepository : BaseRepository, ITicketRepository
     public TicketRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
     {
     }
-    public IQueryable<Ticket> GetAllTickets()
+    public IQueryable<Ticket> GetAllTickets(string userRole, int userId)
     {
-        return this.GetDbSet<Ticket>()
+        var query = this.GetDbSet<Ticket>()
             .Include(t => t.Assignments)
                 .ThenInclude(a => a.AssignedToNavigation)
             .Include(t => t.CreatedByNavigation)
             .Include(t => t.ResolvedByNavigation);
+
+        switch (userRole)
+        {
+            case "User":
+                return query.Where(t => t.CreatedBy == userId);
+            case "Agent":
+                return query.Where(t => t.Assignments.Any(a => a.AssignedTo == userId));
+            case "Admin":
+            case "SuperAdmin":
+                return query;
+            default:
+                return Enumerable.Empty<Ticket>().AsQueryable();
+        }
     }
     public void AddTicket(Ticket ticket)
     {

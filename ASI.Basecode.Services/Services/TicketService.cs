@@ -3,9 +3,11 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace ASI.Basecode.Services.Services;
 
@@ -15,18 +17,29 @@ public class TicketService : ITicketService
     private readonly IUserService _userService;
     private readonly IMapper _mapper;
     private readonly IUpdateService _updateService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public TicketService(ITicketRepository ticketRepository, IUserService userService, IMapper mapper, IUpdateService updateService)
+    public TicketService(ITicketRepository ticketRepository, IUserService userService, IMapper mapper, IUpdateService updateService, IHttpContextAccessor httpContextAccessor)
     {
         _ticketRepository = ticketRepository;
         _userService = userService;
         _mapper = mapper;
         _updateService = updateService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public IEnumerable<TicketViewModel> GetAllTickets()
     {
-        var tickets = _ticketRepository.GetAllTickets();
+        var user = _httpContextAccessor.HttpContext?.User;
+        var userRole = user?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        var userIdClaim = user?.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+        
+        if (string.IsNullOrEmpty(userRole) || !int.TryParse(userIdClaim, out int userId))
+        {
+            return Enumerable.Empty<TicketViewModel>();
+        }
+
+        var tickets = _ticketRepository.GetAllTickets(userRole, userId);
         return _mapper.Map<IEnumerable<TicketViewModel>>(tickets);
     }
 
@@ -124,9 +137,23 @@ public class TicketService : ITicketService
     public PaginatedTicketsViewModel GetPaginatedTickets(string searchTerm, int page, int pageSize, 
         string[] categories = null, string[] priorities = null)
     {
-        var query = _ticketRepository.GetAllTickets().AsQueryable();
+        var user = _httpContextAccessor.HttpContext?.User;
+        var userRole = user?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        var userIdClaim = user?.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+        
+        if (string.IsNullOrEmpty(userRole) || !int.TryParse(userIdClaim, out int userId))
+        {
+            return new PaginatedTicketsViewModel
+            {
+                Tickets = Enumerable.Empty<TicketViewModel>(),
+                TotalTickets = 0,
+                CurrentPage = page,
+                PageSize = pageSize
+            };
+        }
 
-        // Apply search filter
+        var query = _ticketRepository.GetAllTickets(userRole, userId).AsQueryable();
+
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
             searchTerm = searchTerm.ToLower();
@@ -138,13 +165,11 @@ public class TicketService : ITicketService
             );
         }
 
-        // Apply category filters
         if (categories != null && categories.Length > 0)
         {
             query = query.Where(t => categories.Contains(t.Category));
         }
 
-        // Apply priority filters
         if (priorities != null && priorities.Length > 0)
         {
             var priorityNumbers = priorities.Select(int.Parse).ToArray();
