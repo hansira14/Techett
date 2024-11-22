@@ -753,16 +753,11 @@
 
             function getPriorityText(priority) {
                 switch (priority) {
-                    case 1:
-                        return '<span class="px-2 py-1 rounded-full" style="background-color: #d1d5db; color: white; font-size: 0.75rem; font-weight: 500;">Low</span>';
-                    case 2:
-                        return '<span class="px-2 py-1 rounded-full" style="background-color: #8b5cf6; color: white; font-size: 0.75rem; font-weight: 500;">Medium</span>';
-                    case 3:
-                        return '<span class="px-2 py-1 rounded-full" style="background-color: #f87171; color: white; font-size: 0.75rem; font-weight: 500;">High</span>';
-                    case 4:
-                        return '<span class="px-2 py-1 rounded-full" style="background-color: #ef4444; color: white; font-size: 0.75rem; font-weight: 500;">Critical</span>';
-                    default:
-                        return priority;
+                    case 1: return 'Low';
+                    case 2: return 'Medium';
+                    case 3: return 'High';
+                    case 4: return 'Critical';
+                    default: return priority;
                 }
             }
 
