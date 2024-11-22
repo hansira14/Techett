@@ -41,6 +41,13 @@ namespace ASI.Basecode.WebApp
                     .ForMember(dest => dest.CreatedByName,
                         opt => opt.MapFrom(src =>
                             $"{src.CreatedByNavigation.Fname} {src.CreatedByNavigation.Lname}"))
+                    .ForMember(dest => dest.CreatedByProfilePicture,
+                        opt => opt.MapFrom(src =>
+                            string.IsNullOrEmpty(src.CreatedByNavigation.ProfilePicUrl)
+                                ? AvatarHelper.GetInitialAvatar(
+                                    src.CreatedByNavigation.Fname,
+                                    src.CreatedByNavigation.Lname)
+                                : src.CreatedByNavigation.ProfilePicUrl))
                     .ForMember(dest => dest.ResolvedByName,
                         opt => opt.MapFrom(src =>
                             src.ResolvedByNavigation != null ?

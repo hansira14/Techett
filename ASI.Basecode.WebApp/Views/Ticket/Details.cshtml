@@ -621,16 +621,9 @@
         function markAsResolved() {
             if (confirm('Are you sure you want to mark this ticket as resolved?')) {
                 $.ajax({
-                    url: '/Ticket/EditTicket',
+                    url: '/Ticket/MarkAsResolved',
                     type: 'POST',
-                    data: {
-                        TicketId: @Model.TicketId,
-                        Title: '@Html.Raw(Json.Serialize(Model.Title))',
-                        Content: '@Html.Raw(Json.Serialize(Model.Content))',
-                        Category: '@Model.Category',
-                        Priority: '@Model.Priority',
-                        Status: 'Resolved'
-                    },
+                    data: { ticketId: @Model.TicketId },
                     success: function(response) {
                         if (response.success) {
                             loadUpdates();

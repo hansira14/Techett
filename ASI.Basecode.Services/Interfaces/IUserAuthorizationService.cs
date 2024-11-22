@@ -9,4 +9,5 @@ public interface IUserAuthorizationService
     bool CanDeleteTicket(int ticketCreatorId);
     bool CanUploadAttachment(int ticketCreatorId);
     bool CanDeleteAttachment(int ticketCreatorId);
+    bool CanModifyTicketField(int ticketCreatorId, int? ticketId, string fieldName);
 }

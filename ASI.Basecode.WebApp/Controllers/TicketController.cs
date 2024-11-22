@@ -118,20 +118,40 @@ namespace ASI.Basecode.WebApp.Controllers
 
             try
             {
-                var ticket = _ticketService.GetTicketById(model.TicketId);
-                if (ticket == null)
+                var existingTicket = _ticketService.GetTicketById(model.TicketId);
+                if (existingTicket == null)
                 {
                     return Json(new { success = false, message = "Ticket not found" });
                 }
 
-                if (ticket.Status == "Resolved")
+                if (existingTicket.Status == "Resolved")
                 {
                     return Json(new { success = false, message = "Cannot edit resolved tickets" });
                 }
 
-                if (!_userAuthorizationService.CanModifyTicket(ticket.CreatedBy, ticket.TicketId))
+                // Check field-level permissions
+                if (model.Status != existingTicket.Status && 
+                    !_userAuthorizationService.CanModifyTicketField(existingTicket.CreatedBy, existingTicket.TicketId, "Status"))
                 {
-                    return Json(new { success = false, message = "You don't have permission to modify this ticket" });
+                    return Json(new { success = false, message = "You don't have permission to modify the status" });
+                }
+
+                if (model.Priority != existingTicket.Priority && 
+                    !_userAuthorizationService.CanModifyTicketField(existingTicket.CreatedBy, existingTicket.TicketId, "Priority"))
+                {
+                    return Json(new { success = false, message = "You don't have permission to modify the priority" });
+                }
+
+                if (model.Category != existingTicket.Category && 
+                    !_userAuthorizationService.CanModifyTicketField(existingTicket.CreatedBy, existingTicket.TicketId, "Category"))
+                {
+                    return Json(new { success = false, message = "You don't have permission to modify the category" });
+                }
+
+                if ((model.Title != existingTicket.Title || model.Content != existingTicket.Content) && 
+                    !_userAuthorizationService.CanModifyTicketField(existingTicket.CreatedBy, existingTicket.TicketId, "Title"))
+                {
+                    return Json(new { success = false, message = "You don't have permission to modify the title or content" });
                 }
 
                 _ticketService.UpdateTicket(model, GetCurrentUserId());
@@ -161,6 +181,31 @@ namespace ASI.Basecode.WebApp.Controllers
 
                 _ticketService.DeleteTicket(id);
                 return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult MarkAsResolved(int ticketId)
+        {
+            try
+            {
+                var ticket = _ticketService.GetTicketById(ticketId);
+                if (ticket == null)
+                {
+                    return Json(new { success = false, message = "Ticket not found" });
+                }
+
+                if (!_userAuthorizationService.CanModifyTicketField(ticket.CreatedBy, ticketId, "Status"))
+                {
+                    return Json(new { success = false, message = "You don't have permission to resolve this ticket" });
+                }
+
+                var success = _ticketService.MarkTicketAsResolved(ticketId, GetCurrentUserId());
+                return Json(new { success = success, message = success ? null : "Failed to resolve ticket" });
             }
             catch (Exception ex)
             {

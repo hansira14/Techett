@@ -121,5 +121,52 @@ namespace ASI.Basecode.Services.Services
         {
             return CanModifyTicket(ticketCreatorId);
         }
+
+        public bool CanModifyTicketField(int ticketCreatorId, int? ticketId, string fieldName)
+        {
+            var currentUser = _httpContextAccessor.HttpContext?.User;
+            if (currentUser == null) return false;
+
+            var userRole = currentUser.Claims
+                .FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            var userIdClaim = currentUser.Claims
+                .FirstOrDefault(c => c.Type == "UserId");
+
+            // SuperAdmin and Admin can modify all fields
+            if (userRole?.Equals(Roles.SuperAdmin, StringComparison.OrdinalIgnoreCase) == true ||
+                userRole?.Equals(Roles.Admin, StringComparison.OrdinalIgnoreCase) == true)
+            {
+                return true;
+            }
+
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int currentUserId))
+            {
+                // Regular users (creators) can only modify title and content
+                if (currentUserId == ticketCreatorId)
+                {
+                    return fieldName.Equals("Title", StringComparison.OrdinalIgnoreCase) ||
+                           fieldName.Equals("Content", StringComparison.OrdinalIgnoreCase);
+                }
+
+                // Agents can modify status, priority, and category if assigned
+                if (ticketId.HasValue && userRole?.Equals(Roles.Agent, StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    var assignment = _assignmentRepository.GetAssignmentByTicketId(ticketId.Value);
+                    if (assignment?.AssignedTo == currentUserId)
+                    {
+                        // Allow agents to change status to resolved
+                        if (fieldName.Equals("Status", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return true;
+                        }
+                        
+                        return fieldName.Equals("Priority", StringComparison.OrdinalIgnoreCase) ||
+                               fieldName.Equals("Category", StringComparison.OrdinalIgnoreCase);
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 } 

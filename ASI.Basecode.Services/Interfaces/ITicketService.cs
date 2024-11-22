@@ -13,5 +13,6 @@ namespace ASI.Basecode.Services.Interfaces
         PaginatedTicketsViewModel GetPaginatedTickets(string searchTerm, int page, int pageSize, 
             string[] categories = null, string[] priorities = null, 
             string sortColumn = null, string sortDirection = "asc");
+        bool MarkTicketAsResolved(int ticketId, int userId);
     }
 }
