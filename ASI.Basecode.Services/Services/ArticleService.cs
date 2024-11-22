@@ -13,12 +13,15 @@ public class ArticleService : IArticleService
 {
     private readonly IArticleRepository _articleRepository;
     private readonly IMapper _mapper;
+    private readonly IUserRepository _userRepository;
 
     public ArticleService(IArticleRepository articleRepository, 
-                         IMapper mapper)
+                         IMapper mapper,
+                         IUserRepository userRepository)
     {
         _articleRepository = articleRepository;
         _mapper = mapper;
+        _userRepository = userRepository;
     }
 
     public IEnumerable<ArticleViewModel> GetAllArticles()
@@ -47,6 +50,13 @@ public class ArticleService : IArticleService
         var article = _mapper.Map<Article>(model);
         article.CreatedBy = userId;
         article.CreatedOn = DateTime.Now;
+
+        var user = _userRepository.GetById(model.CreatedBy);
+        
+        model.CreatedByProfilePicUrl = string.IsNullOrEmpty(user.ProfilePicUrl)
+            ? AvatarHelper.GetInitialAvatar(user.Fname, user.Lname)
+            : user.ProfilePicUrl;
+
         _articleRepository.AddArticle(article);
         return article.ArticleId;
     }

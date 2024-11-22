@@ -33,7 +33,14 @@ namespace ASI.Basecode.WebApp
 
                 CreateMap<Article, ArticleViewModel>()
                     .ForMember(dest => dest.CreatedByName,
-                        opt => opt.MapFrom(src => $"{src.CreatedByNavigation.Fname} {src.CreatedByNavigation.Lname}"));
+                        opt => opt.MapFrom(src => $"{src.CreatedByNavigation.Fname} {src.CreatedByNavigation.Lname}"))
+                    .ForMember(dest => dest.CreatedByProfilePicUrl,
+                        opt => opt.MapFrom(src =>
+                            string.IsNullOrEmpty(src.CreatedByNavigation.ProfilePicUrl)
+                                ? AvatarHelper.GetInitialAvatar(
+                                    src.CreatedByNavigation.Fname,
+                                    src.CreatedByNavigation.Lname)
+                                : src.CreatedByNavigation.ProfilePicUrl));
 
                 CreateMap<ArticleViewModel, Article>();
 

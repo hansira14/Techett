@@ -16,6 +16,7 @@ public class ArticleViewModel
     public int CreatedBy { get; set; }
     public string CreatedByName { get; set; }
     public DateTime CreatedOn { get; set; }
+    public string CreatedByProfilePicUrl { get; set; }
 }
 
 public class ArticleDetailViewModel
