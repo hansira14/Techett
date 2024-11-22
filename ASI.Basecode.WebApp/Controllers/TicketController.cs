@@ -187,5 +187,30 @@ namespace ASI.Basecode.WebApp.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        [HttpPost]
+        public IActionResult MarkAsResolved(int ticketId)
+        {
+            try
+            {
+                var ticket = _ticketService.GetTicketById(ticketId);
+                if (ticket == null)
+                {
+                    return Json(new { success = false, message = "Ticket not found" });
+                }
+
+                if (!_userAuthorizationService.CanModifyTicketField(ticket.CreatedBy, ticketId, "Status"))
+                {
+                    return Json(new { success = false, message = "You don't have permission to resolve this ticket" });
+                }
+
+                var success = _ticketService.MarkTicketAsResolved(ticketId, GetCurrentUserId());
+                return Json(new { success = success, message = success ? null : "Failed to resolve ticket" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
     }
 }

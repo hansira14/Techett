@@ -154,8 +154,13 @@ namespace ASI.Basecode.Services.Services
                     var assignment = _assignmentRepository.GetAssignmentByTicketId(ticketId.Value);
                     if (assignment?.AssignedTo == currentUserId)
                     {
-                        return fieldName.Equals("Status", StringComparison.OrdinalIgnoreCase) ||
-                               fieldName.Equals("Priority", StringComparison.OrdinalIgnoreCase) ||
+                        // Allow agents to change status to resolved
+                        if (fieldName.Equals("Status", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return true;
+                        }
+                        
+                        return fieldName.Equals("Priority", StringComparison.OrdinalIgnoreCase) ||
                                fieldName.Equals("Category", StringComparison.OrdinalIgnoreCase);
                     }
                 }

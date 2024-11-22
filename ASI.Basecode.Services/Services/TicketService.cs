@@ -243,4 +243,28 @@ public class TicketService : ITicketService
             SortDirection = sortDirection
         };
     }
+
+    public bool MarkTicketAsResolved(int ticketId, int userId)
+    {
+        var ticket = _ticketRepository.GetTicketById(ticketId);
+        if (ticket == null)
+            return false;
+
+        if (ticket.Status == "Resolved")
+            return false;
+
+        ticket.Status = "Resolved";
+        ticket.ResolvedOn = DateTime.Now;
+        ticket.ResolvedBy = userId;
+        ticket.UpdatedOn = DateTime.Now;
+
+        _ticketRepository.UpdateTicket(ticket);
+
+        // Add update record
+        var user = _userService.GetUserById(userId);
+        var message = $"{user.Fname} {user.Lname} marked the ticket as resolved";
+        _updateService.AddUpdate(ticketId, "Resolved", null, message, userId);
+
+        return true;
+    }
 }
