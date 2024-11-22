@@ -6,6 +6,8 @@
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 @*
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-3" style="margin-top: 15px;">
     <div class="rounded-md col-span-2">
@@ -181,15 +183,31 @@
                 <div class="card-header bg-purple-400 text-white py-2 px-4 rounded d-flex justify-content-between align-items-center">
                     <h4 style="margin: 0; font-size: 1rem; font-weight: bold;">@Model.Title</h4>
                     <div>
+
                         @if (Model.Status != "Resolved" &&
                         (User.IsInRole(Roles.SuperAdmin) || User.IsInRole(Roles.Admin) ||
                         Model.CreatedBy == ViewBag.CurrentUserId ||
                         (User.IsInRole(Roles.Agent) && Model.AssignedToId == ViewBag.CurrentUserId)))
                         {
-                            <button class="btn custom-btn violet-btn text-sm h-6 w-34" onclick="markAsResolved()">Mark as Resolved</button>
-                            <button class="btn custom-btn blue-btn text-sm h-6 w-34" onclick="editMode()">Edit</button>
+                            <div style="background-color: white; border-radius: 20px; padding: 2px 10px; display: inline-flex; align-items: center; font-weight: bold;">
+                                <button class="btn custom-btn violet-btn text-sm h-6 w-34" onclick="markAsResolved()" style="color: black; border: none; background: none;">
+                                    <i class="fas fa-check-circle" style="margin-right: 5px;"></i>Mark as Resolved
+                                </button>
+                            </div>
+
+                            <div style="background-color: white; border-radius: 20px; padding: 2px 10px; display: inline-flex; align-items: center; margin-left: 5px; font-weight: bold;">
+                                <button class="btn custom-btn blue-btn text-sm h-6 w-34" onclick="editMode()" style="color: black; border: none; background: none;">
+                                    <i class="fas fa-edit" style="margin-right: 5px;"></i>Edit
+                                </button>
+                            </div>
+
                         }
-                        <a href="/Ticket/Tickets" class="btn custom-btn blu-btn text-sm h-6 w-34">Back to List</a>
+
+                        <div style="background-color: white; border-radius: 20px; padding: 2px 10px; display: inline-flex; align-items: center; margin-left: 5px; font-weight: bold;">
+                            <a href="/Ticket/Tickets" class="btn custom-btn blu-btn text-sm h-6 w-34" style="color: black; text-decoration: none;">
+                                <i class="fas fa-arrow-left" style="margin-right: 5px;"></i>Back to List
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body bg-white text-black" style="padding: 0.5rem;">
@@ -221,12 +239,12 @@
                             <div class="form-group">
                                 <label for="Title" style="font-size: 0.9rem;" class="block text-sm font-medium text-indigo-700 mb-1">Title</label>
                                 <input name="Title" id="Title" class="form-control  w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;" value="@Model.Title"
-                                       @(User.IsInRole("Agent") ? "readonly" : "") required />
+                                @(User.IsInRole("Agent") ? "readonly" : "") required />
                             </div>
                             <div class="form-group">
                                 <label for="Content" style="font-size: 0.9rem;" class="block text-sm font-medium text-indigo-700 mb-1">Description</label>
                                 <textarea name="Content" id="Content" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;" rows="4"
-                                          @(User.IsInRole("Agent") ? "readonly" : "") required>@Model.Content</textarea>
+                                @(User.IsInRole("Agent") ? "readonly" : "") required>@Model.Content</textarea>
                             </div>
                             <div class="form-group">
                                 <label for="Category" style="font-size: 0.9rem;" class="block text-sm font-medium text-indigo-700 mb-1">Category</label>
@@ -253,11 +271,11 @@
                                 </select>
                             </div>
                             <div class="mt-3 flex justify-end">
-                                
+
                                 <button type="button" class="btn px-4 py-2 text-gray-700 rounded-md" style="padding: 5px 10px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);" onclick="cancelEdit()">Cancel</button>
                                 <button type="submit" class="btn text-[#161571] rounded-md hover:bg-[#BCC5FF]" style="background-color: #D1D7FF; padding: 5px 10px;">Save Changes</button>
                             </div>
-                            
+
                         </form>
                     </div>
                 </div>
@@ -298,33 +316,33 @@
 
     </div>
 
-   @* <!-- Right Container (Comments) -->
+    @* <!-- Right Container (Comments) -->
     <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md col-span-1" style="height: 100vh; overflow-y: auto;">
-        <div class="flex justify-between mb-4 items-start">
-            <div class="font-medium" style="font-weight: bold; color:#5513EE">C o m m e n t s</div>
-        </div>
-        <div class="comments-container">
-            <div class="card bg-white">
-                <div class="card-body comments-list flex-grow h-full bg-white text-black">
-                    <div id="commentsList" style="height: 100vh; max-height: 400px; overflow-y: auto;">
-                        <!-- Comments will be loaded here -->
-                    </div>
-                    <div class="comment-form" style="margin-top: 10px;">
-                        <form id="addCommentForm">
-                            <input type="hidden" name="TicketId" value="@Model.TicketId" />
-                            <div class="form-group">
-                                <textarea name="CommentText" id="CommentText" class="form-control" rows="4" placeholder="Add a comment" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Comment</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="flex justify-between mb-4 items-start">
+    <div class="font-medium" style="font-weight: bold; color:#5513EE">C o m m e n t s</div>
+    </div>
+    <div class="comments-container">
+    <div class="card bg-white">
+    <div class="card-body comments-list flex-grow h-full bg-white text-black">
+    <div id="commentsList" style="height: 100vh; max-height: 400px; overflow-y: auto;">
+    <!-- Comments will be loaded here -->
+    </div>
+    <div class="comment-form" style="margin-top: 10px;">
+    <form id="addCommentForm">
+    <input type="hidden" name="TicketId" value="@Model.TicketId" />
+    <div class="form-group">
+    <textarea name="CommentText" id="CommentText" class="form-control" rows="4" placeholder="Add a comment" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Comment</button>
+    </form>
+    </div>
+    </div>
+    </div>
+    </div>
     </div>*@
     <div class="comments-container">
         <div class="card h-90">
-            
+
             <div class="card-body comments-list flex-grow h-full">
                 <div id="commentsList" style="height: 120vh; max-height: 560px; overflow-y: auto;">
                     <!-- Comments will be loaded here -->
@@ -378,19 +396,19 @@
             $('#viewMode').show();
         }
 
-        $('#editTicketForm').submit(function(e) {
+        $('#editTicketForm').submit(function (e) {
             e.preventDefault();
             var oldStatus = '@Model.Status';
             var oldPriority = '@Model.Priority';
             var newStatus = $('#Status').val();
             var newPriority = $('#Priority').val();
-            
-            
+
+
             $.ajax({
                 url: '/Ticket/EditTicket',
                 type: 'POST',
                 data: $(this).serialize(),
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         if (oldStatus !== newStatus || oldPriority !== newPriority) {
                             loadUpdates();
@@ -400,31 +418,31 @@
                         toastr.error(response.message || 'Failed to update ticket');
                     }
                 },
-                error: function() {
+                error: function () {
                     toastr.error('An error occurred while updating the ticket');
                 }
             });
         });
 
         function loadComments() {
-            $.get('/Comment/GetTicketComments', { ticketId: @Model.TicketId }, function(comments) {
+            $.get('/Comment/GetTicketComments', { ticketId: @Model.TicketId }, function (comments) {
                 var html = '';
-                comments.forEach(function(comment) {
+                comments.forEach(function (comment) {
                     html += `
-                        <div class="comment-item mb-3">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <strong>${comment.userName}</strong>
-                                    <small class="text-muted ml-2" style="font-size: 11px;">${new Date(comment.commentedOn).toLocaleString()}</small>
+                                <div class="comment-item mb-3">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <strong>${comment.userName}</strong>
+                                            <small class="text-muted ml-2" style="font-size: 11px;">${new Date(comment.commentedOn).toLocaleString()}</small>
+                                        </div>
+                                        <button  onclick="deleteComment(${comment.commentId})">
+                                            <i class="fas fa-trash" style="font-size: 12px; margin-right: 7px; color: red;"></i>
+                                        </button>
+                                    </div>
+                                    <p class="mb-0 mt-2">${comment.comment}</p>
+                                    <hr>
                                 </div>
-                                <button  onclick="deleteComment(${comment.commentId})">
-                                    <i class="fas fa-trash" style="font-size: 12px; margin-right: 7px; color: red;"></i>
-                                </button>
-                            </div>
-                            <p class="mb-0 mt-2">${comment.comment}</p>
-                            <hr>
-                        </div>
-                    `;
+                            `;
                 });
                 $('#commentsList').html(html);
                 // Scroll to bottom of comments list after loading
@@ -433,16 +451,16 @@
             });
         }
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             loadComments();
 
-            $('#addCommentForm').submit(function(e) {
+            $('#addCommentForm').submit(function (e) {
                 e.preventDefault();
                 $.ajax({
                     url: '/Comment/AddComment',
                     type: 'POST',
                     data: $(this).serialize(),
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             loadComments();
                             $('textarea[name="Comment"]').val('');
@@ -450,7 +468,7 @@
                             toastr.error(response.message || 'Failed to add comment');
                         }
                     },
-                    error: function() {
+                    error: function () {
                         toastr.error('An error occurred while adding the comment');
                     }
                 });
@@ -460,18 +478,18 @@
 
             loadAttachments();
 
-            $('#attachmentInput').change(function(e) {
+            $('#attachmentInput').change(function (e) {
                 if ('@Model.Status' === 'Resolved') {
                     toastr.error('Cannot add attachments to resolved tickets');
                     $(this).val('');
                     return;
                 }
-                
+
                 const files = e.target.files;
                 if (files.length > 0) {
                     const formData = new FormData();
                     formData.append('ticketId', @Model.TicketId);
-                    
+
                     for (let i = 0; i < files.length; i++) {
                         formData.append('file', files[i]);
                     }
@@ -482,7 +500,7 @@
                         data: formData,
                         processData: false,
                         contentType: false,
-                        success: function(response) {
+                        success: function (response) {
                             if (response.success) {
                                 loadAttachments();
                                 $(this).val('');
@@ -490,7 +508,7 @@
                                 toastr.error(response.message || 'Failed to upload attachment');
                             }
                         },
-                        error: function() {
+                        error: function () {
                             toastr.error('An error occurred while uploading the attachment');
                         }
                     });
@@ -508,14 +526,14 @@
                     url: '/Comment/DeleteComment',
                     type: 'POST',
                     data: { commentId: commentId },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             loadComments();
                         } else {
                             toastr.error(response.message || 'Failed to delete comment');
                         }
                     },
-                    error: function() {
+                    error: function () {
                         toastr.error('An error occurred while deleting the comment');
                     }
                 });
@@ -523,63 +541,63 @@
         }
 
         function loadUpdates() {
-            $.get('/Update/GetTicketUpdates', { ticketId: @Model.TicketId }, function(updates) {
+            $.get('/Update/GetTicketUpdates', { ticketId: @Model.TicketId }, function (updates) {
                 var html = '';
-                updates.forEach(function(update) {
+                updates.forEach(function (update) {
                     html += `
-                        <div class="update-item mb-1">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="status-priority text-center">
-                                    <strong>${update.updatedByName}</strong>
-                                            
-                                                <small class="text-muted ml-2" style="font-size: 11px;">${new Date(update.updatedOn).toLocaleString()}</small>
+                                <div class="update-item mb-1">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="status-priority text-center">
+                                            <strong>${update.updatedByName}</strong>
+
+                                                        <small class="text-muted ml-2" style="font-size: 11px;">${new Date(update.updatedOn).toLocaleString()}</small>
+                                        </div>
+                                    </div>
+                                    <p>${update.message}</p>
+                                    <div class="mb-2">
+                                        ${update.status ? `<small class="text-muted">Status: ${update.status}</small>` : ''}
+                                        ${update.priority ? `<small class="text-muted ml-2">Priority: ${update.priority}</small>` : ''}
+                                    </div>
+
+                                    <hr>
                                 </div>
-                            </div>
-                            <p>${update.message}</p>
-                            <div class="mb-2">
-                                ${update.status ? `<small class="text-muted">Status: ${update.status}</small>` : ''}
-                                ${update.priority ? `<small class="text-muted ml-2">Priority: ${update.priority}</small>` : ''}
-                            </div>
-                                    
-                            <hr>
-                        </div>
-                    `;
+                            `;
                 });
                 $('#updatesList').html(html);
             });
         }
 
         function loadAttachments() {
-            $.get('/Attachment/GetTicketAttachments', { ticketId: @Model.TicketId }, function(attachments) {
+            $.get('/Attachment/GetTicketAttachments', { ticketId: @Model.TicketId }, function (attachments) {
                 var html = '';
-                attachments.forEach(function(attachment) {
+                attachments.forEach(function (attachment) {
                     const isImage = attachment.filetype.startsWith('image/');
-                    
+
                     html += `
-                        <div class="attachment-item mb-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    ${isImage ? 
-                                        `<div class="mr-3">
-                                            <img src="${attachment.source}" alt="${attachment.filename}" 
-                                                 style="max-width: 150px; max-height: 150px; object-fit: contain;" 
-                                                 class="img-thumbnail"/>
-                                        </div>` : 
-                                        `<i class="fas fa-paperclip mr-2"></i>`
-                                    }
-                                    <div>
-                                        <a href="${attachment.source}" target="_blank" class="text-decoration-none">
-                                            ${attachment.filename}
-                                        </a>
-                                        <small class="text-muted d-block">${formatFileSize(attachment.filesize)}</small>
+                                <div class="attachment-item mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            ${isImage ?
+                            `<div class="mr-3">
+                                                    <img src="${attachment.source}" alt="${attachment.filename}"
+                                                         style="max-width: 150px; max-height: 150px; object-fit: contain;"
+                                                         class="img-thumbnail"/>
+                                                </div>` :
+                            `<i class="fas fa-paperclip mr-2"></i>`
+                        }
+                                            <div>
+                                                <a href="${attachment.source}" target="_blank" class="text-decoration-none">
+                                                    ${attachment.filename}
+                                                </a>
+                                                <small class="text-muted d-block">${formatFileSize(attachment.filesize)}</small>
+                                            </div>
+                                        </div>
+                                        <button onclick="deleteAttachment(${attachment.attachmentId})">
+                                            <i class="fas fa-trash" style="font-size: 12px; margin-right: 7px; color: red;"></i>
+                                        </button>
                                     </div>
                                 </div>
-                                <button onclick="deleteAttachment(${attachment.attachmentId})">
-                                    <i class="fas fa-trash" style="font-size: 12px; margin-right: 7px; color: red;"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
+                            `;
                 });
                 $('#attachmentsList').html(html || '<p>No attachments</p>');
             });
@@ -598,20 +616,20 @@
                 toastr.error('Cannot delete attachments for resolved tickets');
                 return;
             }
-            
+
             if (confirm('Are you sure you want to delete this attachment?')) {
                 $.ajax({
                     url: '/Attachment/Delete',
                     type: 'POST',
                     data: { attachmentId: attachmentId },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             loadAttachments();
                         } else {
                             toastr.error(response.message || 'Failed to delete attachment');
                         }
                     },
-                    error: function() {
+                    error: function () {
                         toastr.error('An error occurred while deleting the attachment');
                     }
                 });
@@ -624,7 +642,7 @@
                     url: '/Ticket/MarkAsResolved',
                     type: 'POST',
                     data: { ticketId: @Model.TicketId },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             loadUpdates();
                             showFeedbackModal();
@@ -633,7 +651,7 @@
                             toastr.error(response.message || 'Failed to resolve ticket');
                         }
                     },
-                    error: function() {
+                    error: function () {
                         toastr.error('An error occurred while resolving the ticket');
                     }
                 });
@@ -641,7 +659,7 @@
         }
 
         function checkAndShowFeedback() {
-            $.get('/Feedback/CheckFeedbackStatus', { ticketId: @Model.TicketId }, function(response) {
+            $.get('/Feedback/CheckFeedbackStatus', { ticketId: @Model.TicketId }, function (response) {
                 if (!response.hasFeedback && '@Model.CreatedBy' === '@ViewBag.CurrentUserId') {
                     showFeedbackModal();
                 }
@@ -652,7 +670,7 @@
             $('#feedbackModal').modal('show');
         }
 
-        $('#feedbackForm').submit(function(e) {
+        $('#feedbackForm').submit(function (e) {
             e.preventDefault();
             var formData = {
                 TicketId: @Model.TicketId,
@@ -665,7 +683,7 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         $('#feedbackModal').modal('hide');
                         toastr.success('Thank you for your feedback!');
@@ -673,40 +691,47 @@
                         toastr.error(response.message || 'Failed to submit feedback');
                     }
                 },
-                error: function() {
+                error: function () {
                     toastr.error('An error occurred while submitting feedback');
                 }
             });
         });
 
-        
+
     </script>
 }
 
 <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-start;
-            transition: background-color 0.4s ease;
-        }
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
 
-        /* Hide scrollbar in WebKit-based browsers (Chrome, Safari, Edge) */
-        .scrollable-container::-webkit-scrollbar {
-            width: 0;
-            height: 0;
-        }
+    /* Hide scrollbar in WebKit-based browsers (Chrome, Safari, Edge) */
+    .scrollable-container::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+    }
 
-        /* Hide scrollbar in Firefox */
-        .scrollable-container {
-            scrollbar-width: none; /* For Firefox */
-        }
+    /* Hide scrollbar in Firefox */
+    .scrollable-container {
+        scrollbar-width: none; /* For Firefox */
+    }
 
-        /* Make sure the container can still be scrolled */
-        .scrollable-container {
-            overflow-y: auto;
-        }
+    /* Make sure the container can still be scrolled */
+    .scrollable-container {
+        overflow-y: auto;
+    }
 
+    .custom-btn {
+        font-size: 12px;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        font-weight: bold;
+    }
 </style>
