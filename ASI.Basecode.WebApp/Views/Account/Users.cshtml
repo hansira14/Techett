@@ -67,7 +67,7 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <p class="mb-0"><strong>Andr� Erasmo</strong> is at <strong>Cebu Institute of Technology
+                                <p class="mb-0"><strong>André Erasmo</strong> is at <strong>Cebu Institute of Technology
                                         - University</strong> with <strong>Justine Jam Cotejo</strong></p>
                                 <div class="d-flex align-items-center gap-2">
                                     <small class="text-muted">13h</small>
@@ -75,7 +75,7 @@
                                     <small class="text-muted">1 comment</small>
                                 </div>
                             </div>
-                            <div class="text-primary">�</div>
+                            <div class="text-primary"></div>
                         </div>
 
                         <!-- Story Views -->
@@ -102,7 +102,7 @@
                                     engagement list.</p>
                                 <small class="text-muted">3d</small>
                             </div>
-                            <div class="text-primary">�</div>
+                            <div class="text-primary"></div>
                         </div>
                     </div>
 
@@ -122,34 +122,19 @@
 </div>
 <div class="flex flex-col h-full flex-grow min-h-[calc(100vh-85px)] mb-3">
     <div class="rounded-md col-span-3 flex-grow ">
-        <form action="" class="flex items-center mb-3">
+        <form id="searchForm" class="flex items-center mb-3">
             <div class="relative w-40 mr-2">
-                <input type="text" class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500" placeholder="Search users">
+                <input type="text" 
+                       id="searchInput" 
+                       name="searchTerm" 
+                       class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500" 
+                       placeholder="Search users">
                 <svg class="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
-            <div class="relative">
-                <select class="text-sm py-2 pl-3 pr-10 bg-gray-50 border border-gray-100 rounded-md focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
-                    <option value="">Filter</option>
-                    <option value="option1">Name</option>
-                    <option value="option2">Email</option>
-                    <option value="option1">Role</option>
-                    <option value="option1">Team</option>
-                    <option value="option1">Status</option>
-                </select>
-                <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-            </div>
-            <div class="ml-auto">
-                <button type="button" id="addTicketButton" data-toggle="modal" class="px-4 py-2 bg-purple-400 text-white rounded-md flex items-center justify-center hover:bg-purple-600 transition duration-300 ease-in-out" data-target="#createUserModal">
-                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        <span class="text-sm ml-2">Add New User</span>
-                    </svg>
-                </button>
-            </div>
+            <input type="hidden" id="currentPage" name="page" value="1">
+            <input type="hidden" id="pageSize" name="pageSize" value="12">
         </form>
         <div class="overflow-x-auto bg-white rounded-md shadow">
             <table class="table-auto w-full">
@@ -512,6 +497,131 @@
 
         // Initialize table to show first page
         changePage(0);
+    </script>
+    <script>
+        $(document).ready(function () {
+            let searchTimeout;
+
+            // Prevent form submission
+            $('#searchForm').submit(function(e) {
+                e.preventDefault();
+            });
+
+            // Handle search input
+            $('#searchInput').on('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function() {
+                    $('#currentPage').val(1); // Reset to first page on new search
+                    loadUsers();
+                }, 500); // Debounce search for 500ms
+            });
+
+            // Handle pagination clicks
+            $('#prevPage, #nextPage').click(function(e) {
+                e.preventDefault();
+                const direction = $(this).attr('id') === 'prevPage' ? -1 : 1;
+                const currentPage = parseInt($('#currentPage').val());
+                $('#currentPage').val(currentPage + direction);
+                loadUsers();
+            });
+
+            function loadUsers() {
+                const searchData = {
+                    searchTerm: $('#searchInput').val(),
+                    page: $('#currentPage').val(),
+                    pageSize: $('#pageSize').val()
+                };
+
+                $.ajax({
+                    url: '/Account/SearchUsers',
+                    type: 'GET',
+                    data: searchData,
+                    success: function(response) {
+                        updateTable(response);
+                        updatePagination(response);
+                    },
+                    error: function() {
+                        toastr.error('Failed to load users');
+                    }
+                });
+            }
+
+            function updateTable(data) {
+                const tbody = $('table tbody');
+                tbody.empty();
+                
+                data.users.forEach(user => {
+                    const row = createUserRow(user);
+                    tbody.append(row);
+                });
+            }
+
+            function updatePagination(data) {
+                const startItem = ((data.currentPage - 1) * data.pageSize) + 1;
+                const endItem = Math.min(data.currentPage * data.pageSize, data.totalUsers);
+                
+                // Update the results text
+                $('.pagination span').text(
+                    data.totalUsers > 0 
+                        ? `${startItem}-${endItem} of ${data.totalUsers} results`
+                        : 'No results found'
+                );
+
+                // Disable/enable pagination buttons
+                $('#prevPage').prop('disabled', data.currentPage === 1);
+                $('#nextPage').prop('disabled', endItem >= data.totalUsers);
+
+                // Show/hide pagination
+                if (data.totalUsers === 0) {
+                    $('.pagination').hide();
+                } else {
+                    $('.pagination').show();
+                }
+            }
+
+            function createUserRow(user) {
+                return `
+                    <tr class="hover:bg-gray-50 border-b">
+                        <td class="py-2 px-3 text-sm">
+                            <input type="checkbox" id="user-${user.userId}" class="checkbox">
+                        </td>
+                        <td class="py-2 px-4 text-sm text-gray-800 truncate max-w-[200px]">
+                            <a href="/Account/Profile/${user.userId}" class="text-blue-600 hover:text-blue-800">
+                                ${user.fname} ${user.lname}
+                            </a>
+                        </td>
+                        <td class="py-2 px-4 text-sm text-gray-800 truncate max-w-[200px]">${user.email}</td>
+                        <td class="py-2 px-4 text-sm text-gray-800 truncate max-w-[150px]">${user.role}</td>
+                        <td class="py-2 px-4 text-sm text-gray-800 truncate max-w-[150px]">${user.teamName}</td>
+                        <td class="py-2 px-4 text-sm text-gray-800">
+                            <span class="px-2 py-1 rounded-full text-white text-xs font-medium ${user.isActive ? 'bg-purple-400' : 'bg-red-400'}">
+                                ${user.isActive ? 'Active' : 'Inactive'}
+                            </span>
+                        </td>
+                        <td class="py-2 px-4 text-center">
+                            <a href="/Account/Profile/${user.userId}" class="text-blue-600 hover:text-blue-800 mr-2">
+                                <svg class="w-4 h-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </a>
+                            <button onclick="editUser(${user.userId})" class="text-orange-600 hover:text-orange-800 mr-2">
+                                <svg class="w-4 h-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </button>
+                            <button onclick="deleteUser(${user.userId})" class="text-red-600 hover:text-red-800">
+                                <svg class="w-4 h-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            // Initial load
+            loadUsers();
+        });
     </script>
 }
 

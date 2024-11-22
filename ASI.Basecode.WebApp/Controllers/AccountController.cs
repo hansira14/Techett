@@ -386,6 +386,13 @@ namespace ASI.Basecode.WebApp.Controllers
                 return Json(new { success = false, message = "Error updating profile picture" });
             }
         }
+
+        [HttpGet]
+        public IActionResult SearchUsers(string searchTerm, int page = 1, int pageSize = 12)
+        {
+            var paginatedUsers = _userService.GetPaginatedUsers(searchTerm, page, pageSize);
+            return Json(paginatedUsers);
+        }
     }
 }
 
