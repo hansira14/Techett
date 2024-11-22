@@ -18,14 +18,16 @@ public class TicketService : ITicketService
     private readonly IMapper _mapper;
     private readonly IUpdateService _updateService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly INotificationService _notificationService;
 
-    public TicketService(ITicketRepository ticketRepository, IUserService userService, IMapper mapper, IUpdateService updateService, IHttpContextAccessor httpContextAccessor)
+    public TicketService(ITicketRepository ticketRepository, IUserService userService, IMapper mapper, IUpdateService updateService, IHttpContextAccessor httpContextAccessor, INotificationService notificationService)
     {
         _ticketRepository = ticketRepository;
         _userService = userService;
         _mapper = mapper;
         _updateService = updateService;
         _httpContextAccessor = httpContextAccessor;
+        _notificationService = notificationService;
     }
 
     public IEnumerable<TicketViewModel> GetAllTickets()
@@ -70,10 +72,10 @@ public class TicketService : ITicketService
         var statusChanged = !string.Equals(ticket.Status, model.Status, StringComparison.OrdinalIgnoreCase);
         var priorityChanged = ticket.Priority != model.Priority;
         var categoryChanged = !string.Equals(ticket.Category, model.Category, StringComparison.OrdinalIgnoreCase);
-
+        var message = "";
         if (statusChanged || priorityChanged || categoryChanged)
         {
-            var message = GenerateUpdateMessage(userId, ticket.TicketId, 
+            message = GenerateUpdateMessage(userId, ticket.TicketId, 
                 statusChanged ? model.Status : null,
                 priorityChanged ? model.Priority : null,
                 categoryChanged ? model.Category : null);
@@ -95,6 +97,16 @@ public class TicketService : ITicketService
         }
 
         _ticketRepository.UpdateTicket(ticket);
+
+        // Create notification
+        var notificationMessage = $"Ticket #{ticket.TicketId} has been updated: {message}";
+        _notificationService.CreateNotification(
+            ticket.TicketId,
+            notificationMessage,
+            "TicketUpdate",
+            ticket.CreatedBy,
+            ticket.Assignments.FirstOrDefault()?.AssignedTo ?? 0
+        );
     }
 
     private string GenerateUpdateMessage(int userId, int ticketId, string newStatus, int? newPriority, string newCategory)

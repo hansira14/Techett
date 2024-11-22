@@ -23,5 +23,10 @@ public class NotificationRepository : BaseRepository, INotificationRepository
     {
         return this.GetDbSet<Notification>().Find(id);
     }   
+    public void UpdateNotification(Notification notification)
+    {
+        this.GetDbSet<Notification>().Update(notification);
+        this.UnitOfWork.SaveChanges();
+    }
     
 }

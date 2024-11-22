@@ -8,4 +8,5 @@ public interface INotificationRepository
     IQueryable<Notification> GetAllNotifications();
     void AddNotification(Notification notification);
     Notification GetNotificationById(int id);
+    void UpdateNotification(Notification notification);
 }

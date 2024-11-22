@@ -1,3 +1,4 @@
+using System;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.WebApp.Mvc;
 using AutoMapper;
@@ -12,7 +13,8 @@ public class NotificationController : ControllerBase<NotificationController>
 {
     private readonly INotificationService _notificationService;
 
-    public NotificationController(IHttpContextAccessor httpContextAccessor,
+    public NotificationController(
+        IHttpContextAccessor httpContextAccessor,
         ILoggerFactory loggerFactory,
         IConfiguration configuration,
         IMapper mapper,
@@ -20,8 +22,26 @@ public class NotificationController : ControllerBase<NotificationController>
     {
         _notificationService = notificationService;
     }
-    public IActionResult Index()
+
+    [HttpGet]
+    public IActionResult GetNotifications()
     {
-        return View();
+        var userId = GetCurrentUserId();
+        var notifications = _notificationService.GetUserNotifications(userId);
+        return Json(notifications);
+    }
+
+    [HttpPost]
+    public IActionResult MarkAsRead(int notificationId)
+    {
+        try
+        {
+            _notificationService.MarkAsRead(notificationId);
+            return Json(new { success = true });
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
     }
 }
