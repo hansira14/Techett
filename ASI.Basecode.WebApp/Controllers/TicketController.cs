@@ -43,9 +43,15 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult SearchTickets(string searchTerm, int page = 1, int pageSize = 12)
+        public IActionResult SearchTickets(string searchTerm, int page = 1, int pageSize = 12, 
+            string[] categories = null, int[] priorities = null)
         {
-            var paginatedTickets = _ticketService.GetPaginatedTickets(searchTerm, page, pageSize);
+            // Convert empty arrays to null to handle "no filter selected" case
+            categories = categories?.Length == 0 ? null : categories;
+            priorities = priorities?.Length == 0 ? null : priorities;
+
+            var paginatedTickets = _ticketService.GetPaginatedTickets(searchTerm, page, pageSize, 
+                categories, priorities?.Select(p => p.ToString()).ToArray());
             return Json(paginatedTickets);
         }
 

@@ -121,10 +121,12 @@ public class TicketService : ITicketService
         _ticketRepository.DeleteTicket(ticket);
     }
 
-    public PaginatedTicketsViewModel GetPaginatedTickets(string searchTerm, int page, int pageSize)
+    public PaginatedTicketsViewModel GetPaginatedTickets(string searchTerm, int page, int pageSize, 
+        string[] categories = null, string[] priorities = null)
     {
         var query = _ticketRepository.GetAllTickets().AsQueryable();
 
+        // Apply search filter
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
             searchTerm = searchTerm.ToLower();
@@ -134,6 +136,19 @@ public class TicketService : ITicketService
                 t.Category.ToLower().Contains(searchTerm) ||
                 t.Status.ToLower().Contains(searchTerm)
             );
+        }
+
+        // Apply category filters
+        if (categories != null && categories.Length > 0)
+        {
+            query = query.Where(t => categories.Contains(t.Category));
+        }
+
+        // Apply priority filters
+        if (priorities != null && priorities.Length > 0)
+        {
+            var priorityNumbers = priorities.Select(int.Parse).ToArray();
+            query = query.Where(t => priorityNumbers.Contains(t.Priority));
         }
 
         var totalTickets = query.Count();
@@ -149,7 +164,9 @@ public class TicketService : ITicketService
             TotalTickets = totalTickets,
             CurrentPage = page,
             PageSize = pageSize,
-            SearchTerm = searchTerm
+            SearchTerm = searchTerm,
+            SelectedCategories = categories,
+            SelectedPriorities = priorities
         };
     }
 }

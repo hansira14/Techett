@@ -8,4 +8,6 @@ public class PaginatedTicketsViewModel
     public int CurrentPage { get; set; }
     public int PageSize { get; set; }
     public string SearchTerm { get; set; }
+    public string[] SelectedCategories { get; set; }
+    public string[] SelectedPriorities { get; set; }
 }
