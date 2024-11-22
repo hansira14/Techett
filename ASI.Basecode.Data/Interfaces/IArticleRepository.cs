@@ -8,5 +8,4 @@ public interface IArticleRepository
     void AddArticle(Article article);
     void UpdateArticle(Article article);
     Article GetArticleById(int id);
-    void DeleteArticle(Article article);
 }

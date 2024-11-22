@@ -70,7 +70,8 @@ public class ArticleService : IArticleService
         var article = _articleRepository.GetArticleById(id);
         if (article != null)
         {
-            _articleRepository.DeleteArticle(article);
+            article.IsDeleted = true;
+            _articleRepository.UpdateArticle(article);
         }
     }
 }

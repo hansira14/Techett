@@ -13,7 +13,8 @@ public class ArticleRepository : BaseRepository, IArticleRepository
     }
     public IQueryable<Article> GetAllArticles()
     {
-        return this.GetDbSet<Article>();
+        return this.GetDbSet<Article>()
+            .Where(a => !a.IsDeleted.HasValue || !a.IsDeleted.Value);
     }
     public void AddArticle(Article article){
         this.GetDbSet<Article>().Add(article);
@@ -33,11 +34,7 @@ public class ArticleRepository : BaseRepository, IArticleRepository
     {
         return this.GetDbSet<Article>()
             .Include(a => a.CreatedByNavigation)
-            .FirstOrDefault(a => a.ArticleId == id);
-    }
-    public void DeleteArticle(Article article)
-    {
-        this.GetDbSet<Article>().Remove(article);
-        this.UnitOfWork.SaveChanges();
+            .Where(a => (!a.IsDeleted.HasValue || !a.IsDeleted.Value) && a.ArticleId == id)
+            .FirstOrDefault();
     }
 }
