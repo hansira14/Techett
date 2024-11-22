@@ -59,8 +59,8 @@ namespace ASI.Basecode.Services.Services
                 var defaultPreference = new Preference
                 {
                     UserId = user.UserId,
-                    IsEmailingOn = false, 
-                    ViewType = "List" 
+                    IsEmailingOn = false,
+                    ViewType = "List"
                 };
             }
             else
@@ -131,7 +131,9 @@ namespace ASI.Basecode.Services.Services
                 Name = $"{user.Fname} {user.Lname}",
                 Email = user.Email,
                 Role = user.Role,
-                ProfilePictureUrl = "https://placehold.co/150x150",
+                ProfilePictureUrl = string.IsNullOrEmpty(user.ProfilePicUrl)
+                                    ? "/img/default-profile.png"
+                                    : user.ProfilePicUrl,
                 TotalTicketsAssigned = assignments.Count(),
                 TotalTicketsSolved = assignments.Count(a => a.Ticket.Status == "Resolved"),
                 PendingTickets = assignments.Count(a => a.Ticket.Status != "Resolved"),
@@ -193,6 +195,17 @@ namespace ASI.Basecode.Services.Services
             }
 
             return agentViewModels;
+        }
+
+        public void UpdateProfilePicture(int userId, string profilePictureUrl)
+        {
+            var user = _repository.GetById(userId);
+            if (user != null)
+            {
+                user.ProfilePicUrl = profilePictureUrl;
+                user.UpdatedOn = DateTime.Now;
+                _repository.UpdateUser(user);
+            }
         }
     }
 }

@@ -15,4 +15,5 @@ public interface IUserService
     void DeleteUser(int id);
     UserProfileViewModel GetUserProfile(int userId);
     IEnumerable<AgentViewModel> GetAllAgents();
+    void UpdateProfilePicture(int userId, string profilePictureUrl);
 }
