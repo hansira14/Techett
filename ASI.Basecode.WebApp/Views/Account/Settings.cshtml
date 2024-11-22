@@ -115,14 +115,14 @@
         <!-- Profile Picture Section -->
         <div class="flex items-center justify-center text-center mb-8">
             <div class="relative">
-                <img src="@Model.ProfilePictureUrl"
+                <img id="profile-picture" src="@Model.ProfilePictureUrl"
                      alt="@Model.Name's profile picture"
                      class="w-24 h-24 rounded-full bg-gray-200 border-4 border-white flex items-center justify-center" />
                 <!-- Camera Icon -->
                 <label for="file-upload" class="absolute bottom-0 right-0 bg-indigo-600 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer">
                     <i class="ri-camera-line text-white"></i>
                 </label>
-
+                <p class="text-center text-sm text-gray-400">@HttpContextAccessor.HttpContext.Session.GetString("UserRole")</p>
                 <!-- Hidden File Input -->
                 <input type="file"
                        id="file-upload"
@@ -130,7 +130,11 @@
                        accept="image/*"
                        onchange="updateProfilePicture(event)" />
             </div>
-
+            <button onclick="editUser('@HttpContextAccessor.HttpContext.Session.GetString("UserId")')" class="text-orange-600 hover:text-orange-800 mr-2">
+                <svg class="w-4 h-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+            </button>
             <!-- User Information -->
             <div class="ml-6">
                 <h3 class="text-lg font-semibold text-gray-800">
@@ -177,7 +181,7 @@
     <div class="bg-white shadow-md p-8 mb-8" style="border-radius: 25px;">
         <h2 class="text-xl font-semibold text-gray-600 mb-6">Account Preferences</h2>
 
-        <div class="space-y-4">
+        <div class="space-y-4">@*
             <!-- Notifications Toggle -->
             <div class="preference-row">
                 <div>
@@ -190,7 +194,7 @@
                     </div>
                 </label>
             </div>
-            @*
+            
             <!-- Dark Mode Toggle -->
             <div class="preference-row">
                 <div>
@@ -298,7 +302,69 @@
                 alert('An error occurred. Please try again.');
             });
     }
-    
+
+    function editUser() {
+        $.get('/Account/GetUserDetails/' + id {
+            $('#editUserId').val(user.userId);
+            $('#editFname').val(user.fname);
+            $('#editLname').val(user.lname);
+            $('#editEmail').val(user.email);
+            $('#editRole').val(user.role);
+            $('#editUserModal').modal('show');
+        }).fail(function () {
+            toastr.error('Failed to load user details');
+        });
+    }
+
+    $(document).ready(function () {
+        $('#editUserForm').validate({
+            rules: {
+                Fname: "required",
+                Lname: "required",
+                Email: {
+                    required: true,
+                    email: true
+                },
+                Password: {
+                    required: false,
+                    minlength: 6
+                },
+                ConfirmPassword: {
+                    required: false,
+                    equalTo: "#editPassword"
+                },
+                Role: "required"
+            },
+            messages: {
+                Password: {
+                    minlength: "Password must be at least 6 characters"
+                },
+                ConfirmPassword: {
+                    equalTo: "Passwords do not match"
+                }
+            },
+            submitHandler: function (form) {
+                $.ajax({
+                    url: form.action,
+                    type: 'POST',
+                    data: $(form).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#editUserModal').modal('hide');
+                            location.reload();
+                        } else {
+                            toastr.error(response.message || 'Failed to update user');
+                        }
+                    },
+                    error: function (xhr) {
+                        toastr.error(xhr.responseJSON?.message || 'An error occurred while updating the user');
+                    }
+                });
+                return false;
+            }
+        });
+
+    });
 </script>
 <style>
     body {
