@@ -415,6 +415,43 @@ namespace ASI.Basecode.WebApp.Controllers
                 totalUsers 
             });
         }
+
+        [HttpGet]
+        [Authorize(Policy = "RequireAdminRole")]
+        public IActionResult SearchAgents(string searchTerm, int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                var query = _userService.GetAllAgents().AsQueryable();
+
+                if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    searchTerm = searchTerm.ToLower();
+                    query = query.Where(a => 
+                        a.Fname.ToLower().Contains(searchTerm) ||
+                        a.Lname.ToLower().Contains(searchTerm) ||
+                        a.Email.ToLower().Contains(searchTerm));
+                }
+
+                var totalAgents = query.Count();
+                var agents = query
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                return Json(new { 
+                    agents, 
+                    currentPage = page, 
+                    pageSize, 
+                    totalAgents 
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while searching agents");
+                return Json(new { success = false, message = "Error occurred while searching agents" });
+            }
+        }
     }
 }
 
