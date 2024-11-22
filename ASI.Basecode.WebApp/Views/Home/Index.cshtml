@@ -15,122 +15,21 @@
 <div class="py-2 px-0 bg-absolute flex items-center left-0 right-0 z-30">
     <ul class="flex items-center text-sm m-0">
         <li class="mr-2">
-            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">Hi! @HttpContextAccessor.HttpContext.Session.GetString("UserName")</a>
+            <a href="#" class="text-2xl font-semibold mb-1 hover:text-gray-600 font-bold" style="color: #161571;">Hi!
+                @HttpContextAccessor.HttpContext.Session.GetString("UserName")</a>
         </li>
     </ul>
     <ul class="ml-auto flex items-center">
         <!-- Profile Section -->
         <div class="flex items-center">
             <div class="text-left mr-1">
-                <div class="text-gray-800 font-regular text-xs">@HttpContextAccessor.HttpContext.Session.GetString("UserName")</div>
+                <div class="text-gray-800 font-regular text-xs">
+                    @HttpContextAccessor.HttpContext.Session.GetString("UserName")</div>
             </div>
             <img src="https://placehold.co/32x32" alt="Profile" class="w-10 h-10 rounded-md object-cover" />
         </div>
     </ul>
 </div>
-@*
-@if (User.IsInRole("admin") || User.IsInRole("superadmin"))
-{
-    <!-- Row 1 - Charts -->
-    <div class="container-fluid mb-4">
-        <div class="row">
-            <!-- Bar Chart -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title text-uppercase">Monthly Tickets</h5>
-                        <canvas id="barChart" height="200"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pie Chart -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title text-uppercase">Ticket Distribution</h5>
-                        <canvas id="pieChart" height="200"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Line Chart -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title text-uppercase">Ticket Trends</h5>
-                        <canvas id="lineChart1" height="200"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Row 2 - Stats and Chart -->
-    <div class="container-fluid mb-4">
-        <div class="row">
-            <!-- Column 1 - Stats Cards -->
-            <div class="col-md-4">
-                <div class="row">
-                    <!-- Total Tickets -->
-                    <div class="col-6 mb-3">
-                        <div class="card bg-primary text-white">
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2">Total Tickets</h6>
-                                <h2 class="card-title mb-0">245</h2>
-                                <small class="text-white-50">↑ 12% increase</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Open Tickets -->
-                    <div class="col-6 mb-3">
-                        <div class="card bg-warning text-white">
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2">Open Tickets</h6>
-                                <h2 class="card-title mb-0">85</h2>
-                                <small class="text-white-50">↑ 5% increase</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Resolved Tickets -->
-                    <div class="col-6 mb-3">
-                        <div class="card bg-success text-white">
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2">Resolved</h6>
-                                <h2 class="card-title mb-0">142</h2>
-                                <small class="text-white-50">↑ 18% increase</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Pending Tickets -->
-                    <div class="col-6 mb-3">
-                        <div class="card bg-danger text-white">
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2">Pending</h6>
-                                <h2 class="card-title mb-0">18</h2>
-                                <small class="text-white-50">↓ 3% decrease</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Column 2 - Line Chart -->
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title text-uppercase">Weekly Resolution Rate</h5>
-                        <canvas id="lineChart2" height="250"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-<div/>*@
 
 @await Html.PartialAsync("_Charts")
 
@@ -139,9 +38,9 @@
         <div class="flex justify-between mb-2 items-start">
             <div class="font-medium uppercase">T i c k e t s</div>
         </div>
-        
+
         <!-- Tickets as cards -->
-        <div class="grid grid-cols-1 gap-6 mb-3 overflow-y-auto pr-4" style="max-height: calc(3 * 202px);">
+        <div class="grid grid-cols-1 gap-1 mb-3 overflow-y-auto pr-4" style="max-height: calc(3 * 202px);">
             <!-- Right padding only using pr-4 -->
             @foreach (var ticket in Model)
             {
@@ -168,9 +67,9 @@
                 </div>
             }
         </div>
-        
+
     </div>
-        
+
 
     <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-3 rounded-md col-span-1">
         <!-- Keep Articles normal width -->
@@ -179,10 +78,13 @@
         </div>
         <form action="" class="flex items-center mb-2">
             <div class="relative w-full mr-2">
-                <input type="text" class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500" placeholder="Search articles">
+                <input type="text"
+                    class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500"
+                    placeholder="Search articles">
                 <i class="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 text-gray-400"></i>
             </div>
-            <select class="text-sm py-2 pl-4 pr-10 bg-gray-50 border border-gray-100 rounded-md focus:border-blue-500 outline-none appearance-none bg-select-arrow bg-no-repeat bg-[length:16px_16px] bg-[right_16px_center]">
+            <select
+                class="text-sm py-2 pl-4 pr-10 bg-gray-50 border border-gray-100 rounded-md focus:border-blue-500 outline-none appearance-none bg-select-arrow bg-no-repeat bg-[length:16px_16px] bg-[right_16px_center]">
                 <option value="">All</option>
             </select>
         </form>
@@ -190,15 +92,22 @@
             <table class="w-full min-w-[540px]">
                 <thead>
                     <tr>
-                        <th class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Articles</th>
-                        <th class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">Department</th>
-                        <th class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">Status</th>
+                        <th
+                            class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">
+                            Articles</th>
+                        <th class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">
+                            Department</th>
+                        <th
+                            class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">
+                            Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td class="py-2 pl-2 border-b border-b-gray-50">
-                            <a href="@Url.Action("Tickets", "Admin")" class="text-gray-600 text-sm font-medium hover:text-blue-500 truncate">Resolved issues</a>
+                            <a href="@Url.Action("Tickets", "Admin")"
+                                class="text-gray-600 text-sm font-medium hover:text-blue-500 truncate">Resolved
+                                issues</a>
                         </td>
                         <td class="py-2 pl-2 border-b border-b-gray-50">
                             <span class="text-[13px] font-medium text-gray-400">CASE</span>
@@ -218,9 +127,11 @@
 <div class="modal fade" id="createTicketModal" tabindex="-1">
     <div class="modal-dialog max-w-md mx-auto">
         <div class="modal-content rounded-lg shadow-xl">
-            <div class="modal-header text-center bg-gradient-to-r from-blue-100 to-purple-700 rounded-t-lg p-4 d-flex justify-content-center align-items-center position-relative">
+            <div
+                class="modal-header text-center bg-gradient-to-r from-blue-100 to-purple-700 rounded-t-lg p-4 d-flex justify-content-center align-items-center position-relative">
                 <h5 class="modal-title text-2xl font-bold text-center text-indigo-900">Create Ticket</h5>
-                <button type="button" class="close position-absolute" data-dismiss="modal" style="top: 10px; right: 10px;">
+                <button type="button" class="close position-absolute" data-dismiss="modal"
+                    style="top: 10px; right: 10px;">
                     <span>&times;</span>
                 </button>
             </div>
@@ -228,15 +139,24 @@
                 <div class="modal-body p-6 space-y-4">
                     <div class="form-group">
                         <label for="Title" class="block text-sm font-medium text-indigo-700 mb-1">Ticket Name</label>
-                        <input name="Title" id="Title" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;" />
+                        <input name="Title" id="Title"
+                            class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            required
+                            style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;" />
                     </div>
                     <div class="form-group">
                         <label for="Content" class="block text-sm font-medium text-indigo-700 mb-1">Description</label>
-                        <textarea name="Content" id="Content" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md h-32 focus:outline-none focus:ring-2 focus:ring-blue-400" rows="4" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;"></textarea>
+                        <textarea name="Content" id="Content"
+                            class="form-control w-full px-3 py-2 border border-gray-300 rounded-md h-32 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            rows="4" required
+                            style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="Category" class="block text-sm font-medium text-indigo-700 mb-1">Category</label>
-                        <select name="Category" id="Category" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;">
+                        <select name="Category" id="Category"
+                            class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            required
+                            style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;">
                             <option value="Bug">Bug</option>
                             <option value="Feature">Feature Request</option>
                             <option value="Support">Support</option>
@@ -244,7 +164,10 @@
                     </div>
                     <div class="form-group">
                         <label for="Priority" class="block text-sm font-medium text-indigo-700 mb-1">Priority</label>
-                        <select name="Priority" id="Priority" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;">
+                        <select name="Priority" id="Priority"
+                            class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            required
+                            style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;">
                             <option value="1">Low</option>
                             <option value="2">Medium</option>
                             <option value="3">High</option>
@@ -254,7 +177,8 @@
                     <div class="form-group">
                         <label class="block text-sm font-medium text-indigo-700 mb-1">Attachments</label>
                         <div class="flex items-center space-x-4">
-                            <label for="attachmentInput" class="px-4 py-2 bg-indigo-900 text-white rounded-md hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                            <label for="attachmentInput"
+                                class="px-4 py-2 bg-indigo-900 text-white rounded-md hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
                                 Choose Files
                             </label>
                             <span class="text-sm text-indigo-900" id="fileChosen">No file chosen</span>
@@ -264,8 +188,12 @@
                     </div>
                 </div>
                 <div class="modal-footer p-6 pt-0 flex justify-end space-x-4 mt-3 mb-0">
-                    <button type="button" class="btn px-4 py-2 text-gray-700 mt-3 rounded-md focus:outline-none, focus:ring" style="padding: 5px 10px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn text-[#161571] rounded-md mt-3 hover:bg-[#BCC5FF]" style="background-color: #D1D7FF; padding: 5px 10px;">Create Ticket</button>
+                    <button type="button"
+                        class="btn px-4 py-2 text-gray-700 mt-3 rounded-md focus:outline-none, focus:ring"
+                        style="padding: 5px 10px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);"
+                        data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn text-[#161571] rounded-md mt-3 hover:bg-[#BCC5FF]"
+                        style="background-color: #D1D7FF; padding: 5px 10px;">Create Ticket</button>
                 </div>
 
 
@@ -276,12 +204,15 @@
     </div>
 </div>
 <!-- Assign Ticket Modal -->
-<div class="modal fade" id="assignTicketModal" tabindex="-1" role="dialog" aria-labelledby="assignTicketModalLabel" aria-hidden="true">
+<div class="modal fade" id="assignTicketModal" tabindex="-1" role="dialog" aria-labelledby="assignTicketModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-lg max-w-md mx-auto">
         <div class="modal-content rounded-lg shadow-xl">
-            <div class="modal-header text-center bg-gradient-to-r from-blue-100 to-purple-700 rounded-t-lg p-4 d-flex justify-content-center align-items-center position-relative">
+            <div
+                class="modal-header text-center bg-gradient-to-r from-blue-100 to-purple-700 rounded-t-lg p-4 d-flex justify-content-center align-items-center position-relative">
                 <h5 class="modal-title text-2xl font-bold text-center text-indigo-900">Assign Ticket</h5>
-                <button type="button" class="close position-absolute" data-dismiss="modal" style="top: 10px; right: 10px;">
+                <button type="button" class="close position-absolute" data-dismiss="modal"
+                    style="top: 10px; right: 10px;">
                     <span>&times;</span>
                 </button>
             </div>
@@ -290,16 +221,23 @@
                 <div class="modal-body p-6 space-y-4">
                     <div class="form-group">
                         <label for="AssignedTo" class="block text-sm font-medium text-indigo-700 mb-1">Assign To</label>
-                        <select name="AssignedTo" id="AssignedTo" class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;">
+                        <select name="AssignedTo" id="AssignedTo"
+                            class="form-control w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            required
+                            style="box-shadow: 0 4px 8px rgba(126, 142, 241, 0.5), 0 0 15px rgba(126, 142, 241, 0.2); color: #161571;">
                             <!-- Options will be populated dynamically -->
                         </select>
                     </div>
                 </div>
                 <div class="modal-footer p-6 pt-0 flex justify-end space-x-4 mt-3">
-                    <button type="button" class="btn px-4 py-2 mt-3 text-gray-700 hover:bg-gray-100 rounded-md" style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn text-green mt-3 rounded-md hover:bg-green" style="background-color: #98A6FB; padding: 5px 10px;" onclick="removeAssignment()">Remove Assignment</button>
+                    <button type="button" class="btn px-4 py-2 mt-3 text-gray-700 hover:bg-gray-100 rounded-md"
+                        style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn text-green mt-3 rounded-md hover:bg-green"
+                        style="background-color: #98A6FB; padding: 5px 10px;" onclick="removeAssignment()">Remove
+                        Assignment</button>
 
-                    <button type="submit" class="btn text-[#161571] mt-3 rounded-md hover:bg-[#BCC5FF]" style="background-color: #D1D7FF; padding: 5px 10px;">Assign</button>
+                    <button type="submit" class="btn text-[#161571] mt-3 rounded-md hover:bg-[#BCC5FF]"
+                        style="background-color: #D1D7FF; padding: 5px 10px;">Assign</button>
                 </div>
             </form>
         </div>
@@ -327,13 +265,13 @@
 
             function displayPendingAttachment(file, index) {
                 const html = `
-                            <div class="attachment-item d-flex justify-content-between align-items-center mb-2">
-                                <span>${file.name}</span>
-                                <button type="button" class="btn btn-danger btn-sm" onclick="window.removePendingAttachment(${index})">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                        `;
+                                <div class="attachment-item d-flex justify-content-between align-items-center mb-2">
+                                    <span>${file.name}</span>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="window.removePendingAttachment(${index})">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            `;
                 $('#attachmentsList').append(html);
             }
 
@@ -531,85 +469,89 @@
         height: 100%;
         width: 100%;
     }
-    
+
     canvas {
-        max-height: 300px; /* Adjust this value as needed */
+        max-height: 300px;
+        /* Adjust this value as needed */
     }
-    
+
     .chart-container {
         position: relative;
         height: 100%;
         width: 100%;
     }
+
     .chart-container {
         position: relative;
-        height: 300px; /* Adjust height as needed */
+        height: 300px;
+        /* Adjust height as needed */
     }
+
     .btn {
         font-size: 14px;
         padding: 5px 10px;
     }
+
     /* Tailwind classes for custom button colors */
-.btn-outline-blue {
-    border-color: #3b82f6;
-    color: #3b82f6;
-}
+    .btn-outline-blue {
+        border-color: #3b82f6;
+        color: #3b82f6;
+    }
 
-.btn-outline-green {
-    border-color: #10b981;
-    color: #10b981;
-}
+    .btn-outline-green {
+        border-color: #10b981;
+        color: #10b981;
+    }
 
-.btn-outline-yellow {
-    border-color: #f59e0b;
-    color: #f59e0b;
-}
+    .btn-outline-yellow {
+        border-color: #f59e0b;
+        color: #f59e0b;
+    }
 
-.btn-outline-red {
-    border-color: #ef4444;
-    color: #ef4444;
-}
+    .btn-outline-red {
+        border-color: #ef4444;
+        color: #ef4444;
+    }
 
-.btn-outline-blue:hover {
-    background-color: #3b82f6;
-    color: white;
-}
+    .btn-outline-blue:hover {
+        background-color: #3b82f6;
+        color: white;
+    }
 
-.btn-outline-green:hover {
-    background-color: #10b981;
-    color: white;
-}
+    .btn-outline-green:hover {
+        background-color: #10b981;
+        color: white;
+    }
 
-.btn-outline-yellow:hover {
-    background-color: #f59e0b;
-    color: white;
-}
+    .btn-outline-yellow:hover {
+        background-color: #f59e0b;
+        color: white;
+    }
 
-.btn-outline-red:hover {
-    background-color: #ef4444;
-    color: white;
-}
+    .btn-outline-red:hover {
+        background-color: #ef4444;
+        color: white;
+    }
 
-/* Add active button styles */
-input[type="radio"]:checked + button {
-    font-weight: bold;
-    text-decoration: underline;
-}
+    /* Add active button styles */
+    input[type="radio"]:checked+button {
+        font-weight: bold;
+        text-decoration: underline;
+    }
 
-input[type="radio"]:checked + button.btn-outline-blue {
-    color: #3b82f6;
-}
+    input[type="radio"]:checked+button.btn-outline-blue {
+        color: #3b82f6;
+    }
 
-input[type="radio"]:checked + button.btn-outline-green {
-    color: #10b981;
-}
+    input[type="radio"]:checked+button.btn-outline-green {
+        color: #10b981;
+    }
 
-input[type="radio"]:checked + button.btn-outline-yellow {
-    color: #f59e0b;
-}
+    input[type="radio"]:checked+button.btn-outline-yellow {
+        color: #f59e0b;
+    }
 
-input[type="radio"]:checked + button.btn-outline-red {
-    color: #ef4444;
-}
-
+    input[type="radio"]:checked+button.btn-outline-red {
+        color: #ef4444;
+    }
 </style>
