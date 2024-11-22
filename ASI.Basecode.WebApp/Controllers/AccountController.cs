@@ -359,11 +359,9 @@ namespace ASI.Basecode.WebApp.Controllers
 
                 var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
                 
-                // Use similar logic as AttachmentController for file handling
                 var fileName = $"profile_{userId}_{DateTime.Now.Ticks}{Path.GetExtension(file.FileName)}";
                 var uploadPath = Path.Combine(_configuration["FileServer:UploadPath"], "profiles");
                 
-                // Create directory if it doesn't exist
                 if (!Directory.Exists(uploadPath))
                     Directory.CreateDirectory(uploadPath);
 
@@ -373,8 +371,6 @@ namespace ASI.Basecode.WebApp.Controllers
                 {
                     file.CopyTo(stream);
                 }
-
-                // Update user profile picture URL in database
                 var relativeFilePath = $"/files/profiles/{fileName}";
                 _userService.UpdateProfilePicture(userId, relativeFilePath);
 
@@ -388,10 +384,36 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult SearchUsers(string searchTerm, int page = 1, int pageSize = 12)
+        public IActionResult SearchUsers(string searchTerm, int page = 1, int pageSize = 12, string[] roles = null)
         {
-            var paginatedUsers = _userService.GetPaginatedUsers(searchTerm, page, pageSize);
-            return Json(paginatedUsers);
+            var query = _userService.GetAllUsers();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                searchTerm = searchTerm.ToLower();
+                query = query.Where(u => 
+                    u.Fname.ToLower().Contains(searchTerm) ||
+                    u.Lname.ToLower().Contains(searchTerm) ||
+                    u.Email.ToLower().Contains(searchTerm));
+            }
+
+            if (roles != null && roles.Length > 0)
+            {
+                query = query.Where(u => roles.Contains(u.Role));
+            }
+
+            var totalUsers = query.Count();
+            var users = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return Json(new { 
+                users, 
+                currentPage = page, 
+                pageSize, 
+                totalUsers 
+            });
         }
     }
 }
