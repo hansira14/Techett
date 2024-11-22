@@ -107,7 +107,7 @@
                     </div>
                     <div>
                         <p className="text-sm font-medium leading-none bold-text">Total Tickets</p>
-                        <p className="text-xl">86,575,443</p>
+                        <p className="text-xl" id="userTotalTickets">-</p>
                     </div>
                 </div>
             </CardContent>
@@ -121,7 +121,7 @@
                     </div>
                     <div>
                         <p className="text-sm font-medium leading-none bold-text">Pending Tickets</p>
-                        <p className="text-xl">324,243,2455</p>
+                        <p className="text-xl" id="userPendingTickets">-</p>
                     </div>
                 </div>
             </CardContent>
@@ -135,7 +135,7 @@
                     </div>
                     <div>
                         <p className="text-sm font-medium leading-none bold-text">Opened Tickets</p>
-                        <p className="text-xl">453,472,384</p>
+                        <p className="text-xl" id="userOpenedTickets">-</p>
                     </div>
                 </div>
             </CardContent>
@@ -149,12 +149,27 @@
                     </div>
                     <div>
                         <p className="text-sm font-medium leading-none bold-text">Closed Tickets</p>
-                        <p className="text-xl">453,472,384</p>
+                        <p className="text-xl" id="userClosedTickets">-</p>
                     </div>
                 </div>
             </CardContent>
         </Card>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateUserStats() {
+                $.get('/Chart/GetUserTicketCounts', function(data) {
+                    document.getElementById('userTotalTickets').textContent = data.total;
+                    document.getElementById('userPendingTickets').textContent = data.pending;
+                    document.getElementById('userOpenedTickets').textContent = data.opened;
+                    document.getElementById('userClosedTickets').textContent = data.closed;
+                });
+            }
+            
+            updateUserStats();
+        });
+    </script>
 }
 <script>
     document.addEventListener('DOMContentLoaded', function() {

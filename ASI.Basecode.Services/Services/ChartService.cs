@@ -212,5 +212,21 @@ namespace ASI.Basecode.Services
 
             return trendData;
         }
+
+        public Dictionary<string, int> GetUserTicketCounts()
+        {
+            var (role, userId) = GetCurrentUserInfo();
+            if (role == null) return new Dictionary<string, int>();
+
+            var tickets = _ticketRepository.GetAllTickets(role, userId).ToList();
+            
+            return new Dictionary<string, int>
+            {
+                ["total"] = tickets.Count,
+                ["pending"] = tickets.Count(t => t.Status == "In Progress"),
+                ["opened"] = tickets.Count(t => t.Status == "Open"),
+                ["closed"] = tickets.Count(t => t.Status == "Resolved")
+            };
+        }
     }
 } 
