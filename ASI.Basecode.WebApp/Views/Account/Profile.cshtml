@@ -3,94 +3,89 @@
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
-<body class="bg-gray-100">
 
-    <!-- Main Content -->
-    <div class="ml-38 pt-14 mt-20">
-        <div class="relative">
-            <div class="fixed top-0 left-0 w-full h-48 bg-gradient-to-r from-white to-blue-100 -z-10"></div>
-           
-            <!-- Profile Header -->
-            <div class="absolute top-[-2.5rem] left-1/2 transform -translate-x-1/2 mb-20">
-                <div class="relative">
-                    <img src="@Model.ProfilePictureUrl"
-                         alt="@Model.Name's profile picture"
-                         class="w-24 h-24 rounded-full bg-gray-200 border-4 border-white flex items-center justify-center" />
-                </div>
-            </div>
-
-            
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8 flex flex-col items-center sm:flex-row sm:items-start">
+        <img src="@Model.ProfilePictureUrl" alt="@Model.Name's profile picture" class="h-24 w-24 sm:h-32 sm:w-32 rounded-full object-cover" />
+        <div class="mt-4 text-center sm:ml-6 sm:mt-0 sm:text-left">
+            <h1 class="text-2xl font-semibold">@Model.Name</h1>
+            <p class="text-sm text-gray-600">@Model.Email</p>
+            <p class="text-sm text-gray-600">@Model.Role</p>
         </div>
-        
-        <div class="mt-6 align-items-center justify-content-between">
-            <div class="user-profile">
-                
-                <!-- Profile Header -->
-                <div class="bg-none rounded-lg p-6 mb-4 mt-10">
-                    <h1 class="text-center text-xl font-semibold">@Model.Name</h1>
-                    <h2 class="text-center text-sm text-gray-500">@Model.Email</h2>
-                    <p class="text-center text-sm text-gray-400">@Model.Role</p>
-                </div>              
-            </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div class="ml-24 md:col-span-2">
-                <section class="mb-2">
-                    <h2 class="text-lg font-semibold mb-4">Ticket Statistics</h2>
-                    <ul class="space-y-2">
-                        <li class="mt-2 text-sm text-gray-600">Total Tickets Assigned: <span class="mt-2 text-sm text-gray-600">@Model.TotalTicketsAssigned</span></li>
-                        <li class="mt-2 text-sm text-gray-600">Total Tickets Solved: <span class="mt-2 text-sm text-gray-600">@Model.TotalTicketsSolved</span></li>
-                        <li class="mt-2 text-sm text-gray-600">Pending Tickets: <span class="mt-2 text-sm text-gray-600">@Model.PendingTickets</span></li>
-                        <li class="mt-2 text-sm text-gray-600">Average Resolution Time: <span class="mt-2 text-sm text-gray-600">@(Model.AverageResolveTime.HasValue ? $"{Model.AverageResolveTime.Value:F1} hours" : "N/A")</span></li>
-                    </ul>
-                </section>
-
-            </div>
-
-            <div class="mr-7    ">
-                <div class="mb-4 w-80">
-                    <h2 class="text-lg font-semibold mb-2 grid grid-cols-1 md:grid-cols-4 gap-12">Feedback</h2>
-                    @if (Model.Feedbacks.Any())
-                    {
-                        <ul class="space-y-4 border-opacity-100 p-4" style="border: 2px solid #7E8EF1;">
-                            @foreach (var feedback in Model.Feedbacks)
-                            {
-                                <li>
-                                    <div class="feedback-header flex justify-between items-center">
-                                        <div>
-                                            <span class="block text-sm font-medium">@feedback.UserName</span>
-                                            <span class="text-xs text-gray-400">@((DateTime.Now - feedback.CreatedOn).TotalDays < 1 ? "Today" : (DateTime.Now - feedback.CreatedOn).TotalDays < 2 ? "Yesterday" : $"{(int)(DateTime.Now - feedback.CreatedOn).TotalDays} days ago")</span>
-                                        </div>
-                                        <div class="stars flex mr-5">
-                                            @for (int i = 0; i < feedback.Rating; i++)
-                                            {
-                                                <span class="text-yellow-500">&#9733;</span>
-                                            }
-                                            @for (int i = feedback.Rating; i < 5; i++)
-                                            {
-                                                <span class="text-gray-300">&#9734;</span>
-                                            }
-                                        </div>
-                                    </div>
-                                    <p class="mt-2 text-sm text-gray-600">@feedback.Remarks</p>
-                                </li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <p class="text-gray-500">No feedback available.</p>
-                    }
-                </div>
-            </div>
-        </div>
-
     </div>
-</body>
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div class="md:col-span-2">
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-semibold mb-4">Ticket Statistics</h2>
+                <ul class="space-y-2">
+                    <li class="text-sm text-gray-600">
+                        Total Tickets Assigned: <span class="font-medium">@Model.TotalTicketsAssigned</span>
+                    </li>
+                    <li class="text-sm text-gray-600">
+                        Total Tickets Solved: <span class="font-medium">@Model.TotalTicketsSolved</span>
+                    </li>
+                    <li class="text-sm text-gray-600">
+                        Pending Tickets: <span class="font-medium">@Model.PendingTickets</span>
+                    </li>
+                    <li class="text-sm text-gray-600">
+                        Average Resolution Time:
+                        <span class="font-medium">
+                            @(Model.AverageResolveTime.HasValue ? $"{Model.AverageResolveTime.Value:F1} hours" : "N/A")
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-semibold mb-4">Feedback</h2>
+                @if (Model.Feedbacks.Any())
+                {
+                    <ul class="space-y-4">
+                        @foreach (var feedback in Model.Feedbacks)
+                        {
+                            <li class="border-b pb-4 last:border-b-0 last:pb-0">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div>
+                                        <span class="block text-sm font-medium">@feedback.UserName</span>
+                                        <span class="text-xs text-gray-400">
+                                            @((DateTime.Now - feedback.CreatedOn).TotalDays < 1 ? "Today" :
+                                                (DateTime.Now - feedback.CreatedOn).TotalDays < 2 ? "Yesterday" :
+                                                $"{(int)(DateTime.Now - feedback.CreatedOn).TotalDays} days ago")
+                                        </span>
+                                    </div>
+                                    <div class="flex">
+                                        @for (int i = 0; i < feedback.Rating; i++)
+                                        {
+                                            <span class="text-yellow-500">&#9733;</span>
+                                        }
+                                        @for (int i = feedback.Rating; i < 5; i++)
+                                        {
+                                            <span class="text-gray-300">&#9734;</span>
+                                        }
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600">@feedback.Remarks</p>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-gray-500">No feedback available.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     body {
         margin: 0;
         font-family: Arial, sans-serif;
+        background-color: #f3f4f6;
         display: flex;
         justify-content: flex-start;
         align-items: flex-start;
