@@ -20,14 +20,7 @@
         </li>
     </ul>
     <ul class="ml-auto flex items-center">
-        <!-- Profile Section -->
-        <div class="flex items-center">
-            <div class="text-left mr-1">
-                <div class="text-gray-800 font-regular text-xs">
-                    @HttpContextAccessor.HttpContext.Session.GetString("UserName")</div>
-            </div>
-            <img src="https://placehold.co/32x32" alt="Profile" class="w-10 h-10 rounded-md object-cover" />
-        </div>
+        @await Html.PartialAsync("_Header")
     </ul>
 </div>
 

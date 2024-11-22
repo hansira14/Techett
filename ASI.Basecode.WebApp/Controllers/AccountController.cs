@@ -99,14 +99,20 @@ namespace ASI.Basecode.WebApp.Controllers
             var loginResult = _userService.AuthenticateUser(model.Email, model.Password, ref user);
             if (loginResult == LoginResult.Success)
             {
-                // 認証OK
+                // Authentication OK
                 await this._signInManager.SignInAsync(user);
+                
+                // Set session variables
                 this._session.SetString("UserName", string.Join(" ", user.Fname, user.Lname));
+                this._session.SetString("FirstName", user.Fname);
+                this._session.SetString("LastName", user.Lname);
+                this._session.SetString("ProfilePictureUrl", user.ProfilePicUrl ?? ""); 
+
                 return RedirectToAction("Index", "Home");
             }
             else
             {
-                // 認証NG
+                // Authentication failed
                 TempData["ErrorMessage"] = "Incorrect UserId or Password";
                 return View();
             }

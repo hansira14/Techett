@@ -1,32 +1,29 @@
-﻿@*@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor HttpContextAccessor
-<header class="@((ViewBag.LoginView == true) ? "hide-navbar" : "")">
-    <div class="logosec hover-pointer">
-        <img src="~/img/asi-logo-invert.svg"
-             style="width: 185px;" alt="logo"
-             onclick="window.location.href = '@Url.Action("Index", "Home")';">
-    </div>
-    <div class="logosec">
-        @HttpContextAccessor.HttpContext.Session.GetString("UserName")
-        <div class="mr-20 hover-pointer" style="position: relative">
-            <div class="dp">
-                <img src="~/img/profile-logo.png"
-                     class="dpicn hover-pointer"
-                     alt="dp">
+﻿<div class="py-2 px-0 bg-absolute flex items-center left-0 right-0 z-30">
+    <ul class="ml-auto flex items-center">
+        <div class="flex items-center">
+            <div class="text-left mr-4">
+                <div class="text-gray-800 font-regular text-base">
+                    @HttpContextAccessor.HttpContext.Session.GetString("UserName")
+                </div>
             </div>
-            <div class="dropdown">
-                <ul>
-                    <li>
-                        <i class="fa-solid fa-gear"></i>
-                        <a href="#">Settings</a>
-                    </li>
-                    <li>
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        <a asp-action="SignOutUser" asp-controller="Account">Logout</a>
-                    </li>
-                </ul>
-            </div>
+            @{
+                var profilePicUrl = HttpContextAccessor.HttpContext.Session.GetString("ProfilePictureUrl");
+                var firstName = HttpContextAccessor.HttpContext.Session.GetString("FirstName");
+                var lastName = HttpContextAccessor.HttpContext.Session.GetString("LastName");
+            }
+
+            @if (!string.IsNullOrEmpty(profilePicUrl))
+            {
+                <img src="@profilePicUrl" alt="Profile" class="w-10 h-10 rounded-md object-cover" />
+            }
+            else
+            {
+                <div class="w-10 h-10 rounded-md overflow-hidden">
+                    <img src="@AvatarHelper.GetInitialAvatar(firstName, lastName)" 
+                         alt="Profile" 
+                         class="w-full h-full object-cover" />
+                </div>
+            }
         </div>
-    </div>
-</header>
-*@
+    </ul>
+</div>
