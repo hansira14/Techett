@@ -10,4 +10,6 @@ public class PaginatedTicketsViewModel
     public string SearchTerm { get; set; }
     public string[] SelectedCategories { get; set; }
     public string[] SelectedPriorities { get; set; }
+    public string SortColumn { get; set; }
+    public string SortDirection { get; set; }
 }

@@ -135,7 +135,8 @@ public class TicketService : ITicketService
     }
 
     public PaginatedTicketsViewModel GetPaginatedTickets(string searchTerm, int page, int pageSize, 
-        string[] categories = null, string[] priorities = null)
+        string[] categories = null, string[] priorities = null,
+        string sortColumn = null, string sortDirection = "asc")
     {
         var user = _httpContextAccessor.HttpContext?.User;
         var userRole = user?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
@@ -154,6 +155,7 @@ public class TicketService : ITicketService
 
         var query = _ticketRepository.GetAllTickets(userRole, userId).AsQueryable();
 
+        // Apply search filter
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
             searchTerm = searchTerm.ToLower();
@@ -165,15 +167,60 @@ public class TicketService : ITicketService
             );
         }
 
+        // Apply category filter
         if (categories != null && categories.Length > 0)
         {
             query = query.Where(t => categories.Contains(t.Category));
         }
 
+        // Apply priority filter
         if (priorities != null && priorities.Length > 0)
         {
             var priorityNumbers = priorities.Select(int.Parse).ToArray();
             query = query.Where(t => priorityNumbers.Contains(t.Priority));
+        }
+
+        // Apply sorting
+        if (!string.IsNullOrEmpty(sortColumn))
+        {
+            query = sortColumn.ToLower() switch
+            {
+                "title" => sortDirection == "asc" 
+                    ? query.OrderBy(t => t.Title) 
+                    : query.OrderByDescending(t => t.Title),
+                
+                "content" => sortDirection == "asc" 
+                    ? query.OrderBy(t => t.Content) 
+                    : query.OrderByDescending(t => t.Content),
+                
+                "status" => sortDirection == "asc" 
+                    ? query.OrderBy(t => t.Status) 
+                    : query.OrderByDescending(t => t.Status),
+                
+                "category" => sortDirection == "asc" 
+                    ? query.OrderBy(t => t.Category) 
+                    : query.OrderByDescending(t => t.Category),
+                
+                "priority" => sortDirection == "asc" 
+                    ? query.OrderBy(t => t.Priority) 
+                    : query.OrderByDescending(t => t.Priority),
+
+                 "assignedto" => sortDirection == "asc"
+                    ? query.OrderBy(t => t.Assignments
+                        .Select(a => a.AssignedToNavigation.Fname + " " + a.AssignedToNavigation.Lname)
+                        .FirstOrDefault() ?? "zzz")
+                    : query.OrderByDescending(t => t.Assignments
+                        .Select(a => a.AssignedToNavigation.Fname + " " + a.AssignedToNavigation.Lname)
+                        .FirstOrDefault() ?? ""),
+                
+                
+                _ => query.OrderByDescending(t => t.CreatedOn) // Default sort
+            };
+        }
+        else
+        {
+            // Default sorting by creation date if no sort column specified
+            query = query.OrderByDescending(t => t.CreatedOn);
         }
 
         var totalTickets = query.Count();
@@ -191,7 +238,9 @@ public class TicketService : ITicketService
             PageSize = pageSize,
             SearchTerm = searchTerm,
             SelectedCategories = categories,
-            SelectedPriorities = priorities
+            SelectedPriorities = priorities,
+            SortColumn = sortColumn,
+            SortDirection = sortDirection
         };
     }
 }

@@ -44,13 +44,21 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpGet]
         public IActionResult SearchTickets(string searchTerm, int page = 1, int pageSize = 12, 
-            string[] categories = null, int[] priorities = null)
+            string[] categories = null, int[] priorities = null, 
+            string sortColumn = null, string sortDirection = "asc")
         {
             categories = categories?.Length == 0 ? null : categories;
             priorities = priorities?.Length == 0 ? null : priorities;
 
-            var paginatedTickets = _ticketService.GetPaginatedTickets(searchTerm, page, pageSize, 
-                categories, priorities?.Select(p => p.ToString()).ToArray());
+            var paginatedTickets = _ticketService.GetPaginatedTickets(
+                searchTerm, 
+                page, 
+                pageSize, 
+                categories, 
+                priorities?.Select(p => p.ToString()).ToArray(),
+                sortColumn,
+                sortDirection
+            );
             return Json(paginatedTickets);
         }
 

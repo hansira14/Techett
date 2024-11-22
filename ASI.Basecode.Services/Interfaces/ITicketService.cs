@@ -11,6 +11,7 @@ namespace ASI.Basecode.Services.Interfaces
         void DeleteTicket(int id);
         int CreateTicket(TicketViewModel model, int userId);
         PaginatedTicketsViewModel GetPaginatedTickets(string searchTerm, int page, int pageSize, 
-            string[] categories = null, string[] priorities = null);
+            string[] categories = null, string[] priorities = null, 
+            string sortColumn = null, string sortDirection = "asc");
     }
 }
