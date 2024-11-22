@@ -18,14 +18,7 @@
         </li>
     </ul>
     <ul class="ml-auto flex items-center">
-
-        <!-- Profile Section -->
-        <div class="flex items-center">
-            <div class="text-left mr-1">
-                <div class="text-gray-800 font-regular text-xs">@HttpContextAccessor.HttpContext.Session.GetString("UserName")</div>
-            </div>
-            <img src="https://placehold.co/32x32" alt="Profile" class="w-10 h-10 rounded-md object-cover mr-4" />
-        </div>
+        @await Html.PartialAsync("_Header")
     </ul>
 </div>
 
@@ -115,7 +108,7 @@
                                 <a class="text-purple-900 text-xs">
                                     @article.CreatedByName
                                 </a>
-                                <span class="text-gray-400 text-xs">• @article.CreatedOn.ToString("g")</span>
+                                <span class="text-gray-400 text-xs">â€¢ @article.CreatedOn.ToString("g")</span>
                                 <button onclick="editArticle(@article.ArticleId)" class="text-blue-600 hover:text-blue-800 mr-2 ml-auto">
                                     <svg class="w-4 h-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
