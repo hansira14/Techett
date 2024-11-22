@@ -150,13 +150,31 @@ public class ArticleController : ControllerBase<ArticleController>
         }
     }
 
-    private int GetCurrentUserId()
+    [HttpGet]
+    public IActionResult SearchArticles(string searchTerm, int page = 1, int pageSize = 10)
     {
-        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
-        if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+        var query = _articleService.GetAllArticles().AsQueryable();
+
+        if (!string.IsNullOrEmpty(searchTerm))
         {
-            return userId;
+            searchTerm = searchTerm.ToLower();
+            query = query.Where(a => 
+                a.Title.ToLower().Contains(searchTerm) ||
+                a.Content.ToLower().Contains(searchTerm));
         }
-        throw new UnauthorizedAccessException("User is not authenticated");
+
+        var totalArticles = query.Count();
+        var articles = query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return Json(new { 
+            articles, 
+            currentPage = page, 
+            pageSize, 
+            totalArticles 
+        });
     }
+
 }

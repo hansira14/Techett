@@ -25,61 +25,17 @@
 
 <div class="flex flex-col h-full flex-grow min-h-[calc(100vh-85px)] mb-3">
     <div class="p-1 rounded-md col-span-3 flex-grow">
-        <form action="" class="flex items-center mb-3">
+        <form id="searchForm" class="flex items-center mb-3">
             <div class="relative w-40 mr-2">
-                <input type="text" class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500" placeholder="Search articles">
+                <input type="text" id="searchInput" name="searchTerm"
+                    class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                    placeholder="Search articles">
                 <svg class="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
-            
-
-            <!-- Add Filter Button and Dropdown -->
-            <div class="relative mr-2">
-                <button type="button" id="filterButton"
-                        class="py-2 px-4 bg-gray-50 border border-gray-100 rounded-md text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 hover:bg-gray-100 flex items-center">
-                    <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                    </svg>
-                    Filter
-                </button>
-
-                <div id="filterDropdown"
-                     class="hidden absolute left-0 mt-2 w-64 bg-white rounded-md shadow-lg z-50 p-4">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Categories</label>
-                        <div class="space-y-2">
-                            <label class="flex items-center">
-                                <input type="checkbox" name="categories" value="Bug" class="mr-2">
-                                Bug
-                            </label>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="categories" value="Feature Request" class="mr-2">
-                                Feature Request
-                            </label>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="categories" value="Support" class="mr-2">
-                                Support
-                            </label>
-                        </div>
-                    </div>
-
-
-                    <div class="flex justify-between">
-                        <button type="button" id="clearFilters" class="text-gray-600 text-sm hover:text-gray-800">
-                            Clear Filters
-                        </button>
-                        <button type="button" id="applyFilters"
-                                class="bg-blue-500 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-600">
-                            Apply Filters
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-
+            <input type="hidden" id="currentPage" name="page" value="1">
+            <input type="hidden" id="pageSize" name="pageSize" value="10">
             <div class="relative mr-2">
                 <button type="button" id="createArticleBtn" data-toggle="modal" data-target="#createArticleModal"
                         class="py-2 px-4 bg-purple-400 text-white rounded-md text-sm hover:bg-purple-600 transition duration-300 ease-in-out flex items-center">
@@ -91,7 +47,6 @@
                     Create Article
                 </button>
             </div>
-            
         </form>
 
         <div class="overflow-x-auto bg-white rounded-md shadow">
@@ -410,6 +365,142 @@
                     }
                 });
             });
+        });
+    </script>
+    <script>
+        function loadArticles() {
+            const searchData = {
+                searchTerm: $('#searchInput').val(),
+                page: $('#currentPage').val(),
+                pageSize: $('#pageSize').val()
+            };
+
+            $.ajax({
+                url: '/Article/SearchArticles',
+                type: 'GET',
+                data: searchData,
+                beforeSend: function() {
+                    $('table tbody').addClass('opacity-50');
+                },
+                success: function(response) {
+                    updateTable(response);
+                    updatePagination(response);
+                },
+                error: function(xhr) {
+                    toastr.error('Failed to load articles: ' + (xhr.responseJSON?.message || 'Unknown error'));
+                },
+                complete: function() {
+                    $('table tbody').removeClass('opacity-50');
+                }
+            });
+        }
+
+        function updateTable(data) {
+            const tbody = $('table tbody');
+            tbody.empty();
+
+            data.articles.forEach(article => {
+                const row = createArticleRow(article);
+                tbody.append(row);
+            });
+        }
+
+        function updatePagination(data) {
+            const startItem = ((data.currentPage - 1) * data.pageSize) + 1;
+            const endItem = Math.min(data.currentPage * data.pageSize, data.totalArticles);
+
+            $('.pagination span').text(
+                data.totalArticles > 0
+                    ? `${startItem}-${endItem} of ${data.totalArticles} results`
+                    : 'No results found'
+            );
+
+            $('#prevPage').prop('disabled', data.currentPage === 1);
+            $('#nextPage').prop('disabled', endItem >= data.totalArticles);
+        }
+
+        function createArticleRow(article) {
+            const timeDiff = new Date() - new Date(article.createdOn);
+            const relativeTime = getRelativeTime(timeDiff, article.createdOn);
+
+            return `
+                <tr class="hover:bg-gray-50 border-b">
+                    <td class="py-2 px-4 text-sm text-gray-800">
+                        <div class="flex items-center">
+                            <img src="${article.createdByProfilePicUrl}" 
+                                 alt="Author" 
+                                 class="w-8 h-8 rounded-full mr-3 object-cover" />
+                            <div class="flex flex-col">
+                                <span class="text-xs text-gray-500">${article.createdByName}</span>
+                                <a href="/Article/Details?id=${article.articleId}" class="font-medium hover:underline">
+                                    ${article.title}
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-2 px-4 text-sm text-gray-800">
+                        <p class="line-clamp-2 text-gray-600">${article.content}</p>
+                    </td>
+                    <td class="py-2 px-4 text-sm text-gray-500">
+                        <span>${relativeTime}</span>
+                    </td>
+                    <td class="py-2 px-4 text-center">
+                        <button onclick="deleteArticle(${article.articleId})" class="text-red-600 hover:text-red-800">
+                            <svg class="w-4 h-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function getRelativeTime(timeDiff, createdOn) {
+            const minutes = timeDiff / (1000 * 60);
+            const hours = minutes / 60;
+            const days = hours / 24;
+
+            if (minutes < 60) {
+                return `${Math.floor(minutes)} mins ago`;
+            } else if (hours < 24) {
+                return `${Math.floor(hours)} hours ago`;
+            } else if (days < 7) {
+                return `${Math.floor(days)} days ago`;
+            } else {
+                return new Date(createdOn).toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                });
+            }
+        }
+
+        $(document).ready(function () {
+            let searchTimeout;
+
+            $('#searchForm').submit(function (e) {
+                e.preventDefault();
+            });
+
+            $('#searchInput').on('input', function () {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function () {
+                    $('#currentPage').val(1);
+                    loadArticles();
+                }, 500);
+            });
+
+            $('#prevPage, #nextPage').click(function (e) {
+                e.preventDefault();
+                const direction = $(this).attr('id') === 'prevPage' ? -1 : 1;
+                const currentPage = parseInt($('#currentPage').val());
+                $('#currentPage').val(currentPage + direction);
+                loadArticles();
+            });
+
+            loadArticles();
         });
     </script>
 }
