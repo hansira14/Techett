@@ -39,6 +39,7 @@ namespace ASI.Basecode.Data.Models
         public string Email { get; set; }
         public string Role { get; set; }
         public bool? IsActive { get; set; }
+        public string ProfilePicUrl { get; set; }
 
         public virtual User CreatedByNavigation { get; set; }
         public virtual Team Team { get; set; }

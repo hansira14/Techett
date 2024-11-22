@@ -219,12 +219,32 @@
     function updateProfilePicture(event) {
         const file = event.target.files[0];
         if (file) {
+            // Show preview
             const reader = new FileReader();
-            reader.onload = function (e) {
-                // Update the image source with the uploaded file
+            reader.onload = function(e) {
                 document.getElementById("profile-picture").src = e.target.result;
             };
             reader.readAsDataURL(file);
+
+            // Upload to server
+            const formData = new FormData();
+            formData.append("file", file);
+
+            fetch('/Account/UpdateProfilePicture', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    toastr.success('Profile picture updated successfully');
+                } else {
+                    toastr.error(data.message || 'Failed to update profile picture');
+                }
+            })
+            .catch(error => {
+                toastr.error('An error occurred while updating profile picture');
+            });
         }
     }
     

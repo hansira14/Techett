@@ -35,10 +35,24 @@ namespace ASI.Basecode.WebApp.Controllers
             _userAuthorizationService = userAuthorizationService;
         }
 
-        public IActionResult Tickets()
+        [HttpGet]
+        public IActionResult Tickets(string searchTerm = "", int page = 1, int pageSize = 12)
         {
-            var tickets = _ticketService.GetAllTickets();
-            return View("Tickets", tickets);
+            var paginatedTickets = _ticketService.GetPaginatedTickets(searchTerm, page, pageSize);
+            return View(paginatedTickets);
+        }
+
+        [HttpGet]
+        public IActionResult SearchTickets(string searchTerm, int page = 1, int pageSize = 12, 
+            string[] categories = null, int[] priorities = null)
+        {
+            // Convert empty arrays to null to handle "no filter selected" case
+            categories = categories?.Length == 0 ? null : categories;
+            priorities = priorities?.Length == 0 ? null : priorities;
+
+            var paginatedTickets = _ticketService.GetPaginatedTickets(searchTerm, page, pageSize, 
+                categories, priorities?.Select(p => p.ToString()).ToArray());
+            return Json(paginatedTickets);
         }
 
         public IActionResult Details(int id)

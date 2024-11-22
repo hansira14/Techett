@@ -297,14 +297,37 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Profile(int id)
+        public IActionResult Profile(int? id = null)
         {
-            var profile = _userService.GetUserProfile(id);
-            if (profile == null)
+            try
             {
-                return NotFound();
+                int userId;
+                
+                if (id.HasValue)
+                {
+                    userId = id.Value;
+                }
+                else
+                {
+                    var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+                    if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out userId))
+                    {
+                        return RedirectToAction("Login");
+                    }
+                }
+
+                var profile = _userService.GetUserProfile(userId);
+                if (profile == null)
+                {
+                    return NotFound();
+                }
+                return View(profile);
             }
-            return View(profile);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching user profile");
+                return View("Error");
+            }
         }
 
         [HttpGet]
@@ -323,6 +346,44 @@ namespace ASI.Basecode.WebApp.Controllers
                 { 
                     RequestId = HttpContext.TraceIdentifier
                 });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult UpdateProfilePicture(IFormFile file)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                    return Json(new { success = false, message = "No file uploaded" });
+
+                var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
+                
+                // Use similar logic as AttachmentController for file handling
+                var fileName = $"profile_{userId}_{DateTime.Now.Ticks}{Path.GetExtension(file.FileName)}";
+                var uploadPath = Path.Combine(_configuration["FileServer:UploadPath"], "profiles");
+                
+                // Create directory if it doesn't exist
+                if (!Directory.Exists(uploadPath))
+                    Directory.CreateDirectory(uploadPath);
+
+                var filePath = Path.Combine(uploadPath, fileName);
+                
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+
+                // Update user profile picture URL in database
+                var relativeFilePath = $"/files/profiles/{fileName}";
+                _userService.UpdateProfilePicture(userId, relativeFilePath);
+
+                return Json(new { success = true, profilePictureUrl = relativeFilePath });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating profile picture");
+                return Json(new { success = false, message = "Error updating profile picture" });
             }
         }
     }
