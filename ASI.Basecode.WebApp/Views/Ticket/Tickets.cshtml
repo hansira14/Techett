@@ -541,6 +541,11 @@
         $(document).ready(function () {
             let searchTimeout;
 
+            // Prevent form submission
+            $('#searchForm').submit(function(e) {
+                e.preventDefault();
+            });
+
             // Handle search input
             $('#searchInput').on('input', function() {
                 clearTimeout(searchTimeout);
@@ -589,13 +594,25 @@
             function updatePagination(data) {
                 const startItem = ((data.currentPage - 1) * data.pageSize) + 1;
                 const endItem = Math.min(data.currentPage * data.pageSize, data.totalTickets);
+                const totalPages = Math.ceil(data.totalTickets / data.pageSize);
                 
+                // Update the results text
                 $('.pagination span').text(
-                    `${startItem}-${endItem} of ${data.totalTickets} results`
+                    data.totalTickets > 0 
+                        ? `${startItem}-${endItem} of ${data.totalTickets} results`
+                        : 'No results found'
                 );
 
+                // Disable/enable pagination buttons
                 $('#prevPage').prop('disabled', data.currentPage === 1);
-                $('#nextPage').prop('disabled', data.currentPage >= data.totalPages);
+                $('#nextPage').prop('disabled', endItem >= data.totalTickets);
+
+                // Optionally hide pagination if no results
+                if (data.totalTickets === 0) {
+                    $('.pagination').hide();
+                } else {
+                    $('.pagination').show();
+                }
             }
 
             function createTicketRow(ticket) {
