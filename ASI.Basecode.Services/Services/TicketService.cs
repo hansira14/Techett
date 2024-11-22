@@ -120,4 +120,36 @@ public class TicketService : ITicketService
 
         _ticketRepository.DeleteTicket(ticket);
     }
+
+    public PaginatedTicketsViewModel GetPaginatedTickets(string searchTerm, int page, int pageSize)
+    {
+        var query = _ticketRepository.GetAllTickets().AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            searchTerm = searchTerm.ToLower();
+            query = query.Where(t => 
+                t.Title.ToLower().Contains(searchTerm) ||
+                t.Content.ToLower().Contains(searchTerm) ||
+                t.Category.ToLower().Contains(searchTerm) ||
+                t.Status.ToLower().Contains(searchTerm)
+            );
+        }
+
+        var totalTickets = query.Count();
+
+        var tickets = query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return new PaginatedTicketsViewModel
+        {
+            Tickets = _mapper.Map<IEnumerable<TicketViewModel>>(tickets),
+            TotalTickets = totalTickets,
+            CurrentPage = page,
+            PageSize = pageSize,
+            SearchTerm = searchTerm
+        };
+    }
 }

@@ -35,10 +35,18 @@ namespace ASI.Basecode.WebApp.Controllers
             _userAuthorizationService = userAuthorizationService;
         }
 
-        public IActionResult Tickets()
+        [HttpGet]
+        public IActionResult Tickets(string searchTerm = "", int page = 1, int pageSize = 12)
         {
-            var tickets = _ticketService.GetAllTickets();
-            return View("Tickets", tickets);
+            var paginatedTickets = _ticketService.GetPaginatedTickets(searchTerm, page, pageSize);
+            return View(paginatedTickets);
+        }
+
+        [HttpGet]
+        public IActionResult SearchTickets(string searchTerm, int page = 1, int pageSize = 12)
+        {
+            var paginatedTickets = _ticketService.GetPaginatedTickets(searchTerm, page, pageSize);
+            return Json(paginatedTickets);
         }
 
         public IActionResult Details(int id)
