@@ -93,7 +93,7 @@
             </div>
             
         </form>
-        
+        @*
         <div class="grid grid-cols-1 mb-0 border-none">
             <div class="p-0 rounded-md">
 
@@ -146,8 +146,85 @@
                     }
                 </div>
             </div>
+        </div>*@
+        <div class="overflow-x-auto bg-white rounded-md shadow">
+            <table class="table-auto w-full">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-gray-600 cursor-pointer w-1/3">
+                            <div class="flex items-center">
+                                TITLE
+                                <span class="sort-icon ml-1">↕</span>
+                            </div>
+                        </th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-gray-600 cursor-pointer w-1/4">
+                            <div class="flex items-center">
+                                AUTHOR
+                                <span class="sort-icon ml-1">↕</span>
+                            </div>
+                        </th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-gray-600 cursor-pointer w-32">
+                            <div class="flex items-center">
+                                CREATED ON
+                                <span class="sort-icon ml-1">↕</span>
+                            </div>
+                        </th>
+                        <th class="py-3 px-4 text-center text-sm font-medium text-gray-600 w-1/4">
+                            ACTIONS
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var article in Model)
+                    {
+                        <tr class="hover:bg-gray-50 border-b">
+                            <td class="py-2 px-4 text-sm text-gray-800 w-1/3">
+                                <div class="flex items-center">
+                                    <a href="@Url.Action("Details", "Article", new { id = article.ArticleId })" class="font-meduim truncate hover:underline">
+                                        @article.Title
+                                    </a>
+                                </div>
+                            </td>
+                            <td class="py-2 px-4 text-sm text-gray-800 w-1/4">
+                                <span class="text-xs text-gray-500">@article.CreatedByName</span>
+                            </td>
+                            <td class="py-2 px-4 text-sm text-gray-800 w-32">
+                                <span class="text-xs text-gray-500">@article.CreatedOn.ToString("g")</span>
+                            </td>
+                            <td class="py-2 px-4 text-center w-1/4">
+                                <button onclick="editArticle(@article.ArticleId)" class="text-blue-600 hover:text-blue-800 mr-2">
+                                    <svg class="w-4 h-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                     viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </button>
+                                <button onclick="deleteArticle(@article.ArticleId)" class="text-red-600 hover:text-red-800">
+                                    <svg class="w-4 h-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                     viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="pagination flex items-center justify-between mt-2.5">
+                <span class="text-sm align-center text-gray-700 ml-4">1-10 of 76 results</span>
+                <div class="space-x-2">
+                    <button id="prevPage" onclick="changePage(-1)"
+                            class="px-3 py-2 mb-2.5 text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300">
+                        Previous
+                    </button>
+                    <button id="nextPage" onclick="changePage(1)"
+                            class="px-3 py-2 mb-2.5 mr-2 text-sm text-white hover:text-purple-600 bg-purple-400 hover:bg-purple-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400">
+                        Next
+                    </button>
+                </div>
+            </div>
         </div>
-
 
     </div>
 </div>
@@ -356,4 +433,5 @@
         });
         
     </script>
+    
 }
