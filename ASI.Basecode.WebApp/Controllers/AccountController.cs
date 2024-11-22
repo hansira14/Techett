@@ -287,9 +287,38 @@ namespace ASI.Basecode.WebApp.Controllers
                 return Json(new { success = false, message = Resources.Messages.Errors.ServerError });
             }
         }
-        public IActionResult Settings()
+        [HttpGet]
+        public IActionResult Settings(int? id = null)
         {
-            return View();
+            try
+            {
+                int userId;
+
+                if (id.HasValue)
+                {
+                    userId = id.Value;
+                }
+                else
+                {
+                    var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+                    if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out userId))
+                    {
+                        return RedirectToAction("Login");
+                    }
+                }
+
+                var profile = _userService.GetUserProfile(userId);
+                if (profile == null)
+                {
+                    return NotFound();
+                }
+                return View(profile);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching user profile");
+                return View("Error");
+            }
         }
         public IActionResult AboutUs()
         {
@@ -329,6 +358,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 return View("Error");
             }
         }
+
 
         [HttpGet]
         [Authorize(Policy = "RequireAdminRole")]
