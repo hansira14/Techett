@@ -36,6 +36,12 @@
             </a>
         </li>
         
+        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Profile" ? "active" : "")">
+            <a asp-controller="Account" asp-action="Profile" asp-route-id="@Context.Session.GetInt32("UserId")">
+                <i class="fa-solid fa-user sidebar-icon"></i>
+                <span>Profile</span>
+            </a>
+        </li>
         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Settings" ? "active" : "")">
             <a asp-controller="Account" asp-action="Settings">
                 <i class="fa-solid fa-gear sidebar-icon"></i> 

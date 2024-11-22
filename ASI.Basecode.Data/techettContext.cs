@@ -550,6 +550,10 @@ namespace ASI.Basecode.Data
                     .HasMaxLength(255)
                     .HasColumnName("password");
 
+                entity.Property(e => e.ProfilePicUrl)
+                    .HasMaxLength(500)
+                    .HasColumnName("profilePicUrl");
+
                 entity.Property(e => e.Role)
                     .IsRequired()
                     .HasMaxLength(20)

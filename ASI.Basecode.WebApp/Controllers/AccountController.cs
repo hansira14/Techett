@@ -297,14 +297,37 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Profile(int id)
+        public IActionResult Profile(int? id = null)
         {
-            var profile = _userService.GetUserProfile(id);
-            if (profile == null)
+            try
             {
-                return NotFound();
+                int userId;
+                
+                if (id.HasValue)
+                {
+                    userId = id.Value;
+                }
+                else
+                {
+                    var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+                    if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out userId))
+                    {
+                        return RedirectToAction("Login");
+                    }
+                }
+
+                var profile = _userService.GetUserProfile(userId);
+                if (profile == null)
+                {
+                    return NotFound();
+                }
+                return View(profile);
             }
-            return View(profile);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching user profile");
+                return View("Error");
+            }
         }
 
         [HttpGet]
