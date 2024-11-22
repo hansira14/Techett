@@ -16,4 +16,5 @@ public interface IUserService
     UserProfileViewModel GetUserProfile(int userId);
     IEnumerable<AgentViewModel> GetAllAgents();
     void UpdateProfilePicture(int userId, string profilePictureUrl);
+    PaginatedUsersViewModel GetPaginatedUsers(string searchTerm, int page, int pageSize);
 }

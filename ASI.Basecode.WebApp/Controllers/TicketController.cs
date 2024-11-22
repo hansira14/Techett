@@ -46,7 +46,6 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult SearchTickets(string searchTerm, int page = 1, int pageSize = 12, 
             string[] categories = null, int[] priorities = null)
         {
-            // Convert empty arrays to null to handle "no filter selected" case
             categories = categories?.Length == 0 ? null : categories;
             priorities = priorities?.Length == 0 ? null : priorities;
 

@@ -207,5 +207,45 @@ namespace ASI.Basecode.Services.Services
                 _repository.UpdateUser(user);
             }
         }
+
+        public PaginatedUsersViewModel GetPaginatedUsers(string searchTerm, int page, int pageSize)
+        {
+            var query = _repository.GetUsers().AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.ToLower();
+                query = query.Where(u => 
+                    u.Fname.ToLower().Contains(searchTerm) ||
+                    u.Lname.ToLower().Contains(searchTerm) ||
+                    u.Email.ToLower().Contains(searchTerm) ||
+                    u.Role.ToLower().Contains(searchTerm)
+                );
+            }
+
+            var totalUsers = query.Count();
+            var users = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(u => new UserViewModel
+                {
+                    UserId = u.UserId,
+                    Fname = u.Fname,
+                    Lname = u.Lname,
+                    Email = u.Email,
+                    Role = u.Role,
+                    TeamId = u.TeamId,
+                    IsActive = u.IsActive ?? true
+                })
+                .ToList();
+
+            return new PaginatedUsersViewModel
+            {
+                Users = users,
+                TotalUsers = totalUsers,
+                CurrentPage = page,
+                PageSize = pageSize
+            };
+        }
     }
 }
