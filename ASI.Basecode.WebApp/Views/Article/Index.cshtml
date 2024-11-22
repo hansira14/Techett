@@ -151,15 +151,9 @@
             <table class="table-auto w-full">
                 <thead class="bg-gray-200">
                     <tr>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-gray-600 cursor-pointer w-1/3">
+                        <th class="py-3 px-4 text-left text-sm font-medium text-gray-600 cursor-pointer w-1/2">
                             <div class="flex items-center">
                                 TITLE
-                                <span class="sort-icon ml-1">↕</span>
-                            </div>
-                        </th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-gray-600 cursor-pointer w-1/4">
-                            <div class="flex items-center">
-                                AUTHOR
                                 <span class="sort-icon ml-1">↕</span>
                             </div>
                         </th>
@@ -178,15 +172,18 @@
                     @foreach (var article in Model)
                     {
                         <tr class="hover:bg-gray-50 border-b">
-                            <td class="py-2 px-4 text-sm text-gray-800 w-1/3">
+                            <td class="py-2 px-4 text-sm text-gray-800 w-1/2">
                                 <div class="flex items-center">
-                                    <a href="@Url.Action("Details", "Article", new { id = article.ArticleId })" class="font-meduim truncate hover:underline">
-                                        @article.Title
-                                    </a>
+                                    <img src="https://placehold.co/32x32" 
+                                         alt="Author" 
+                                         class="w-8 h-8 rounded-full mr-3 object-cover" />
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-500">@article.CreatedByName</span>
+                                        <a href="@Url.Action("Details", "Article", new { id = article.ArticleId })" class="font-medium truncate hover:underline">
+                                            @article.Title
+                                        </a>
+                                    </div>
                                 </div>
-                            </td>
-                            <td class="py-2 px-4 text-sm text-gray-800 w-1/4">
-                                <span class="text-xs text-gray-500">@article.CreatedByName</span>
                             </td>
                             <td class="py-2 px-4 text-sm text-gray-800 w-32">
                                 <span class="text-xs text-gray-500">@article.CreatedOn.ToString("g")</span>
