@@ -30,5 +30,6 @@ namespace ASI.Basecode.Services.ServiceModels
         public string ResolvedByName { get; set; }
         public int? AssignedToId { get; set; }
         public string AssignedToName { get; set; }
+        public string CreatedByProfilePicture { get; set; }
     }
 }
