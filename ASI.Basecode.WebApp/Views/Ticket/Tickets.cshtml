@@ -1,5 +1,5 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@model IEnumerable<ASI.Basecode.Services.ServiceModels.TicketViewModel>
+@model PaginatedTicketsViewModel
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -58,14 +58,14 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <p class="mb-0"><strong>André Erasmo</strong> is at <strong>Cebu Institute of Technology - University</strong> with <strong>Justine Jam Cotejo</strong></p>
+                                <p class="mb-0"><strong>Andr Erasmo</strong> is at <strong>Cebu Institute of Technology - University</strong> with <strong>Justine Jam Cotejo</strong></p>
                                 <div class="d-flex align-items-center gap-2">
                                     <small class="text-muted">13h</small>
                                     <small class="text-muted">42 reactions</small>
                                     <small class="text-muted">1 comment</small>
                                 </div>
                             </div>
-                            <div class="text-primary">•</div>
+                            <div class="text-primary"></div>
                         </div>
 
                         <!-- Story Views -->
@@ -88,7 +88,7 @@
                                 <p class="mb-0">You're featured on <strong>Dennis E. Albiso</strong>'s public weekly engagement list.</p>
                                 <small class="text-muted">3d</small>
                             </div>
-                            <div class="text-primary">•</div>
+                            <div class="text-primary"></div>
                         </div>
                     </div>
 
@@ -108,44 +108,96 @@
 
 <div class="flex flex-col h-full flex-grow min-h-[calc(100vh-85px)] mb-3">
     <div class="p-1 rounded-md col-span-3 flex-grow">
-        <form action="" class="flex items-center mb-3">
+        <form id="searchForm" class="flex items-center mb-3">
             <div class="relative w-40 mr-2">
-                <input type="text" class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500" placeholder="Search tickets">
+                <input type="text" 
+                       id="searchInput" 
+                       name="searchTerm" 
+                       class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500" 
+                       placeholder="Search tickets">
                 <svg class="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
-            <div class="relative">
-                <select class="text-sm py-2 pl-3 pr-10 bg-gray-50 border border-gray-100 rounded-md focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
-                    <option value="">Filter</option>
-                    <option value="option1">Title</option>
-                    <option value="option2">Status</option>
-                    <option value="option1">Category</option>
-                    <option value="option1">Priority</option>
-                    <option value="option1">Agent</option>
-                </select>
-                <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-            </div>
-            @*
-            <div class="relative flex items-center ml-2">
-                <div class="create-now">
-                    <button type="button" id="addTicketButton" data-toggle="modal" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center hover:bg-blue-700 transition duration-300 ease-in-out" data-target="#createTicketModal">
-                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
-                    </button>
-                </div>
-            </div>*@
-            <div class="ml-auto">
-                <button type="button" id="addTicketButton" data-toggle="modal" class="px-4 py-2 bg-purple-400 text-white rounded-md flex items-center justify-center hover:bg-purple-600 transition duration-300 ease-in-out" data-target="#createTicketModal">
-                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        <span class="text-sm ml-2">Add New Ticket</span>
+            
+            <!-- Add Filter Button and Dropdown -->
+            <div class="relative mr-2">
+                <button type="button" 
+                        id="filterButton"
+                        class="py-2 px-4 bg-gray-50 border border-gray-100 rounded-md text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 hover:bg-gray-100 flex items-center">
+                    <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                     </svg>
+                    Filter
+                </button>
+                
+                <div id="filterDropdown" class="hidden absolute left-0 mt-2 w-64 bg-white rounded-md shadow-lg z-50 p-4">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Categories</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="categories" value="Bug" class="mr-2">
+                                Bug
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="categories" value="Feature Request" class="mr-2">
+                                Feature Request
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="categories" value="Support" class="mr-2">
+                                Support
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="priorities" value="1" class="mr-2">
+                                Low
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="priorities" value="2" class="mr-2">
+                                Medium
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="priorities" value="3" class="mr-2">
+                                High
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="priorities" value="4" class="mr-2">
+                                Critical
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button type="button" id="clearFilters" class="text-gray-600 text-sm hover:text-gray-800">
+                            Clear Filters
+                        </button>
+                        <button type="button" id="applyFilters" class="bg-blue-500 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-600">
+                            Apply Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relative mr-2">
+                <button type="button" 
+                        id="createTicketBtn"
+                        data-toggle="modal" 
+                        data-target="#createTicketModal"
+                        class="py-2 px-4 bg-purple-400 text-white rounded-md text-sm hover:bg-purple-600 transition duration-300 ease-in-out flex items-center">
+                    <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    Create Ticket
                 </button>
             </div>
+            
+            <input type="hidden" id="currentPage" name="page" value="1">
+            <input type="hidden" id="pageSize" name="pageSize" value="12">
         </form>
 
         <div class="overflow-x-auto bg-white rounded-md shadow">
@@ -164,7 +216,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var ticket in Model)
+                    @foreach (var ticket in Model.Tickets)
                     {
 
                         <tr class="hover:bg-gray-50 border-b">
@@ -207,11 +259,6 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </a>
-                                <button onclick="editTicketModal(@ticket.TicketId)" class="text-orange-600 hover:text-orange-800 mr-2">
-                                    <svg class="w-4 h-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                </button>
                                 <button onclick="deleteTicket(@ticket.TicketId)" class="text-red-600 hover:text-red-800">
                                     <svg class="w-4 h-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -563,34 +610,192 @@
     </script>
     <!--Pagination-->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var rows = document.querySelectorAll('table tbody tr');
-            for (var i = 12; i < rows.length; i++) {
-                rows[i].style.display = 'none';
-            }
-        });
-        var currentPage = 1;
-        var rowsPerPage = 12;
+        $(document).ready(function () {
+            let searchTimeout;
 
-        function changePage(direction) {
-            currentPage += direction;
-
-            var rows = document.querySelectorAll('table tbody tr');
-            var startIndex = (currentPage - 1) * rowsPerPage;
-            var endIndex = currentPage * rowsPerPage;
-
-            // Show only the rows for the current page
-            rows.forEach((row, index) => {
-                row.style.display = (index >= startIndex && index < endIndex) ? '' : 'none';
+            // Prevent form submission
+            $('#searchForm').submit(function(e) {
+                e.preventDefault();
             });
 
-            // Disable buttons if on first/last page
-            document.getElementById('prevPage').disabled = currentPage === 1;
-            document.getElementById('nextPage').disabled = endIndex >= rows.length;
-        }
+            // Handle search input
+            $('#searchInput').on('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function() {
+                    $('#currentPage').val(1); // Reset to first page on new search
+                    loadTickets();
+                }, 500); // Debounce search for 500ms
+            });
 
-        // Initialize table to show first page
-        changePage(0);
+            // Handle pagination clicks
+            $('#prevPage, #nextPage').click(function(e) {
+                e.preventDefault();
+                const direction = $(this).attr('id') === 'prevPage' ? -1 : 1;
+                const currentPage = parseInt($('#currentPage').val());
+                $('#currentPage').val(currentPage + direction);
+                loadTickets();
+            });
+
+            function loadTickets() {
+                // Get selected categories
+                const selectedCategories = Array.from(document.querySelectorAll('input[name="categories"]:checked'))
+                    .map(cb => cb.value);
+                
+                // Get selected priorities
+                const selectedPriorities = Array.from(document.querySelectorAll('input[name="priorities"]:checked'))
+                    .map(cb => parseInt(cb.value)); // Convert to integer since priorities are numbers
+                
+                const searchData = {
+                    searchTerm: $('#searchInput').val(),
+                    page: $('#currentPage').val(),
+                    pageSize: $('#pageSize').val(),
+                    categories: selectedCategories,
+                    priorities: selectedPriorities
+                };
+
+                $.ajax({
+                    url: '/Ticket/SearchTickets',
+                    type: 'GET',
+                    data: searchData,
+                    traditional: true, // Important for proper array serialization
+                    success: function(response) {
+                        updateTable(response);
+                        updatePagination(response);
+                    },
+                    error: function() {
+                        toastr.error('Failed to load tickets');
+                    }
+                });
+            }
+
+            function updateTable(data) {
+                const tbody = $('table tbody');
+                tbody.empty();
+                
+                data.tickets.forEach(ticket => {
+                    const row = createTicketRow(ticket);
+                    tbody.append(row);
+                });
+            }
+
+            function updatePagination(data) {
+                const startItem = ((data.currentPage - 1) * data.pageSize) + 1;
+                const endItem = Math.min(data.currentPage * data.pageSize, data.totalTickets);
+                const totalPages = Math.ceil(data.totalTickets / data.pageSize);
+                
+                // Update the results text
+                $('.pagination span').text(
+                    data.totalTickets > 0 
+                        ? `${startItem}-${endItem} of ${data.totalTickets} results`
+                        : 'No results found'
+                );
+
+                // Disable/enable pagination buttons
+                $('#prevPage').prop('disabled', data.currentPage === 1);
+                $('#nextPage').prop('disabled', endItem >= data.totalTickets);
+
+                // Optionally hide pagination if no results
+                if (data.totalTickets === 0) {
+                    $('.pagination').hide();
+                } else {
+                    $('.pagination').show();
+                }
+            }
+
+            function createTicketRow(ticket) {
+                return `
+                    <tr class="hover:bg-gray-50 border-b">
+                        <td class="py-2 px-3 text-sm">
+                            <input type="checkbox" id="ticket-${ticket.ticketId}" class="checkbox">
+                        </td>
+                        <td class="py-2 px-4 text-sm text-gray-800" title="${ticket.title}">
+                            ${ticket.title}
+                        </td>
+                        <td class="py-2 px-4 text-sm text-gray-800" title="${ticket.content}">
+                            ${ticket.content}
+                        </td>
+                        <td class="py-2 px-4 text-sm text-gray-800">
+                            <span class="px-2 py-1 rounded-full text-white text-xs font-medium ${getStatusClass(ticket.status)}">
+                                ${ticket.status}
+                            </span>
+                        </td>
+                        <td class="py-2 px-4 text-sm text-gray-800">${ticket.category}</td>
+                        <td class="py-2 px-4 text-sm text-gray-800">${ticket.priority}</td>
+                        <td class="py-2 px-4 text-sm text-gray-800">${ticket.assignedToName || 'Unassigned'}</td>
+                        <td class="py-2 px-4 text-center truncate max-w-[100px]">
+                            <button onclick="showAssignModal(${ticket.ticketId})" class="text-blue-600 hover:text-blue-800 mr-2">
+                                <svg class="w-4 h-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                </svg>
+                            </button>
+                            <a href="/Ticket/Details?id=${ticket.ticketId}" class="text-green-600 hover:text-green-800 mr-2">
+                                <svg class="w-4 h-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </a>
+                            <button onclick="deleteTicket(${ticket.ticketId})" class="text-red-600 hover:text-red-800">
+                                <svg class="w-4 h-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            function getStatusClass(status) {
+                const statusClasses = {
+                    'Resolved': 'bg-green-400',
+                    'Unconfirmed': 'bg-yellow-400',
+                    'In Progress': 'bg-blue-400',
+                    'default': 'bg-purple-400'
+                };
+                return statusClasses[status] || statusClasses.default;
+            }
+
+            // Initial load
+            loadTickets();
+
+            // Filter dropdown toggle
+            $('#filterButton').click(function(e) {
+                e.stopPropagation();
+                $('#filterDropdown').toggleClass('hidden');
+            });
+
+            // Close dropdown when clicking outside
+            $(document).click(function(e) {
+                if (!$(e.target).closest('#filterButton, #filterDropdown').length) {
+                    $('#filterDropdown').addClass('hidden');
+                }
+            });
+
+            // Apply filters button click
+            $('#applyFilters').click(function() {
+                $('#currentPage').val(1); // Reset to first page when applying filters
+                loadTickets();
+                $('#filterDropdown').addClass('hidden');
+            });
+
+            // Prevent dropdown from closing when clicking inside it
+            $('#filterDropdown').click(function(e) {
+                e.stopPropagation();
+            });
+
+            // Clear filters button click
+            $('#clearFilters').click(function() {
+                // Uncheck all checkboxes
+                $('input[name="categories"], input[name="priorities"]').prop('checked', false);
+                
+                // Reset to first page
+                $('#currentPage').val(1);
+                
+                // Reload tickets
+                loadTickets();
+                
+                // Close dropdown
+                $('#filterDropdown').addClass('hidden');
+            });
+        });
     </script>
 }
 
@@ -641,6 +846,14 @@
             width: 10px; 
             height: 10px; 
             cursor: pointer; 
+        }
+
+        #filterDropdown {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        #filterDropdown input[type="checkbox"] {
+            accent-color: #818CF8;
         }
 
     </style>
