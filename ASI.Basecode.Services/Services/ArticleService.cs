@@ -53,9 +53,7 @@ public class ArticleService : IArticleService
 
         var user = _userRepository.GetById(model.CreatedBy);
         
-        model.CreatedByProfilePicUrl = string.IsNullOrEmpty(user.ProfilePicUrl)
-            ? AvatarHelper.GetInitialAvatar(user.Fname, user.Lname)
-            : user.ProfilePicUrl;
+        model.CreatedByProfilePicUrl = user?.ProfilePicUrl ?? null;
 
         _articleRepository.AddArticle(article);
         return article.ArticleId;
