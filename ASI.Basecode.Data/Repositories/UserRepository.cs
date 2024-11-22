@@ -17,10 +17,17 @@ namespace ASI.Basecode.Data.Repositories
 
         }
 
-        public IQueryable<User> GetUsers()
+        public IQueryable<User> GetUsers(bool isSuperAdmin = false)
         {
-            return this.GetDbSet<User>()
-                       .Include(u => u.Team);
+            var query = this.GetDbSet<User>()
+                           .Include(u => u.Team);
+                           
+            if (!isSuperAdmin)
+            {
+                return query.Where(u => (bool)u.IsActive);
+            }
+            
+            return query;
         }
 
         public User GetById(int id) 

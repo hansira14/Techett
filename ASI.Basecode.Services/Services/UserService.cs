@@ -4,11 +4,13 @@ using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using static ASI.Basecode.Resources.Constants.Enums;
 
 namespace ASI.Basecode.Services.Services
@@ -20,25 +22,30 @@ namespace ASI.Basecode.Services.Services
         private readonly IAssignmentRepository _assignmentRepository;
         private readonly IMapper _mapper;
         private readonly IPreferenceRepository _preferenceRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public UserService(
             IUserRepository repository,
             IFeedbackRepository feedbackRepository,
             IAssignmentRepository assignmentRepository,
+            IHttpContextAccessor httpContextAccessor,
             IMapper mapper)
         {
             _mapper = mapper;
             _repository = repository;
             _feedbackRepository = feedbackRepository;
             _assignmentRepository = assignmentRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public LoginResult AuthenticateUser(string email, string password, ref User user)
         {
             user = new User();
             var passwordKey = PasswordManager.EncryptPassword(password);
-            user = _repository.GetUsers().FirstOrDefault(x => x.Email == email &&
-                                                              x.Password == passwordKey);
+            user = _repository.GetUsers()
+                .FirstOrDefault(x => x.Email == email && 
+                                    x.Password == passwordKey && 
+                                    x.IsActive == true);
             return user != null ? LoginResult.Success : LoginResult.Failed;
         }
 
@@ -71,7 +78,11 @@ namespace ASI.Basecode.Services.Services
 
         public IEnumerable<UserViewModel> GetAllUsers()
         {
-            var users = _repository.GetUsers();
+            var isSuperAdmin = _httpContextAccessor.HttpContext?.User.Claims
+                .Any(c => c.Type == ClaimTypes.Role && 
+                          c.Value.Equals("SuperAdmin", StringComparison.OrdinalIgnoreCase)) ?? false;
+                  
+            var users = _repository.GetUsers(isSuperAdmin);
             return _mapper.Map<IEnumerable<UserViewModel>>(users);
         }
 
@@ -111,7 +122,9 @@ namespace ASI.Basecode.Services.Services
             var user = _repository.GetUsers().FirstOrDefault(x => x.UserId == id);
             if (user != null)
             {
-                _repository.DeleteUser(user);
+                user.IsActive = false;
+                user.UpdatedOn = DateTime.Now;
+                _repository.UpdateUser(user);
             }
             else
             {
