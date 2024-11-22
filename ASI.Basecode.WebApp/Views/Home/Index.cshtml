@@ -1,5 +1,5 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@model IEnumerable<ASI.Basecode.Services.ServiceModels.TicketViewModel>
+@model HomeViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -35,7 +35,7 @@
         <!-- Tickets as cards -->
         <div class="grid grid-cols-1 gap-1 mb-3 overflow-y-auto pr-4" style="max-height: calc(3 * 202px);">
             <!-- Right padding only using pr-4 -->
-            @foreach (var ticket in Model)
+            @foreach (var ticket in Model.Tickets)
             {
                 <div class="bg-white shadow-md rounded-lg p-4">
                     <a href="@Url.Action("Details", "Ticket", new { id = ticket.TicketId })">
@@ -65,52 +65,51 @@
 
 
     <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-3 rounded-md col-span-1">
-        <!-- Keep Articles normal width -->
         <div class="flex justify-between mb-2 items-start">
             <div class="font-medium uppercase">A r t i c l e s</div>
         </div>
-        <form action="" class="flex items-center mb-2">
-            <div class="relative w-full mr-2">
-                <input type="text"
-                    class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500"
-                    placeholder="Search articles">
-                <i class="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 text-gray-400"></i>
-            </div>
-            <select
-                class="text-sm py-2 pl-4 pr-10 bg-gray-50 border border-gray-100 rounded-md focus:border-blue-500 outline-none appearance-none bg-select-arrow bg-no-repeat bg-[length:16px_16px] bg-[right_16px_center]">
-                <option value="">All</option>
-            </select>
-        </form>
-        <div class="overflow-x-auto">
-            <table class="w-full min-w-[540px]">
-                <thead>
-                    <tr>
-                        <th
-                            class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tl-md rounded-bl-md">
-                            Articles</th>
-                        <th class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left">
-                            Department</th>
-                        <th
-                            class="text-[12px] tracking-wide font-medium text-gray-400 py-2 pl-2 bg-gray-50 text-left rounded-tr-md rounded-br-md">
-                            Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="py-2 pl-2 border-b border-b-gray-50">
-                            <a href="@Url.Action("Tickets", "Admin")"
-                                class="text-gray-600 text-sm font-medium hover:text-blue-500 truncate">Resolved
-                                issues</a>
-                        </td>
-                        <td class="py-2 pl-2 border-b border-b-gray-50">
-                            <span class="text-[13px] font-medium text-gray-400">CASE</span>
-                        </td>
-                        <td class="py-2 pl-2 border-b border-b-gray-50">
-                            <span class="text-[13px] font-medium text-gray-400">Resolved</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        
+        <!-- Articles Container -->
+        <div class="space-y-4 overflow-y-auto" style="max-height: calc(100vh - 300px);">
+            @foreach (var article in Model.Articles) 
+            {
+                <div class="card border rounded-lg shadow-sm">
+                    <div class="card-body p-4">
+                        <!-- Header with avatar and user info -->
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-purple-400 flex items-center justify-center" 
+                                     style="width: 48px; height: 48px;">
+                                    <span class="text-white text-lg">
+                                        @article.CreatedByName?.Substring(0,1)
+                                    </span>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0 font-semibold">@article.CreatedByName</h6>
+                                    <small class="text-gray-500">
+                                        @(article.CreatedOn.ToString("MMM dd, yyyy"))
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Content -->
+                        <h2 class="text-xl font-bold mb-3">@article.Title</h2>
+                        <p class="text-gray-600 mb-4 line-clamp-2">
+                            @article.Content
+                        </p>
+
+                        <!-- Action button -->
+                        <div class="border-t pt-3">
+                            <a href="@Url.Action("Details", "Article", new { id = article.ArticleId })" 
+                               class="inline-flex items-center text-purple-600 hover:text-purple-800">
+                                <i class="ri-arrow-right-line mr-2"></i>
+                                Read More
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -546,5 +545,28 @@
 
     input[type="radio"]:checked+button.btn-outline-red {
         color: #ef4444;
+    }
+
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+    }
+
+    .ms-3 {
+        margin-left: 0.75rem;
+    }
+
+    .mb-0 {
+        margin-bottom: 0;
     }
 </style>

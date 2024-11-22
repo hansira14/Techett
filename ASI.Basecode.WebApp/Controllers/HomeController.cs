@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -17,6 +18,8 @@ namespace ASI.Basecode.WebApp.Controllers
     public class HomeController : ControllerBase<HomeController>
     {
         private readonly ITicketService _ticketService;
+        private readonly IArticleService _articleService;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -29,9 +32,11 @@ namespace ASI.Basecode.WebApp.Controllers
                               ILoggerFactory loggerFactory,
                               IConfiguration configuration,
                               ITicketService ticketService,
+                              IArticleService articleService,
                               IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
             _ticketService = ticketService;
+            _articleService = articleService;
         }
 
         /// <summary>
@@ -40,13 +45,13 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <returns> Home View </returns>
         public IActionResult Index()
         {
-            var tickets = _ticketService.GetAllTickets();
-            if (tickets == null)
+            var viewModel = new HomeViewModel
             {
-                tickets = new List<TicketViewModel>(); 
-            }
+                Tickets = _ticketService.GetAllTickets().Take(20) ?? new List<TicketViewModel>(),
+                Articles = _articleService.GetAllArticles().Take(20) ?? new List<ArticleViewModel>()
+            };
 
-            return View(tickets);
+            return View(viewModel);
         }
 
         [AllowAnonymous]
