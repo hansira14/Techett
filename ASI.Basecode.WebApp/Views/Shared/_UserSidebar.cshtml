@@ -23,8 +23,9 @@
             </a>
         </li>
 
-        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Profile" ? "active" : "")">
-            <a asp-controller="Account" asp-action="Profile" asp-route-id="@Context.Session.GetInt32("UserId")">
+        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Profile" && 
+            Context.Request.Query["id"].ToString() == User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value ? "active" : "")">
+            <a asp-controller="Account" asp-action="Profile" asp-route-id="@User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value">
                 <i class="fa-solid fa-user sidebar-icon"></i>
                 <span>Profile</span>
             </a>
