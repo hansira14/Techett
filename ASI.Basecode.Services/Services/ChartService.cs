@@ -31,7 +31,7 @@ namespace ASI.Basecode.Services
                 .GroupBy(t => t.Priority)
                 .OrderBy(g => g.Key)
                 .ToDictionary(
-                    g => g.Key switch { 1 => "Low", 2 => "Medium", 3 => "High", _ => "Unknown" },
+                    g => g.Key switch { 1 => "Low", 2 => "Medium", 3 => "High", 4 => "Critical", _ => "Unknown" },
                     g => g.Count()
                 );
         }
