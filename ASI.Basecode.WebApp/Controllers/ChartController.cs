@@ -44,5 +44,12 @@ namespace ASI.Basecode.WebApp.Controllers
                 articleTrends = articleTrends
             });
         }
+
+        [HttpGet("GetUserTicketCounts")]
+        public IActionResult GetUserTicketCounts()
+        {
+            var counts = _chartService.GetUserTicketCounts();
+            return Json(counts);
+        }
     }
 } 
